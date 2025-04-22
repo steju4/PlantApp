@@ -54,7 +54,7 @@ const Popup = forwardRef(({ addToProList, addToContraList }: any, ref) => {
                             <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
                         </IonButtons>
                         <IonButtons slot="end">
-                            <IonButton strong={true} onClick={confirm} >
+                            <IonButton strong={true} onClick={confirm}>
                                 Confirm
                             </IonButton>
                         </IonButtons>

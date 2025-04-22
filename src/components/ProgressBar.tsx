@@ -1,5 +1,4 @@
 import React from 'react';
-import { IonLabel } from "@ionic/react";
 
 interface ProgressBarProps {
     greenPercentage: number; // Anteil des grünen Balkens (0-100)

@@ -3,14 +3,14 @@ import {
     IonContent,
     IonFabButton,
     IonIcon,
-    IonPage, IonTextarea,
+    IonPage,
     IonTitle,
     IonToolbar
 } from '@ionic/react';
-import './Tab2.css';
+import '../components/css/Tab2.css';
 import React, {useEffect, useRef, useState} from "react";
-import ProList from "./ProList";
-import ContraList from "./ContraList";
+import ProList from "../components/ProList";
+import ContraList from "../components/ContraList";
 import Popup from "../components/new_argument_popup";
 import {add} from "ionicons/icons";
 import ProgressBar from "../components/ProgressBar";
@@ -21,20 +21,17 @@ export interface ArgumentItem {
     importance: number;
     ID: number;
 }
-
+export interface UserData{
+    id: number;
+    name: string;
+    pro: ArgumentItem[];
+    contra: ArgumentItem[];
+};
 const Tab2: React.FC = () => {
-    // useState mit explizitem Typ
-    type UserData = {
-        id: number;
-        name: string;
-        pro: ArgumentItem[];
-        contra: ArgumentItem[];
-    };
-    const [userData, setUserData] = useState<UserData | null>(null);
-    const [text_value, setText_value] = useState("");
-    const [importance_value, setImportance_value] = useState("");
-    const [ID_value, setID_value] = useState("");
 
+    const [userData, setUserData] = useState<UserData | null>(null);
+    const [greenPercentage, setGreenPercentage] = useState(50);
+    const [redPercentage, setRedPercentage] = useState(50);
 
     // Beispielobjekt
 
@@ -79,7 +76,6 @@ const Tab2: React.FC = () => {
                 if (storedUser.pro.length === originalLength && argumentToEdit != undefined || storedUser.pro.length != originalLength && argumentToEdit === undefined) {
                     console.log("Pro-Argument-Array erfolgreich geändert.")
                 }
-
             } else {
                 if (storedUser.contra.length === originalLength && argumentToEdit != undefined || storedUser.contra.length != originalLength && argumentToEdit === undefined) {
                     console.log("Contra-Argument-Array erfolgreich geändert.")
@@ -98,9 +94,13 @@ const Tab2: React.FC = () => {
             const storedUser: UserData | null = await store.get('user');
             if (storedUser) {
                 setUserData(storedUser);
+                if (storedUser.pro.length > 0 || storedUser.contra.length > 0) {
+                    updatePercentages(storedUser.pro, storedUser.contra);
+                }
             }
         };
         fetchUserData();
+
     }, []);
 
     const addNewProArgument = async (newItem: ArgumentItem) => {
@@ -119,36 +119,26 @@ const Tab2: React.FC = () => {
         const storedUser: UserData | null = await store.get('user');
         if (storedUser) {
             storedUser.contra.push(newItem);
-
             updatePercentages(storedUser.pro, storedUser.contra);
             setUserData(storedUser);
             await store.set('user', storedUser);
 
 
-
         }
 
     }
-    const exampleUser: UserData = {
-        id: 0,
-        name: "",
-        pro: [],
-        contra: [],
-    };
-const emptyStore = async ()=>{
-    await store.clear();
-    await store.set('user', exampleUser);
-    const storedUser1: UserData | null = await store.get('user');
-    setUserData(storedUser1);
 
-
-
-
-
-
-
-
-}
+    const emptyStore = async () => {
+        await store.clear();
+        await store.set('user', {
+            id: 0,
+            name: "",
+            pro: [],
+            contra: [],
+        });
+        const storedUser: UserData | null = await store.get('user');
+        setUserData(storedUser);
+    }
 
     const popupRef = useRef<any>(null);
 
@@ -156,45 +146,32 @@ const emptyStore = async ()=>{
         popupRef.current?.openModal();
     };
 
-    const [greenPercentage, setGreenPercentage] = useState(50);
-    const [redPercentage, setRedPercentage] = useState(50);
 
 
-    const calculateTotalImportance = (items: ArgumentItem[]) => {
-        return items.reduce((sum, item) => sum + item.importance, 0);
-    };
+
 
     const updatePercentages = (pros: ArgumentItem[], cons: ArgumentItem[]) => {
-        const totalProImportance = calculateTotalImportance(pros);
-        const totalContraImportance = calculateTotalImportance(cons);
-
+        const totalProImportance = pros.reduce((sum, item) => sum + item.importance, 0)
+        const totalContraImportance = cons.reduce((sum, item) => sum + item.importance, 0)
         const total = totalProImportance + totalContraImportance;
+            setGreenPercentage(Math.round((totalProImportance / total) * 100));
+            setRedPercentage(Math.round((totalContraImportance / total) * 100));
 
-        if (total === 0) {
-            // Verhindert Division durch 0
-            setGreenPercentage(50);
-            setRedPercentage(50);
-        } else {
-            const green = (totalProImportance / total) * 100;
-            const red = (totalContraImportance / total) * 100;
-
-            setGreenPercentage(Math.round(green));
-            setRedPercentage(Math.round(red));
-        }
     };
+
 
     return (
         <IonPage>
             <IonToolbar>
                 <IonTitle>Standortwechsel</IonTitle>
             </IonToolbar>
-            <IonContent fullscreen>
+            <IonContent >
                 <div style={{margin: "10px"}}>
                     <ProgressBar greenPercentage={greenPercentage} redPercentage={redPercentage}></ProgressBar>
                     <IonButton onClick={emptyStore}>
                         Daten löschen
                     </IonButton>
-                    <IonButton onClick={()=> newArgument("Teständerung",4, true, userData?.pro[1].ID || 1 )}>
+                    <IonButton onClick={() => newArgument("Teständerung", 4, true, userData?.pro[1].ID || 1)}>
                         Ändern
 
                     </IonButton>
@@ -203,10 +180,10 @@ const emptyStore = async ()=>{
                 </div>
 
                 <div className="listen-container">
-                    <ProList items={userData?.pro || []}/>
+                    <ProList items={userData?.pro || []} updatePercentages={updatePercentages}/>
 
                     <div className="separator"></div>
-                    <ContraList items={userData?.contra || []}/>
+                    <ContraList items={userData?.contra || []} updatePercentages={updatePercentages}/>
                 </div>
                 <Popup ref={popupRef}
                        addToProList={addNewProArgument}
