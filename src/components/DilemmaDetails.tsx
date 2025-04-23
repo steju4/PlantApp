@@ -10,7 +10,7 @@ import ProgressBar from "./ProgressBar";
 import ProList from "./ProList";
 import ContraList from "./ContraList";
 import Popup from "./new_argument_popup";
-import {add,returnDownBackOutline} from "ionicons/icons";
+import {add, returnDownBackOutline} from "ionicons/icons";
 import "./css/Tab2.css"
 import store from "../db/storage";
 
@@ -24,22 +24,6 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
     const [redPercentage, setRedPercentage] = useState(50);
 
 
-    // Abrufen der Benutzerdaten
-    useEffect(() => {
-        const fetchUserData = async () => {
-            const storedUser: UserData | null = await store.get('user');
-            if (storedUser) {
-
-                if (storedUser.dilemmata.length > 0) {
-                    // Prozentsätze nur für das erste Dilemma berechnen, falls gewünscht
-                    const firstDilemma = storedUser.dilemmata[0];
-                    updatePercentages(firstDilemma.pro, firstDilemma.contra);
-                }
-            }
-        };
-        fetchUserData();
-    }, []);
-
     const updatePercentages = (pros: ArgumentItem[], cons: ArgumentItem[]) => {
         const totalProImportance = pros.reduce((sum, item) => sum + item.importance, 0)
         const totalContraImportance = cons.reduce((sum, item) => sum + item.importance, 0)
@@ -52,32 +36,39 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
     const popupRef = useRef<any>(null);
 
     const openPopup = () => {
-        popupRef.current?.openDilemmaDetails();
+        popupRef.current?.openModal();
     };
 
     const addNewProArgument = async (newItem: ArgumentItem) => {
         const storedUser = await store.get('user') as UserData;
 
-        if (storedUser?.dilemmata?.[0]) {
+        if (storedUser?.dilemmata?.find(dilemma => dilemma.id === id)) {
             // Hole das erste Dilemma
-            const target = { ...storedUser.dilemmata[0] };
+            const target = storedUser?.dilemmata?.find(dilemma => dilemma.id === id);
+            if (target) {
+                // Neues Argument hinzufügen
+                target.pro.push(newItem);
+                target.lastEdit = new Date().toLocaleDateString();
 
-            // Neues Argument hinzufügen
-            target.pro.push(newItem);
-            target.lastEdit = new Date().toLocaleDateString();
+                // Aktualisiere nur das veränderte Dilemma in der Liste der Dilemmata
 
-            // Aktualisiere nur das veränderte Dilemma in der Liste der Dilemmata
-            const updatedDilemmata = storedUser.dilemmata.map((dilemma, index) =>
-                index === 0 ? target : dilemma
-            );
+                const updatedDilemmata = [...storedUser.dilemmata];
+                updatedDilemmata.forEach((dilemma, index) => {
+                    if (dilemma.id === target.id){
+                        updatedDilemmata[index] = target
+                    }
 
-            // Aktualisiere den `user`-Speicher
-            const updatedUser = { ...storedUser, dilemmata: updatedDilemmata };
+                });
 
-            await store.set('user', updatedUser);
+                // Aktualisiere den `user`-Speicher
+                const updatedUser = {...storedUser, dilemmata: updatedDilemmata};
 
-            // Aktualisiere das lokale `dilemma` und Prozentsätze
-            updatePercentages(target.pro, target.contra);
+                await store.set('user', updatedUser);
+
+                // Aktualisiere das lokale `dilemma` und Prozentsätze
+                updatePercentages(target.pro, target.contra);
+            }
+
         } else {
             console.error("Dilemma data is missing or undefined.");
         }
@@ -88,7 +79,7 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
         const storedUser: UserData | null = await store.get('user');
         if (storedUser?.dilemmata?.[0]) {
             // Hole das erste Dilemma
-            const targetDilemma = { ...storedUser.dilemmata[0] };
+            const targetDilemma = {...storedUser.dilemmata[0]};
 
             // Neues Contra-Argument hinzufügen
             targetDilemma.contra.push(newItem);
@@ -100,7 +91,7 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
             );
 
             // Aktualisiere den `user`-Speicher
-            const updatedUser = { ...storedUser, dilemmata: updatedDilemmata };
+            const updatedUser = {...storedUser, dilemmata: updatedDilemmata};
             await store.set('user', updatedUser);
 
             // Aktualisiere das lokale `dilemma` und Prozentsätze
@@ -115,7 +106,7 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
         <IonContent>
             <IonToolbar onClick={onClose}>
                 <IonLabel className="back-button">
-                    <IonIcon icon={returnDownBackOutline} className="back-icon" />
+                    <IonIcon icon={returnDownBackOutline} className="back-icon"/>
                 </IonLabel>
             </IonToolbar>
 
@@ -123,7 +114,6 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
                 <div className="listen-container">
 
                     <IonTitle>{name}</IonTitle>
-
 
 
                     <IonLabel className="date-label" style={{fontWeight: "bold"}}>{lastEdit}</IonLabel>
@@ -136,28 +126,28 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
             </div>
 
 
-                {/*
+            {/*
                 <IonButton onClick={emptyStore}></IonButton>
 */}
 
 
-                <div className="listen-container">
-                    <ProList
-                        items={pro || []}
-                        updatePercentages={updatePercentages}
-                    />
+            <div className="listen-container">
+                <ProList
+                    items={pro || []}
+                    updatePercentages={updatePercentages}
+                />
 
 
-                    <div className="separator"></div>
-                    <ContraList
-                        items={contra || []}
-                        updatePercentages={updatePercentages}
-                    /></div>
-                <Popup ref={popupRef}
-                       addNewProArgument={addNewProArgument}
-                       addNewContraArgument={addNewContraArgument}/>
+                <div className="separator"></div>
+                <ContraList
+                    items={contra || []}
+                    updatePercentages={updatePercentages}
+                /></div>
+            <Popup ref={popupRef}
+                   addNewProArgument={addNewProArgument}
+                   addNewContraArgument={addNewContraArgument}/>
             <div className="open-modal-button">
-                <IonFabButton onClick={openPopup} >
+                <IonFabButton onClick={openPopup}>
                     <IonIcon icon={add}></IonIcon>
                 </IonFabButton>
             </div>
