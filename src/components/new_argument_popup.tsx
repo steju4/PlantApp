@@ -47,7 +47,11 @@ const Popup = forwardRef(({ addNewProArgument, addNewContraArgument }: any, ref)
 
     return (
         <IonContent >
-            <IonModal ref={modal}>
+            <IonModal ref={modal} style={{
+                '--width': '100vw',
+                '--height': '100vh',
+                '--border-radius': '0',
+            }}>
                 <IonHeader>
                     <IonToolbar>
                         <IonButtons slot="start">

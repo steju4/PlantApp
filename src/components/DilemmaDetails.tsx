@@ -1,11 +1,11 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
 
     IonContent,
     IonToolbar,
     IonTitle, IonFabButton, IonIcon, IonLabel,
 } from '@ionic/react';
-import {ArgumentItem, Dilemma, UserData} from "../pages/Tab2";
+import {ArgumentItem, Dilemma, UserData} from "../interfaces";
 import ProgressBar from "./ProgressBar";
 import ProList from "./ProList";
 import ContraList from "./ContraList";
@@ -22,6 +22,15 @@ type Props = Dilemma & {
 const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClose}) => {
     const [greenPercentage, setGreenPercentage] = useState(50);
     const [redPercentage, setRedPercentage] = useState(50);
+    const [dilemma, setDilemma] = useState({
+        proArguments: pro,
+        conArguments: contra,
+    });
+
+    useEffect(() => {
+        updatePercentages(pro, contra);
+    }, []);
+
 
 
     const updatePercentages = (pros: ArgumentItem[], cons: ArgumentItem[]) => {
@@ -32,8 +41,12 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
         setRedPercentage(Math.round((totalContraImportance / total) * 100));
 
     };
+    type PopupRefType = {
+        openModal: () => void;
+        closeModal: () => void;
+    };
 
-    const popupRef = useRef<any>(null);
+    const popupRef = useRef<PopupRefType | null>(null);
 
     const openPopup = () => {
         popupRef.current?.openModal();
@@ -54,7 +67,7 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
 
                 const updatedDilemmata = [...storedUser.dilemmata];
                 updatedDilemmata.forEach((dilemma, index) => {
-                    if (dilemma.id === target.id){
+                    if (dilemma.id === target.id) {
                         updatedDilemmata[index] = target
                     }
 
@@ -67,6 +80,9 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
 
                 // Aktualisiere das lokale `dilemma` und Prozentsätze
                 updatePercentages(target.pro, target.contra);
+                const oldDilemma = dilemma
+                oldDilemma.proArguments = target.pro
+                setDilemma(oldDilemma);
             }
 
         } else {
@@ -76,26 +92,35 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
 
 
     const addNewContraArgument = async (newItem: ArgumentItem) => {
-        const storedUser: UserData | null = await store.get('user');
-        if (storedUser?.dilemmata?.[0]) {
+        const storedUser = await store.get('user') as UserData;
+        if (storedUser?.dilemmata?.find(dilemma => dilemma.id === id)) {
             // Hole das erste Dilemma
-            const targetDilemma = {...storedUser.dilemmata[0]};
+            const target = storedUser.dilemmata?.find(dilemma => dilemma.id === id);
+            if (target) {
+                // Neues Contra-Argument hinzufügen
+                target.contra.push(newItem);
+                target.lastEdit = new Date().toLocaleDateString();
 
-            // Neues Contra-Argument hinzufügen
-            targetDilemma.contra.push(newItem);
-            targetDilemma.lastEdit = new Date().toLocaleDateString();
+                // Aktualisiere nur das veränderte Dilemma in der Liste der Dilemmata
+                const updatedDilemmata = [...storedUser.dilemmata]
+                updatedDilemmata.forEach((dilemma, index) => {
+                    if (dilemma.id === target.id) {
+                        updatedDilemmata[index] = target
+                    }
+                });
 
-            // Aktualisiere nur das veränderte Dilemma in der Liste der Dilemmata
-            const updatedDilemmata = storedUser.dilemmata.map((dilemma, index) =>
-                index === 0 ? targetDilemma : dilemma
-            );
+                // Aktualisiere den `user`-Speicher
+                const updatedUser = {...storedUser, dilemmata: updatedDilemmata};
+                await store.set('user', updatedUser);
+                const oldDilemma = dilemma
+                oldDilemma.conArguments = target.contra
+                setDilemma(oldDilemma);
 
-            // Aktualisiere den `user`-Speicher
-            const updatedUser = {...storedUser, dilemmata: updatedDilemmata};
-            await store.set('user', updatedUser);
+                // Aktualisiere das lokale `dilemma` und Prozentsätze
+                updatePercentages(target.pro, target.contra);
 
-            // Aktualisiere das lokale `dilemma` und Prozentsätze
-            updatePercentages(targetDilemma.pro, targetDilemma.contra);
+            }
+
         } else {
             console.error("Dilemma data is missing or undefined.");
         }
@@ -133,14 +158,14 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
 
             <div className="listen-container">
                 <ProList
-                    items={pro || []}
+                    items={dilemma.proArguments || []}
                     updatePercentages={updatePercentages}
                 />
 
 
                 <div className="separator"></div>
                 <ContraList
-                    items={contra || []}
+                    items={dilemma.conArguments || []}
                     updatePercentages={updatePercentages}
                 /></div>
             <Popup ref={popupRef}

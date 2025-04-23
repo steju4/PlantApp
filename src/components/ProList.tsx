@@ -14,7 +14,7 @@ import {
     IonToolbar
 } from '@ionic/react';
 import './css/List.css';
-import {ArgumentItem} from '../pages/Tab2';
+import {ArgumentItem, Dilemma} from "../interfaces";
 import store from '../db/storage';
 
 interface ProListProps {
@@ -30,7 +30,6 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
 
     // Synchronisiere lokale Items mit den Props
     useEffect(() => {
-        console.log("MARKER1")
         setLocalItems(items);
     }, [items]);
 
@@ -49,7 +48,6 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
         setLocalItems(updatedItems);
 
         // Debugging: Prüfen der aktualisierten Liste
-        console.log('Updated Local Items:', updatedItems);
 
         // Änderungen in den Speicher schreiben
         const User = await store.get('user');
@@ -70,11 +68,10 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
                 JSON.stringify(oldDilemma.contra) !== JSON.stringify(updatedDilemma.contra) ||
                 JSON.stringify(oldDilemma.name) !== JSON.stringify(updatedDilemma.name)
             ) {
-                console.log("Updated Dilemma:", updatedDilemma);
                 updatedDilemma.lastEdit = new Date(Date.now()).toLocaleDateString();
 
                 // Speichere nur das veränderte Dilemma in der Liste der Dilemmata
-                const updatedDilemmata = User.dilemmata.map((dilemma: any, index: number) =>
+                const updatedDilemmata = User.dilemmata.map((dilemma: Dilemma, index: number) =>
                     index === 0 ? updatedDilemma : dilemma
                 );
 
@@ -97,7 +94,11 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
                 <IonItem>
                     <IonLabel style={{fontWeight: 'bold'}}>Pro</IonLabel>
                 </IonItem>
-                <IonModal ref={modal}>
+                <IonModal ref={modal} style={{
+                    '--width': '100vw',
+                    '--height': '100vh',
+                    '--border-radius': '0',
+                }}>
                     <IonHeader>
                         <IonToolbar>
                             <IonButtons slot="start">

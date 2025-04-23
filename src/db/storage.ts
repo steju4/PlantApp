@@ -1,8 +1,8 @@
 import { Storage } from '@ionic/storage';
-import { UserData, Dilemma } from '../pages/Tab2';
+import { UserData, Dilemma } from "../interfaces";
 
 const store = new Storage();
-await store.create();
+store.create();
 
 const initializeStore = async () => {
     const storedUser = await store.get('user') as UserData | null;
@@ -10,10 +10,10 @@ const initializeStore = async () => {
     // Prüfe, ob gespeicherte Daten existieren und setze sie nur zurück, wenn sie leer sind
     if (!storedUser || !storedUser.dilemmata || storedUser.dilemmata.length === 0) {
         const defaultDilemma: Dilemma = {
-            id: Date.now(),
-            name: 'Neues Dilemma',
-            pro: [],
-            contra: [],
+            id: 1,
+            name: 'Mein erstes Dilemma',
+            pro: [{description:"Mein erstes Pro Argument", ID:1, importance:5}],
+            contra: [{description:"Mein erstes Contra Argument", ID:1, importance:5}],
             lastEdit: new Date().toLocaleDateString(),
         };
         const initialUser: UserData = {
@@ -24,6 +24,6 @@ const initializeStore = async () => {
     }
 };
 
-await initializeStore();
+initializeStore();
 
 export default store;

@@ -14,7 +14,7 @@ import {
     IonToolbar
 } from '@ionic/react';
 import './css/List.css';
-import { ArgumentItem } from '../pages/Tab2';
+import { ArgumentItem } from "../interfaces";
 import store from '../db/storage';
 
 interface ContraListProps {
@@ -80,7 +80,11 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages }) => 
                 <IonItem>
                     <IonLabel style={{ fontWeight: 'bold' }}>Contra</IonLabel>
                 </IonItem>
-                <IonModal ref={modal}>
+                <IonModal ref={modal} style={{
+                    '--width': '100vw',
+                    '--height': '100vh',
+                    '--border-radius': '0',
+                }}>
                     <IonHeader>
                         <IonToolbar>
                             <IonButtons slot="start">
