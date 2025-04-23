@@ -1,46 +1,27 @@
+import React, {useRef, useState, useEffect} from 'react';
 import {
+
     IonContent,
-    IonFabButton,
-    IonIcon, IonLabel,
-    IonPage,
-    IonTitle,
-    IonToolbar
+    IonToolbar,
+    IonTitle, IonFabButton, IonIcon, IonLabel,
 } from '@ionic/react';
-import '../components/css/Tab2.css';
-import React, {useEffect, useRef, useState} from "react";
-import ProList from "../components/ProList";
-import ContraList from "../components/ContraList";
-import Popup from "../components/new_argument_popup";
-import {add} from "ionicons/icons";
-import ProgressBar from "../components/ProgressBar";
+import {ArgumentItem, Dilemma, UserData} from "../pages/Tab2";
+import ProgressBar from "./ProgressBar";
+import ProList from "./ProList";
+import ContraList from "./ContraList";
+import Popup from "./new_argument_popup";
+import {add,returnDownBackOutline} from "ionicons/icons";
+import "./css/Tab2.css"
 import store from "../db/storage";
 
-export interface ArgumentItem {
-    description: string;
-    importance: number;
-    ID: number;
-}
 
-export interface Dilemma {
-
-    id: number;
-    name: string;
-    pro: ArgumentItem[];
-    contra: ArgumentItem[];
-    lastEdit: string;
+type Props = Dilemma & {
+    onClose: () => void;
 };
 
-export interface UserData {
-    id: number;
-    dilemmata: Dilemma[];
-}
-
-const Tab2: React.FC = () => {
-
-    const [userData, setUserData] = useState<UserData | null>(null);
+const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClose}) => {
     const [greenPercentage, setGreenPercentage] = useState(50);
     const [redPercentage, setRedPercentage] = useState(50);
-    const [dilemma, setDilemma] = useState<Dilemma | null>(null);
 
 
     // Abrufen der Benutzerdaten
@@ -48,8 +29,7 @@ const Tab2: React.FC = () => {
         const fetchUserData = async () => {
             const storedUser: UserData | null = await store.get('user');
             if (storedUser) {
-                setUserData(storedUser);
-                setDilemma(storedUser.dilemmata[0])
+
                 if (storedUser.dilemmata.length > 0) {
                     // Prozentsätze nur für das erste Dilemma berechnen, falls gewünscht
                     const firstDilemma = storedUser.dilemmata[0];
@@ -60,6 +40,20 @@ const Tab2: React.FC = () => {
         fetchUserData();
     }, []);
 
+    const updatePercentages = (pros: ArgumentItem[], cons: ArgumentItem[]) => {
+        const totalProImportance = pros.reduce((sum, item) => sum + item.importance, 0)
+        const totalContraImportance = cons.reduce((sum, item) => sum + item.importance, 0)
+        const total = totalProImportance + totalContraImportance;
+        setGreenPercentage(Math.round((totalProImportance / total) * 100));
+        setRedPercentage(Math.round((totalContraImportance / total) * 100));
+
+    };
+
+    const popupRef = useRef<any>(null);
+
+    const openPopup = () => {
+        popupRef.current?.openDilemmaDetails();
+    };
 
     const addNewProArgument = async (newItem: ArgumentItem) => {
         const storedUser = await store.get('user') as UserData;
@@ -79,11 +73,10 @@ const Tab2: React.FC = () => {
 
             // Aktualisiere den `user`-Speicher
             const updatedUser = { ...storedUser, dilemmata: updatedDilemmata };
-            setUserData(updatedUser);
+
             await store.set('user', updatedUser);
 
             // Aktualisiere das lokale `dilemma` und Prozentsätze
-            setDilemma(target);
             updatePercentages(target.pro, target.contra);
         } else {
             console.error("Dilemma data is missing or undefined.");
@@ -108,64 +101,41 @@ const Tab2: React.FC = () => {
 
             // Aktualisiere den `user`-Speicher
             const updatedUser = { ...storedUser, dilemmata: updatedDilemmata };
-            setUserData(updatedUser);
             await store.set('user', updatedUser);
 
             // Aktualisiere das lokale `dilemma` und Prozentsätze
-            setDilemma(targetDilemma);
             updatePercentages(targetDilemma.pro, targetDilemma.contra);
         } else {
             console.error("Dilemma data is missing or undefined.");
         }
     };
 
-    const emptyStore = async () => {
-        await store.clear();
-        const initialUserData: UserData = {
-            id: 0,
-            dilemmata: [],
-        };
-        await store.set('user', initialUserData);
-        setUserData(initialUserData);
-    };
-
-    const popupRef = useRef<any>(null);
-
-    const openPopup = () => {
-        popupRef.current?.openModal();
-    };
-
-
-    const updatePercentages = (pros: ArgumentItem[], cons: ArgumentItem[]) => {
-        const totalProImportance = pros.reduce((sum, item) => sum + item.importance, 0)
-        const totalContraImportance = cons.reduce((sum, item) => sum + item.importance, 0)
-        const total = totalProImportance + totalContraImportance;
-        setGreenPercentage(Math.round((totalProImportance / total) * 100));
-        setRedPercentage(Math.round((totalContraImportance / total) * 100));
-
-    };
-
 
     return (
-        <IonPage className="safe-area">
-            <IonToolbar style={{marginTop: "20px"}}>
+        <IonContent>
+            <IonToolbar onClick={onClose}>
+                <IonLabel className="back-button">
+                    <IonIcon icon={returnDownBackOutline} className="back-icon" />
+                </IonLabel>
+            </IonToolbar>
+
+            <div style={{marginTop: "0px"}}>
                 <div className="listen-container">
 
-                    <IonTitle>Standortwechsel</IonTitle>
+                    <IonTitle>{name}</IonTitle>
 
 
-                    {/*
-                    <IonLabel className="date-label" style={{fontWeight: "bold"}}>{userData?.lastEdit}</IonLabel>
-*/}
+
+                    <IonLabel className="date-label" style={{fontWeight: "bold"}}>{lastEdit}</IonLabel>
+
 
                 </div>
                 <div style={{margin: "10px"}}>
                     <ProgressBar greenPercentage={greenPercentage} redPercentage={redPercentage}></ProgressBar>
                 </div>
-            </IonToolbar>
+            </div>
 
 
-            <IonContent scroll-y="auto" className="content">
                 {/*
                 <IonButton onClick={emptyStore}></IonButton>
 */}
@@ -173,28 +143,26 @@ const Tab2: React.FC = () => {
 
                 <div className="listen-container">
                     <ProList
-                        items={userData?.dilemmata[0]?.pro || []}
+                        items={pro || []}
                         updatePercentages={updatePercentages}
                     />
 
 
                     <div className="separator"></div>
                     <ContraList
-                        items={userData?.dilemmata[0]?.contra || []}
+                        items={contra || []}
                         updatePercentages={updatePercentages}
                     /></div>
                 <Popup ref={popupRef}
                        addNewProArgument={addNewProArgument}
                        addNewContraArgument={addNewContraArgument}/>
-            </IonContent>
             <div className="open-modal-button">
-                <IonFabButton onClick={openPopup}>
+                <IonFabButton onClick={openPopup} >
                     <IonIcon icon={add}></IonIcon>
                 </IonFabButton>
             </div>
-        </IonPage>
-    );
-};
 
-
-export default Tab2;
+        </IonContent>
+    )
+}
+export default DilemmaDetails;

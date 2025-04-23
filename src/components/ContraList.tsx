@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
     IonBadge,
     IonButton,
@@ -14,7 +14,7 @@ import {
     IonToolbar
 } from '@ionic/react';
 import './css/List.css';
-import {ArgumentItem} from '../pages/Tab2';
+import { ArgumentItem } from '../pages/Tab2';
 import store from '../db/storage';
 
 interface ContraListProps {
@@ -38,7 +38,10 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages }) => 
     };
 
     const handleSave = async () => {
-        if (!currentArgument) return;
+        const storedUser = await store.get('user');
+        const targetDilemma = storedUser?.dilemmata?.[0];
+
+        if (!currentArgument || !targetDilemma) return;
 
         // Aktualisiere die lokale Liste
         const updatedItems = localItems.map((arg) =>
@@ -46,21 +49,24 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages }) => 
         );
         setLocalItems(updatedItems);
 
-        // Debugging: Prüfen der aktualisierten Liste
-        console.log('Updated Local Items:', updatedItems);
+        // Änderungen im Speicher aktualisieren
+        const updatedDilemma = {
+            ...targetDilemma,
+            contra: targetDilemma.contra.map((arg: { ID: number }) =>
+                arg.ID === currentArgument.ID ? currentArgument : arg
+            ),
+        };
 
-        // Änderungen in den Speicher schreiben
-        const storedUser = await store.get('user');
-        if (storedUser) {
-            const updatedUser = {
-                ...storedUser,
-                contra: storedUser.contra.map((arg: { ID: number; }) =>
-                    arg.ID === currentArgument.ID ? currentArgument : arg
-                ),
-            };
-            await store.set('user', updatedUser);
-            updatePercentages(updatedUser.pro, updatedUser.contra);
+        if (
+            JSON.stringify(targetDilemma.pro) !== JSON.stringify(updatedDilemma.pro) ||
+            JSON.stringify(targetDilemma.contra) !== JSON.stringify(updatedDilemma.contra) ||
+            JSON.stringify(targetDilemma.name) !== JSON.stringify(updatedDilemma.name)
+        ) {
+            updatedDilemma.lastEdit = new Date(Date.now()).toLocaleDateString();
+            storedUser.dilemmata[0] = updatedDilemma;
 
+            await store.set('user', storedUser);
+            updatePercentages(updatedDilemma.pro, updatedDilemma.contra);
         }
 
         // Modal schließen und aktuelles Argument zurücksetzen
@@ -72,7 +78,7 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages }) => 
         <div className="list-div">
             <IonList className="list">
                 <IonItem>
-                    <IonLabel style={{fontWeight: 'bold'}}>Contra</IonLabel>
+                    <IonLabel style={{ fontWeight: 'bold' }}>Contra</IonLabel>
                 </IonItem>
                 <IonModal ref={modal}>
                     <IonHeader>
@@ -125,10 +131,10 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages }) => 
                 </IonModal>
                 {localItems.map((item) => (
                     <IonItem button key={item.ID} onClick={() => openPopup(item)}>
-                        <IonBadge style={{width: '20px', margin: '10px'}} color="danger">
+                        <IonBadge className="badge-class" color="danger">
                             {item.importance}
                         </IonBadge>
-                        <IonLabel>{item.description}</IonLabel>
+                        <IonLabel className="label-class" style={{ margin: "5px" }}>{item.description}</IonLabel>
                     </IonItem>
                 ))}
             </IonList>

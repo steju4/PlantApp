@@ -1,3 +1,10 @@
 .list-div{
     width: 50%;
+    height: 100%;
+}
+.label-class{
+    font-size: 80% !important;
+}
+.badge-class{
+    width: auto
 }

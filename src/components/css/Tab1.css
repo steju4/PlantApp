@@ -1,0 +1,15 @@
+.dilemma-container {
+    display: flex;
+    justify-content: space-between; /* Verteilung der Elemente */
+    align-items: center; /* Vertikale Zentrierung */
+    width: 100%;
+}
+
+.edit-icon {
+    font-size: 25px;
+}
+
+.icon-container {
+    height: 100%;
+    width: 100%;
+}

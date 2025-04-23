@@ -1,34 +1,70 @@
-.add-button-container {
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: 70px;
-    margin-left: 15px;
+.back-button {
+    display: flex; /* Flexbox aktivieren */
+    justify-content: center; /* Horizontal zentrieren */
+    align-items: center; /* Vertikal zentrieren */
+    background-color: transparent; /* Startet transparent */
+    width: 50px; /* Feste Breite */
+    height: 50px; /* Feste Höhe */
+    border-radius: 25px; /* Volle Rundung für Kreisform */
+    cursor: pointer;
+    transition: background-color 0.2s ease; /* Sanfter Übergang */
+    margin-left: 5px;
+}
+
+.back-button:active {
+    background-color: rgba(0, 0, 0, 0.1); /* Seichte graue Box bei Klick */
+}
+
+.back-icon{
+    font-size: 25px;
+}
+.content {
+    overflow-y: auto; /* Nur bei Bedarf scrollen */
+    max-height: 100vh; /* Begrenze die maximale Höhe */
 }
 
 .listen-container {
     display: flex;
     padding-right: 10px;
+    height: 100%;
 }
 
 .separator {
     width: 1px;
     background-color: #9c9c9c;
-    height: 100vh;
-    margin-left: 20px;
-    margin-right: 5px;
+    height: auto;
+    min-height: 400px;
+    margin-left: 15px;
+    margin-right: 0px;
     margin-top: 10px;
 
 }
 
 .open-modal-button {
+    position: fixed;
     transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    width: 10px;
-    margin-left: 10px;
-    margin-bottom: 10px;
+    opacity: 1;
+    left: 10px;
+    bottom: 10px;
+
 }
 .open-modal-button:hover {
-    transform: scale(1.1);
+    transform: scale(1.02);
+
+}
+.safe-area {
+    padding: var(--ion-safe-area-top) var(--ion-safe-area-right) var(--ion-safe-area-bottom) var(--ion-safe-area-left);
+
 
 }
 
+.date-label {
+    font-size: 100% !important;
+}
+
+
+ion-content {
+    height: 15%;  /* Maximale Höhe des Inhaltsbereichs */
+
+}
 

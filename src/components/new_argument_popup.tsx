@@ -14,7 +14,7 @@ import {
     IonTextarea,
 } from '@ionic/react';
 
-const Popup = forwardRef(({ addToProList, addToContraList }: any, ref) => {
+const Popup = forwardRef(({ addNewProArgument, addNewContraArgument }: any, ref) => {
     const modal = useRef<HTMLIonModalElement>(null);
     const [value, setValue] = useState(5);
     const [text_value, setText_value] = useState('');
@@ -33,7 +33,7 @@ const Popup = forwardRef(({ addToProList, addToContraList }: any, ref) => {
             category: segment_value,
             ID: Date.now(),
         };
-        segment_value === 'pro' ? addToProList(newItem) : addToContraList(newItem);
+        segment_value === 'pro' ? addNewProArgument(newItem) : addNewContraArgument(newItem);
         modal.current?.dismiss();
     };
 
@@ -46,7 +46,7 @@ const Popup = forwardRef(({ addToProList, addToContraList }: any, ref) => {
     };
 
     return (
-        <IonContent className="ion-padding">
+        <IonContent >
             <IonModal ref={modal}>
                 <IonHeader>
                     <IonToolbar>

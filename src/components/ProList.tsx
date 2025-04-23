@@ -30,6 +30,7 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
 
     // Synchronisiere lokale Items mit den Props
     useEffect(() => {
+        console.log("MARKER1")
         setLocalItems(items);
     }, [items]);
 
@@ -51,22 +52,44 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
         console.log('Updated Local Items:', updatedItems);
 
         // Änderungen in den Speicher schreiben
-        const storedUser = await store.get('user');
-        if (storedUser) {
-            const updatedUser = {
-                ...storedUser,
-                pro: storedUser.pro.map((arg: { ID: number; }) =>
+        const User = await store.get('user');
+
+        if (User?.dilemmata?.[0]) {
+            // Hole das erste Dilemma
+            const updatedDilemma = {
+                ...User.dilemmata[0],
+                pro: User.dilemmata[0].pro.map((arg: { ID: number }) =>
                     arg.ID === currentArgument.ID ? currentArgument : arg
                 ),
             };
-            await store.set('user', updatedUser);
-            updatePercentages(updatedUser.pro, updatedUser.contra);
+
+            // Prüfe auf Änderungen, bevor die Daten gespeichert werden
+            const oldDilemma = User.dilemmata[0];
+            if (
+                JSON.stringify(oldDilemma.pro) !== JSON.stringify(updatedDilemma.pro) ||
+                JSON.stringify(oldDilemma.contra) !== JSON.stringify(updatedDilemma.contra) ||
+                JSON.stringify(oldDilemma.name) !== JSON.stringify(updatedDilemma.name)
+            ) {
+                console.log("Updated Dilemma:", updatedDilemma);
+                updatedDilemma.lastEdit = new Date(Date.now()).toLocaleDateString();
+
+                // Speichere nur das veränderte Dilemma in der Liste der Dilemmata
+                const updatedDilemmata = User.dilemmata.map((dilemma: any, index: number) =>
+                    index === 0 ? updatedDilemma : dilemma
+                );
+
+                await store.set('user', { ...User, dilemmata: updatedDilemmata });
+                updatePercentages(updatedDilemma.pro, updatedDilemma.contra);
+            }
+        } else {
+            console.error("Dilemmata data is missing or undefined.");
         }
 
         // Modal schließen und aktuelles Argument zurücksetzen
         setCurrentArgument(null);
         modal.current?.dismiss();
     };
+
 
     return (
         <div className="list-div">
@@ -125,10 +148,10 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
                 </IonModal>
                 {localItems.map((item) => (
                     <IonItem button key={item.ID} onClick={() => openPopup(item)}>
-                        <IonBadge style={{width: '20px', margin: '10px'}} color="success">
+                        <IonBadge className="badge-class" color="success">
                             {item.importance}
                         </IonBadge>
-                        <IonLabel>{item.description}</IonLabel>
+                        <IonLabel className= "label-class" style={{margin:"5px"}}>{item.description}</IonLabel>
                     </IonItem>
                 ))}
             </IonList>
