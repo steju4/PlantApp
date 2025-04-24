@@ -5,6 +5,7 @@ import {
     IonButtons,
     IonContent,
     IonHeader,
+    IonIcon,
     IonItem,
     IonLabel,
     IonList,
@@ -14,15 +15,17 @@ import {
     IonToolbar
 } from '@ionic/react';
 import './css/List.css';
-import { ArgumentItem } from "../interfaces";
+import { ArgumentItem, Dilemma } from "../interfaces";
 import store from '../db/storage';
+import { trashBinOutline } from "ionicons/icons";
 
 interface ContraListProps {
     items: ArgumentItem[];
     updatePercentages: (pros: ArgumentItem[], cons: ArgumentItem[]) => void;
+    dilemma: { proArguments: ArgumentItem[], conArguments: ArgumentItem[], ID: number };
 }
 
-const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages }) => {
+const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages, dilemma }) => {
     const modal = useRef<HTMLIonModalElement>(null);
     const [localItems, setLocalItems] = useState<ArgumentItem[]>(items);
     const [currentArgument, setCurrentArgument] = useState<ArgumentItem | null>(null);
@@ -38,10 +41,7 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages }) => 
     };
 
     const handleSave = async () => {
-        const storedUser = await store.get('user');
-        const targetDilemma = storedUser?.dilemmata?.[0];
-
-        if (!currentArgument || !targetDilemma) return;
+        if (!currentArgument) return;
 
         // Aktualisiere die lokale Liste
         const updatedItems = localItems.map((arg) =>
@@ -50,28 +50,50 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages }) => 
         setLocalItems(updatedItems);
 
         // Änderungen im Speicher aktualisieren
-        const updatedDilemma = {
-            ...targetDilemma,
-            contra: targetDilemma.contra.map((arg: { ID: number }) =>
-                arg.ID === currentArgument.ID ? currentArgument : arg
-            ),
-        };
+        const User = await store.get('user');
+        if (User?.dilemmata?.[0]) {
+            const updatedDilemma = {
+                ...User.dilemmata[0],
+                contra: User.dilemmata[0].contra.map((arg: { ID: number }) =>
+                    arg.ID === currentArgument.ID ? currentArgument : arg
+                ),
+            };
 
-        if (
-            JSON.stringify(targetDilemma.pro) !== JSON.stringify(updatedDilemma.pro) ||
-            JSON.stringify(targetDilemma.contra) !== JSON.stringify(updatedDilemma.contra) ||
-            JSON.stringify(targetDilemma.name) !== JSON.stringify(updatedDilemma.name)
-        ) {
-            updatedDilemma.lastEdit = new Date(Date.now()).toLocaleDateString();
-            storedUser.dilemmata[0] = updatedDilemma;
+            if (
+                JSON.stringify(User.dilemmata[0].pro) !== JSON.stringify(updatedDilemma.pro) ||
+                JSON.stringify(User.dilemmata[0].contra) !== JSON.stringify(updatedDilemma.contra) ||
+                JSON.stringify(User.dilemmata[0].name) !== JSON.stringify(updatedDilemma.name)
+            ) {
+                updatedDilemma.lastEdit = new Date(Date.now()).toLocaleDateString();
+                User.dilemmata[0] = updatedDilemma;
 
-            await store.set('user', storedUser);
-            updatePercentages(updatedDilemma.pro, updatedDilemma.contra);
+                await store.set('user', User);
+                updatePercentages(updatedDilemma.pro, updatedDilemma.contra);
+            }
         }
 
         // Modal schließen und aktuelles Argument zurücksetzen
         setCurrentArgument(null);
         modal.current?.dismiss();
+    };
+
+    const DeleteArgument = async (argID: number) => {
+        const currentArguments = [...localItems];
+        const index = currentArguments.findIndex(contraArgument => contraArgument.ID === argID);
+        currentArguments.splice(index, 1);
+        setLocalItems(currentArguments);
+
+        const User = await store.get('user');
+        const Dilemma = User.dilemmata?.find((User_Dilemma: Dilemma) => User_Dilemma.id === dilemma.ID);
+        const Dilemma_Index = User.dilemmata?.findIndex((User_Dilemma: Dilemma) => User_Dilemma.id === dilemma.ID);
+
+        if (Dilemma) {
+            Dilemma.contra = currentArguments;
+            User.dilemmata[Dilemma_Index] = Dilemma;
+            await store.set('user', User);
+            updatePercentages(Dilemma.pro, Dilemma.contra);
+
+        }
     };
 
     return (
@@ -134,11 +156,14 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages }) => 
                     </IonContent>
                 </IonModal>
                 {localItems.map((item) => (
-                    <IonItem button key={item.ID} onClick={() => openPopup(item)}>
+                    <IonItem button key={item.ID}>
                         <IonBadge className="badge-class" color="danger">
                             {item.importance}
                         </IonBadge>
-                        <IonLabel className="label-class" style={{ margin: "5px" }}>{item.description}</IonLabel>
+                        <IonLabel className="label-class" style={{ margin: "5px" }} onClick={() => openPopup(item)}>{item.description}</IonLabel>
+                        <div>
+                            <IonIcon icon={trashBinOutline} size="small" style={{ color: 'rgb(148, 1, 4)' }} onClick={() => DeleteArgument(item.ID)} />
+                        </div>
                     </IonItem>
                 ))}
             </IonList>

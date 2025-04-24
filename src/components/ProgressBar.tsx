@@ -6,6 +6,11 @@ interface ProgressBarProps {
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ greenPercentage, redPercentage }) => {
+
+    if (isNaN(greenPercentage) && isNaN(redPercentage)) {
+        greenPercentage = 50
+        redPercentage = 50
+    }
     const adjustedGreen = Math.min(greenPercentage, 100);
     const adjustedRed = Math.min(redPercentage, 100 - adjustedGreen);
 

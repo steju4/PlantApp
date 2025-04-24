@@ -4,7 +4,7 @@ import {
     IonButton,
     IonButtons,
     IonContent,
-    IonHeader,
+    IonHeader, IonIcon,
     IonItem,
     IonLabel,
     IonList,
@@ -16,14 +16,17 @@ import {
 import './css/List.css';
 import {ArgumentItem, Dilemma} from "../interfaces";
 import store from '../db/storage';
+import {trashBinOutline} from "ionicons/icons";
+
 
 interface ProListProps {
     items: ArgumentItem[];
     updatePercentages: (pros: ArgumentItem[], cons: ArgumentItem[]) => void; // Neue Prop-Typisierung
+    dilemma: {proArguments: ArgumentItem[], conArguments: ArgumentItem[], ID: number};
 
 }
 
-const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
+const ProList: React.FC<ProListProps> = ({ items, updatePercentages, dilemma }) => {
     const modal = useRef<HTMLIonModalElement>(null);
     const [localItems, setLocalItems] = useState<ArgumentItem[]>(items);
     const [currentArgument, setCurrentArgument] = useState<ArgumentItem | null>(null);
@@ -86,6 +89,20 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
         setCurrentArgument(null);
         modal.current?.dismiss();
     };
+    const DeleteArgument = async(argID:number)=>{
+        const currentArguments = [...localItems]
+        const index = currentArguments.findIndex(proArgument => proArgument.ID === argID);
+        currentArguments.splice(index, 1);
+        setLocalItems(currentArguments);
+        const User = await store.get('user');
+        const Dilemma = User.dilemmata?.find((User_Dilemma: Dilemma) => User_Dilemma.id === dilemma.ID);
+        const Dilemma_Index = User.dilemmata?.findIndex((User_Dilemma: Dilemma) => User_Dilemma.id === dilemma.ID);
+        Dilemma.pro = currentArguments;
+        User.dilemmata[Dilemma_Index] = Dilemma
+        await store.set('user', User);
+        updatePercentages(Dilemma.pro, Dilemma.contra);
+
+    }
 
 
     return (
@@ -148,11 +165,16 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages }) => {
                     </IonContent>
                 </IonModal>
                 {localItems.map((item) => (
-                    <IonItem button key={item.ID} onClick={() => openPopup(item)}>
+                    <IonItem button key={item.ID} >
                         <IonBadge className="badge-class" color="success">
                             {item.importance}
                         </IonBadge>
-                        <IonLabel className= "label-class" style={{margin:"5px"}}>{item.description}</IonLabel>
+                        <IonLabel className= "label-class" style={{margin:"5px"}} onClick={() => openPopup(item)}>{item.description}</IonLabel>
+                            <div >
+                        <IonIcon icon={trashBinOutline} size={"small"} style={{ color: 'rgb(148, 1, 4)'}} onClick={()=>DeleteArgument(item.ID)}>
+
+                        </IonIcon>
+                            </div>
                     </IonItem>
                 ))}
             </IonList>
