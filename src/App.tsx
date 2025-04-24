@@ -41,11 +41,7 @@ const App: React.FC = () => (
             </Route>
           </IonRouterOutlet>
 
-          <IonTabBar slot="bottom">
-            <IonTabButton tab="tab1" href="/tab1">
-              <IonIcon aria-hidden="true" icon={dice} />
-            </IonTabButton>
-          </IonTabBar>
+
         </IonTabs>
       </IonReactRouter>
     </IonApp>

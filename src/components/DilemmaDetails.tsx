@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
 
     IonContent,
-    IonTitle, IonFabButton, IonIcon, IonLabel, IonHeader, IonInput,
+    IonTitle, IonFabButton, IonIcon, IonLabel, IonHeader, IonInput, IonToolbar,
 } from '@ionic/react';
 import {ArgumentItem, Dilemma, UserData} from "../interfaces";
 import ProgressBar from "./ProgressBar";
@@ -33,9 +33,9 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
     }, []);
 
     useEffect(() => {
-        const changeDilemmaName = async() => {
+        const changeDilemmaName = async () => {
             const storedUser = await store.get('user') as UserData;
-            if (storedUser){
+            if (storedUser) {
                 const DilemmaIndex = storedUser.dilemmata.findIndex(d => d.id === id);
                 const updatedUser = storedUser
                 updatedUser.dilemmata[DilemmaIndex].name = dilemmaName;
@@ -44,7 +44,6 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
         }
         changeDilemmaName()
     }, [dilemmaName]); // Funktion wird ausgeführt, wenn "value" sich ändert
-
 
 
     const updatePercentages = (pros: ArgumentItem[], cons: ArgumentItem[]) => {
@@ -147,13 +146,21 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
 
 
     return (
-        <IonContent>
-            <div >
-                <IonHeader className="ion-no-border" style={{marginTop: "20px"}}>
-                        <IonLabel className="back-button" onClick={onClose}>
-                            <IonIcon icon={returnDownBackOutline} className="back-icon"/>
-                        </IonLabel>
+        <IonContent fullscreen className="safe-area">
+            <Popup ref={popupRef} style={{
+                '--width': '100vw',
+                '--height': '100vh',
+                '--border-radius': '0',
+            }}
+                   addNewProArgument={addNewProArgument}
+                   addNewContraArgument={addNewContraArgument}/>
+            <IonToolbar style={{marginTop:"30px"}}>
+                <IonHeader className="ion-no-border" >
+                    <IonLabel className="back-button" onClick={onClose}>
+                        <IonIcon icon={returnDownBackOutline} className="back-icon"/>
+                    </IonLabel>
                 </IonHeader>
+            </IonToolbar>
 
                 <div>
                     <div className="listen-container">
@@ -163,16 +170,15 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
                             </IonInput>
                         </IonTitle>
 
-
+                        <div style={{marginRight: "10px", marginTop: "14px", fontSize: "18px"}}>
                         <IonLabel className="date-label" style={{fontWeight: "bold"}}>{lastEdit}</IonLabel>
-
+                        </div>
 
                     </div>
                     <div style={{margin: "10px"}}>
                         <ProgressBar greenPercentage={greenPercentage} redPercentage={redPercentage}></ProgressBar>
                     </div>
                 </div>
-            </div>
 
 
             {/*
@@ -181,25 +187,27 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
 
 
             <div className="listen-container">
-                <ProList
-                    items={dilemma.proArguments || []}
-                    updatePercentages={updatePercentages}
-                    dilemma={dilemma}
-                />
-
-
+                <div className="prolist">
+                    <ProList
+                        items={dilemma.proArguments || []}
+                        updatePercentages={updatePercentages}
+                        dilemma={dilemma}
+                    />
+                </div>
                 <div className="separator"></div>
-                <ContraList
-                    items={dilemma.conArguments || []}
-                    updatePercentages={updatePercentages}
-                    dilemma={dilemma}
 
-                /></div>
-            <Popup ref={popupRef}
-                   addNewProArgument={addNewProArgument}
-                   addNewContraArgument={addNewContraArgument}/>
-            <div className="open-modal-button">
-                <IonFabButton onClick={openPopup}>
+                <div className="contralist">
+
+                    <ContraList
+                        items={dilemma.conArguments || []}
+                        updatePercentages={updatePercentages}
+                        dilemma={dilemma}
+                    /></div>
+            </div>
+
+
+            <div className="open-argument-edit-button">
+                <IonFabButton onClick={openPopup} className="AddButton">
                     <IonIcon icon={add}></IonIcon>
                 </IonFabButton>
             </div>

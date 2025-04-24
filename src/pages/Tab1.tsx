@@ -3,7 +3,7 @@ import {
     IonButton,
     IonButtons,
     IonContent,
-    IonFabButton,
+    IonFabButton, IonFooter,
     IonHeader,
     IonIcon,
     IonItem,
@@ -72,6 +72,24 @@ const Tab1: React.FC = () => {
 
 
         }
+        else{
+            const newItem = {
+                id: Date.now(),
+                name: dilemmaName,
+                pro: [],
+                contra: [],
+                lastEdit: ""
+            }
+            const newUserData = {
+                dilemmata: [newItem],
+                id: Date.now(),
+
+            }
+            setUserData(newUserData);
+            await store.set('user', newUserData);
+            addDilemmaModal.current?.dismiss();
+
+        }
     }
     const openDilemma =  (id:number) => {
         if (userData){
@@ -124,8 +142,9 @@ const Tab1: React.FC = () => {
 
     return (
         <IonPage>
-            <IonToolbar style={{marginTop: "20px"}}>
+            <IonToolbar style={{marginTop: "32px"}}>
                 <IonTitle>Dilemmata</IonTitle>
+                <div className="vertical-line"></div>
             </IonToolbar>
             <IonContent>
                 <IonList>
@@ -135,8 +154,10 @@ const Tab1: React.FC = () => {
                                 <div className="icon-container">
                                     <IonLabel onClick={() => openDilemma(dilemma.id)}>
                                         {dilemma.name}
+
                                     </IonLabel>
                                 </div>
+
                                 <IonIcon onClick={() => openEditDilemma(dilemma.id)} className="edit-icon"
                                          icon={create}></IonIcon></div>
 
@@ -170,17 +191,15 @@ const Tab1: React.FC = () => {
                             <IonButtons slot="start">
                                 <IonButton onClick={() => editDilemmaModal.current?.dismiss()}>Cancel</IonButton>
                             </IonButtons>
-                            <div style={{marginLeft:"50%"}} className="delete-button-container">
-                                <div style={{width: "45px", height:"40px", borderRadius:"20px"}}  onClick={()=>deleteDilemma(dilemma.id)}>
-                                    <div style={{width:"25px",height:"25px",position:"relative", left:'50%', top:'50%',transform: "translate(-50%, -50%)"}}>
-                                            <IonIcon className ="delete-button"icon={trashBin}></IonIcon>
-                                    </div>
+                            <IonButtons style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+                                <IonButton onClick={()=>deleteDilemma(dilemma.id)}>
+                                    <IonIcon  className ="delete-button"icon={trashBin}></IonIcon>
+                                </IonButton>
 
-                                </div>
+                            </IonButtons >
 
-                            </div>
                             <IonButtons slot="end">
-                                <IonButton strong={true} onClick={()=> editDilemma(dilemma.id)}>
+                                <IonButton  onClick={()=> editDilemma(dilemma.id)}>
                                     Confirm
                                 </IonButton>
                             </IonButtons>
@@ -188,7 +207,7 @@ const Tab1: React.FC = () => {
                     </IonHeader>
                     <IonTitle style={{marginTop: "20px"}}>Dilemma umbenennen</IonTitle>
                     <div style={{margin: "20px"}}>
-                        <IonTextarea autoGrow placeholder={clickedDilemmaName} style={{
+                        <IonTextarea className="Textarea" autoGrow placeholder={clickedDilemmaName} style={{
                             height: "100%",
                             width: "100%",
                             border: "2px solid black",
@@ -222,7 +241,7 @@ const Tab1: React.FC = () => {
                     </IonHeader>
                     <IonTitle style={{marginTop: "20px"}}>Neues Dilemma anlegen</IonTitle>
                     <div style={{margin: "20px"}}>
-                    <IonTextarea autoGrow placeholder={"Hier Dilemma-Namen eingeben..."} style={{
+                    <IonTextarea className="Textarea" autoGrow placeholder={"Hier Dilemma-Namen eingeben..."} style={{
                         height: "100%",
                         width: "100%",
                         border: "2px solid black",
@@ -238,13 +257,17 @@ const Tab1: React.FC = () => {
                 </IonModal>
 
             </IonContent>
-            <div className="open-modal-button">
-                <IonFabButton onClick={() => addDilemmaModal.current?.present()}>
-                    <IonIcon icon={add}>
-                    </IonIcon>
-                </IonFabButton>
 
-            </div>
+            <IonFooter style={{backgroundColor:'white', width:'100vw', height:'70px'}}>
+                <div className="open-modal-button">
+                    <IonFabButton className={"AddButton"} onClick={() => addDilemmaModal.current?.present()} >
+                        <IonIcon icon={add}>
+                        </IonIcon>
+                    </IonFabButton>
+
+                </div>
+
+            </IonFooter>
         </IonPage>
 
     );

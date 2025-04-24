@@ -156,13 +156,16 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages, dilem
                     </IonContent>
                 </IonModal>
                 {localItems.map((item) => (
-                    <IonItem button key={item.ID}>
+                    <IonItem button key={item.ID} onClick={() => openPopup(item)}>
                         <IonBadge className="badge-class" color="danger">
                             {item.importance}
                         </IonBadge>
-                        <IonLabel className="label-class" style={{ margin: "5px" }} onClick={() => openPopup(item)}>{item.description}</IonLabel>
+                        <IonLabel className="label-class" style={{ margin: "5px" }} >{item.description}</IonLabel>
                         <div>
-                            <IonIcon icon={trashBinOutline} size="small" style={{ color: 'rgb(148, 1, 4)' }} onClick={() => DeleteArgument(item.ID)} />
+                            <IonIcon icon={trashBinOutline} size="small" style={{ color: 'rgb(148, 1, 4)' }} onClick={(event) => {
+                                event.stopPropagation();
+                                DeleteArgument(item.ID);
+                            }} />
                         </div>
                     </IonItem>
                 ))}

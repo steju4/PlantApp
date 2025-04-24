@@ -1,6 +1,6 @@
 .list-div{
-    width: 50%;
-    height: 100%;
+    height: auto;
+    padding: 11px;
 }
 .label-class{
     font-size: 80% !important;
