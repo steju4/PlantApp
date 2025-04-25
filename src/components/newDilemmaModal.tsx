@@ -16,6 +16,8 @@ interface ColorPickerProps {
 
 }
 
+
+
 const NewDilemmaModal: React.FC<ColorPickerProps> = ({colors, selectColor, newDilemma, setDilemmaName, closeAddDilemmaModal}) => {
 
 
@@ -43,7 +45,9 @@ const NewDilemmaModal: React.FC<ColorPickerProps> = ({colors, selectColor, newDi
                                  borderRadius: "5px"
 
                              }}
-                             onIonInput={(e) => setDilemmaName(e.detail.value as string)}>
+                             onIonInput={(e) => setDilemmaName(e.detail.value as string)}
+                             onKeyPress={(e) => { if (e.key === 'Enter') newDilemma(); }} // Inline Handler
+                                >
 
                 </IonTextarea>
                 <ColorPickerComponent colors={colors} selectColor={selectColor}></ColorPickerComponent>

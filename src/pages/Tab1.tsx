@@ -53,7 +53,7 @@ const Tab1: React.FC = () => {
 
 
     const newDilemma = async () => {
-        if (dilemmaName){
+        if (dilemmaName.trim() !== "") {
         if (userData) {
             const newUserData = [...userData.dilemmata];
             const newItem = {
@@ -89,8 +89,11 @@ const Tab1: React.FC = () => {
             await store.set('user', newUserData);
             addDilemmaModal.current?.dismiss();
             resetColorSelector()
+
         }
         }
+        setDilemmaName("")
+
     }
 
     const openDilemma = (id: number) => {
@@ -120,7 +123,7 @@ const Tab1: React.FC = () => {
     }
 
     const editDilemma = async (ID: number) => {
-        if (dilemmaName) {
+        if (clickedDilemmaName.trim() !== "") {
 
             const clickedDilemma = userData?.dilemmata?.find(d => d.id === ID)
             const clickedDilemmaIndex: number = userData?.dilemmata?.findIndex(d => d.id === ID) as number
@@ -139,6 +142,7 @@ const Tab1: React.FC = () => {
                 setUserData(changedUserData)
                 await store.set('user', changedUserData);
                 editDilemmaModal.current?.dismiss()
+                setDilemmaName("")
             }
         }
     }

@@ -51,14 +51,16 @@ const EditDilemmaModal: React.FC<ColorPickerProps> = ({dilemma, clickedDilemmaNa
             </IonHeader>
             <IonTitle style={{marginTop: "20px"}}>Dilemma umbenennen</IonTitle>
             <div style={{margin: "20px"}}>
-                <IonTextarea className="Textarea" autoGrow placeholder={clickedDilemmaName || "Hier Dilemma-Namen eingeben..."} style={{
+                <IonTextarea className="Textarea" autoGrow  value={clickedDilemmaName} placeholder={"Hier Dilemma-Namen eingeben..."} style={{
                     height: "100%",
                     width: "100%",
                     border: "2px solid black",
                     borderRadius: "5px"
 
                 }}
-                             onIonInput={(e) => setClickedDilemmaName(e.detail.value as string)}>
+                             onIonInput={(e) => setClickedDilemmaName(e.detail.value as string)}
+                             onKeyPress={(e) => { if (e.key === 'Enter') editDilemma(dilemma.id)}} // Inline Handler
+                >
 
                 </IonTextarea>
                 <ColorPickerComponent colors={colors} selectColor={selectColor}></ColorPickerComponent>
