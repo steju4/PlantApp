@@ -1,28 +1,29 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-    IonButton,
-    IonButtons,
+
     IonContent,
     IonFabButton, IonFooter,
-    IonHeader,
     IonIcon,
     IonItem,
     IonLabel,
-    IonList,
     IonModal,
     IonPage,
-    IonTextarea,
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {add, create, trashBin} from "ionicons/icons";
+import {add, create} from "ionicons/icons";
 import '../components/css/Tab1.css';
 import DilemmaDetails from "../components/DilemmaDetails";
 import store from "../db/storage";
-import {Dilemma, UserData} from "../interfaces";
+import {ColorPicker, Dilemma, UserData} from "../interfaces";
+import {colorOptions} from "../colors";
+import EditDilemmaModal from "../components/editDilemmaModal";
+import NewDilemmaModal from "../components/newDilemmaModal";
 
 
 const Tab1: React.FC = () => {
+    const [colors, setColors] = useState<ColorPicker[]>(colorOptions);
+    const [selectedColor, setSelectedColor] = useState("");
     const [userData, setUserData] = useState<UserData>();
     const [dilemmaName, setDilemmaName] = useState("");
     const [clickedDilemmaName, setClickedDilemmaName] = useState("");
@@ -31,7 +32,8 @@ const Tab1: React.FC = () => {
         name: '',
         pro: [],
         contra: [],
-        lastEdit: ''
+        lastEdit: '',
+        color: "white"
     });
     const modal2 = useRef<HTMLIonModalElement>(null);
     const addDilemmaModal = useRef<HTMLIonModalElement>(null);
@@ -41,7 +43,6 @@ const Tab1: React.FC = () => {
     useEffect(() => {
             const fetchUserData = async () => {
                 const storedUser: UserData | null = await store.get('user');
-
                 if (storedUser?.dilemmata) {
                     setUserData(storedUser);
                 }
@@ -51,94 +52,141 @@ const Tab1: React.FC = () => {
     )
 
 
-
     const newDilemma = async () => {
-
-        if (userData){
+        if (dilemmaName){
+        if (userData) {
             const newUserData = [...userData.dilemmata];
             const newItem = {
                 id: Date.now(),
                 name: dilemmaName,
                 pro: [],
                 contra: [],
-                lastEdit: ""
+                lastEdit: "",
+                color: selectedColor,
             }
             newUserData.push(newItem)
             userData.dilemmata = newUserData;
             setUserData(userData);
             await store.set('user', userData);
             addDilemmaModal.current?.dismiss();
+            resetColorSelector()
 
 
-
-        }
-        else{
+        } else {
             const newItem = {
                 id: Date.now(),
                 name: dilemmaName,
                 pro: [],
                 contra: [],
-                lastEdit: ""
+                lastEdit: "",
+                color: selectedColor,
             }
             const newUserData = {
                 dilemmata: [newItem],
                 id: Date.now(),
-
             }
             setUserData(newUserData);
             await store.set('user', newUserData);
             addDilemmaModal.current?.dismiss();
-
+            resetColorSelector()
+        }
         }
     }
-    const openDilemma =  (id:number) => {
-        if (userData){
-            const chosenDilemma = userData.dilemmata.find((d) => d.id === id);
-            if (chosenDilemma){
-                setDilemma(chosenDilemma)
 
+    const openDilemma = (id: number) => {
+        if (userData) {
+            const chosenDilemma = userData.dilemmata.find((d) => d.id === id);
+            if (chosenDilemma) {
+                setDilemma(chosenDilemma)
                 modal2.current?.present()
             }
-
         }
     }
-    const openEditDilemma = async (ID:number)=>{
-        const clickedDilemma = userData?.dilemmata?.find(d => d.id === ID )
+    const openEditDilemma = async (ID: number) => {
+        const clickedDilemma = userData?.dilemmata?.find(d => d.id === ID)
+        if (clickedDilemma)
+        setSelectedColor(clickedDilemma.color)
+        if (clickedDilemma?.color != ""){
+            const clickedDilemmaColorIndex = colors.findIndex(color => color.colorcode == clickedDilemma?.color)
+            const colorCopy = [...colors]
+            colorCopy[clickedDilemmaColorIndex].border = "1px solid grey"
+        }
+        if (clickedDilemma) {
 
-        if (clickedDilemma){
             setDilemma(clickedDilemma)
             setClickedDilemmaName(clickedDilemma.name);
             editDilemmaModal.current?.present()
         }
-
     }
 
-    const editDilemma = async (ID:number)=>{
-        const clickedDilemma = userData?.dilemmata?.find(d => d.id === ID )
-        const clickedDilemmaIndex:number = userData?.dilemmata?.findIndex(d => d.id === ID) as number
-        if (clickedDilemma){
-            clickedDilemma.name = clickedDilemmaName
-            const changedUserData = userData
-            if (changedUserData)
-            changedUserData.dilemmata[clickedDilemmaIndex].name = clickedDilemmaName
-            setUserData(changedUserData)
-            await store.set('user', changedUserData);
-            editDilemmaModal.current?.dismiss()
+    const editDilemma = async (ID: number) => {
+        if (dilemmaName) {
 
+            const clickedDilemma = userData?.dilemmata?.find(d => d.id === ID)
+            const clickedDilemmaIndex: number = userData?.dilemmata?.findIndex(d => d.id === ID) as number
+            if (clickedDilemma) {
+                clickedDilemma.name = clickedDilemmaName
+                const changedUserData = userData
+                if (changedUserData)
+                    changedUserData.dilemmata[clickedDilemmaIndex].name = clickedDilemmaName
+                if (selectedColor != "" && changedUserData) {
+                    changedUserData.dilemmata[clickedDilemmaIndex].color = selectedColor
+                } else {
+                    changedUserData!.dilemmata[clickedDilemmaIndex].color = ""
 
+                }
+                resetColorSelector()
+                setUserData(changedUserData)
+                await store.set('user', changedUserData);
+                editDilemmaModal.current?.dismiss()
+            }
         }
-
-
     }
-    const deleteDilemma= async (ID:number)=>{
-        const clickedDilemmaIndex:number = userData?.dilemmata?.findIndex(d => d.id === ID) as number
-        userData?.dilemmata?.splice(clickedDilemmaIndex,1)
+    const deleteDilemma = async (ID: number) => {
+        const clickedDilemmaIndex: number = userData?.dilemmata?.findIndex(d => d.id === ID) as number
+        userData?.dilemmata?.splice(clickedDilemmaIndex, 1)
         await store.set('user', userData);
         setUserData(userData);
         editDilemmaModal.current?.dismiss()
+    }
+
+    const resetColorSelector = () => {
+        setSelectedColor("");
+        let colorsCopy
+        if (colors) {
+            colorsCopy = [...colors]
+        }
+        if (colorsCopy) {
+            colorsCopy.forEach((color) => {
+                color.border = ""
+            })
+            setColors(colorsCopy)
+        }
 
     }
 
+    const selectColor = async (id: number) => {
+        const selectedColorIndex = colors?.findIndex(d => d.id === id);
+        let colorsCopy
+        if (colors) {
+            colorsCopy = [...colors]
+        }
+        if (colorsCopy) {
+            if (selectedColor === colorsCopy[selectedColorIndex].colorcode){
+                colorsCopy[selectedColorIndex].border = ""
+                setColors(colorsCopy)
+                resetColorSelector()
+            }
+            else{
+            resetColorSelector()
+            if (colorsCopy) {
+                colorsCopy[selectedColorIndex].border = "1px solid grey"
+                setColors(colorsCopy)
+                setSelectedColor(colorsCopy[selectedColorIndex].colorcode)
+            }
+            }
+        }
+    }
 
     return (
         <IonPage>
@@ -147,131 +195,55 @@ const Tab1: React.FC = () => {
                 <div className="vertical-line"></div>
             </IonToolbar>
             <IonContent>
-                <IonList>
-                    {userData?.dilemmata.map(dilemma => (
-                        <IonItem key={dilemma.id}>
-                            <div className={"dilemma-container"}>
-                                <div className="icon-container">
-                                    <IonLabel onClick={() => openDilemma(dilemma.id)}>
-                                        {dilemma.name}
+                {userData?.dilemmata.map(dilemma => (
+                    <IonItem key={dilemma.id} lines="none" className="dilemma-item"
+                             style={{"--background": dilemma.color}}>
+                        <div className={"dilemma-container"}>
 
-                                    </IonLabel>
-                                </div>
-
-                                <IonIcon onClick={() => openEditDilemma(dilemma.id)} className="edit-icon"
-                                         icon={create}></IonIcon></div>
-
-                        </IonItem>
-                    ))}
-
-                </IonList>
-                <IonModal ref={modal2} style={{
-                    '--width': '100vw',
-                    '--height': '100vh',
-                    '--border-radius': '0',
-                }} >
+                            <div className="icon-container">
+                                <IonLabel onClick={() => openDilemma(dilemma.id)}>
+                                    {dilemma.name}
+                                </IonLabel>
+                            </div>
+                            <IonIcon onClick={() => openEditDilemma(dilemma.id)} className="edit-icon"
+                                     icon={create}></IonIcon></div>
+                    </IonItem>
+                ))}
+                <IonModal ref={modal2} className="modal-sizer">
                     <DilemmaDetails
                         pro={dilemma.pro}
                         id={dilemma.id}
                         name={dilemma.name}
                         contra={dilemma.contra}
+                        color={dilemma.color}
                         lastEdit={dilemma.lastEdit}
                         onClose={() => modal2.current?.dismiss()}
-
                     />
-                </IonModal >
-                <IonModal ref={editDilemmaModal} style={{
-                    '--width': '100vw',
-                    '--height': '100vh',
-                    '--border-radius': '0',
-                }}>
-                    <div>
-                    <IonHeader>
-                        <IonToolbar>
-                            <IonButtons slot="start">
-                                <IonButton onClick={() => editDilemmaModal.current?.dismiss()}>Cancel</IonButton>
-                            </IonButtons>
-                            <IonButtons style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
-                                <IonButton onClick={()=>deleteDilemma(dilemma.id)}>
-                                    <IonIcon  className ="delete-button"icon={trashBin}></IonIcon>
-                                </IonButton>
-
-                            </IonButtons >
-
-                            <IonButtons slot="end">
-                                <IonButton  onClick={()=> editDilemma(dilemma.id)}>
-                                    Confirm
-                                </IonButton>
-                            </IonButtons>
-                        </IonToolbar>
-                    </IonHeader>
-                    <IonTitle style={{marginTop: "20px"}}>Dilemma umbenennen</IonTitle>
-                    <div style={{margin: "20px"}}>
-                        <IonTextarea className="Textarea" autoGrow placeholder={clickedDilemmaName} style={{
-                            height: "100%",
-                            width: "100%",
-                            border: "2px solid black",
-                            borderRadius: "5px"
-
-                        }}
-                                     onIonInput={(e) => setClickedDilemmaName(e.detail.value as string)}>
-
-                        </IonTextarea>
-                </div>
-                    </div>
-
                 </IonModal>
-                <IonModal ref={addDilemmaModal} style={{
-                    '--width': '100vw',
-                    '--height': '100vh',
-                    '--border-radius': '0',
-                }}>
-                    <div>
-                    <IonHeader>
-                        <IonToolbar>
-                            <IonButtons slot="start">
-                                <IonButton onClick={() => addDilemmaModal.current?.dismiss()}>Cancel</IonButton>
-                            </IonButtons>
-                            <IonButtons slot="end">
-                                <IonButton strong={true} onClick={newDilemma}>
-                                    Confirm
-                                </IonButton>
-                            </IonButtons>
-                        </IonToolbar>
-                    </IonHeader>
-                    <IonTitle style={{marginTop: "20px"}}>Neues Dilemma anlegen</IonTitle>
-                    <div style={{margin: "20px"}}>
-                    <IonTextarea className="Textarea" autoGrow placeholder={"Hier Dilemma-Namen eingeben..."} style={{
-                        height: "100%",
-                        width: "100%",
-                        border: "2px solid black",
-                        borderRadius: "5px"
-
-                    }}
-                                 onIonInput={(e) => setDilemmaName(e.detail.value as string)}>
-
-                    </IonTextarea>
-
-                        </div>
-                    </div>
+                <IonModal ref={editDilemmaModal} className="modal-sizer">
+                    <EditDilemmaModal dilemma={dilemma} editDilemma={editDilemma}
+                                      closeEditDilemmaModal={() => editDilemmaModal.current?.dismiss()}
+                                      selectColor={selectColor} colors={colors} clickedDilemmaName={clickedDilemmaName}
+                                      deleteDilemma={deleteDilemma}
+                                      setClickedDilemmaName={setClickedDilemmaName}
+                                      resetColorSelector = {resetColorSelector}></EditDilemmaModal>
                 </IonModal>
-
+                <IonModal ref={addDilemmaModal} className="modal-sizer">
+                    <NewDilemmaModal newDilemma={newDilemma} colors={colors} selectColor={selectColor}
+                                     closeAddDilemmaModal={() => addDilemmaModal.current?.dismiss()}
+                                     setDilemmaName={setDilemmaName}/>
+                </IonModal>
             </IonContent>
-
-            <IonFooter style={{backgroundColor:'white', width:'100vw', height:'70px'}}>
+            <IonFooter style={{backgroundColor: 'white', width: '100vw', height: '90px'}}>
                 <div className="open-modal-button">
-                    <IonFabButton className={"AddButton"} onClick={() => addDilemmaModal.current?.present()} >
+                    <IonFabButton className={"AddButton"} onClick={() => addDilemmaModal.current?.present()}>
                         <IonIcon icon={add}>
                         </IonIcon>
                     </IonFabButton>
-
                 </div>
-
             </IonFooter>
         </IonPage>
-
     );
 };
 
 export default Tab1;
-

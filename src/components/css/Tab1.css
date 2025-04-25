@@ -14,18 +14,25 @@
     width: 100%;
 }
 
-.delete-button{
+.delete-button {
     font-size: 25px;
     color: rgb(232, 0, 3);
 }
 
-.delete-button-container {
-    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    opacity: 1;
+.content {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
 
+.dilemma-item {
+
+    border: 0.5px solid #ccc;
+    border-radius: 30px;
+    margin: 5px;
 
 }
 
-.content {
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+.modal-sizer {
+    --width: 100vw;
+    --height: 100vh;
+    --border-radius: 0
 }

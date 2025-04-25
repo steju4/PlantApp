@@ -11,6 +11,7 @@ export interface Dilemma {
     pro: ArgumentItem[];
     contra: ArgumentItem[];
     lastEdit: string;
+    color: string;
 }
 
 export interface UserData {
@@ -18,3 +19,9 @@ export interface UserData {
     dilemmata: Dilemma[];
 }
 
+export interface ColorPicker {
+    colorName: string;
+    colorcode: string;
+    border: string;
+    id: number;
+}
