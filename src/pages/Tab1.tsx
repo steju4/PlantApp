@@ -151,6 +151,7 @@ const Tab1: React.FC = () => {
         userData?.dilemmata?.splice(clickedDilemmaIndex, 1)
         await store.set('user', userData);
         setUserData(userData);
+        resetColorSelector()
         editDilemmaModal.current?.dismiss()
     }
 
