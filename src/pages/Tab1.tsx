@@ -191,6 +191,15 @@ const Tab1: React.FC = () => {
             }
         }
     }
+    const closeAddDilemmaModal = () =>{
+        addDilemmaModal.current?.dismiss()
+        resetColorSelector()
+    }
+    const closeEditDilemmaModal = () =>{
+        editDilemmaModal.current?.dismiss()
+        resetColorSelector()
+    }
+
 
     return (
         <IonPage>
@@ -205,7 +214,8 @@ const Tab1: React.FC = () => {
                         <div className={"dilemma-container"}>
 
                             <div className="icon-container">
-                                <IonLabel onClick={() => openDilemma(dilemma.id)}>
+                                <IonLabel onClick={() => {{openDilemma(dilemma.id)}
+                                console.log(dilemma.id)}}>
                                     {dilemma.name}
                                 </IonLabel>
                             </div>
@@ -226,7 +236,7 @@ const Tab1: React.FC = () => {
                 </IonModal>
                 <IonModal ref={editDilemmaModal} className="modal-sizer">
                     <EditDilemmaModal dilemma={dilemma} editDilemma={editDilemma}
-                                      closeEditDilemmaModal={() => editDilemmaModal.current?.dismiss()}
+                                      closeEditDilemmaModal={() => closeEditDilemmaModal()}
                                       selectColor={selectColor} colors={colors} clickedDilemmaName={clickedDilemmaName}
                                       deleteDilemma={deleteDilemma}
                                       setClickedDilemmaName={setClickedDilemmaName}
@@ -234,7 +244,7 @@ const Tab1: React.FC = () => {
                 </IonModal>
                 <IonModal ref={addDilemmaModal} className="modal-sizer">
                     <NewDilemmaModal newDilemma={newDilemma} colors={colors} selectColor={selectColor}
-                                     closeAddDilemmaModal={() => addDilemmaModal.current?.dismiss()}
+                                     closeAddDilemmaModal={() => closeAddDilemmaModal()}
                                      setDilemmaName={setDilemmaName}/>
                 </IonModal>
             </IonContent>
