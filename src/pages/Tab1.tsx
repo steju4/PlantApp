@@ -33,7 +33,8 @@ const Tab1: React.FC = () => {
         pro: [],
         contra: [],
         lastEdit: '',
-        color: "white"
+        color: "white",
+        progressbarBlur: false
     });
     const modal2 = useRef<HTMLIonModalElement>(null);
     const addDilemmaModal = useRef<HTMLIonModalElement>(null);
@@ -63,6 +64,7 @@ const Tab1: React.FC = () => {
                 contra: [],
                 lastEdit: "",
                 color: selectedColor,
+                progressbarBlur: false
             }
             newUserData.push(newItem)
             userData.dilemmata = newUserData;
@@ -80,6 +82,7 @@ const Tab1: React.FC = () => {
                 contra: [],
                 lastEdit: "",
                 color: selectedColor,
+                progressbarBlur: false
             }
             const newUserData = {
                 dilemmata: [newItem],
@@ -232,6 +235,7 @@ const Tab1: React.FC = () => {
                         contra={dilemma.contra}
                         color={dilemma.color}
                         lastEdit={dilemma.lastEdit}
+                        progressbarBlur={dilemma.progressbarBlur}
                         onClose={() => modal2.current?.dismiss()}
                     />
                 </IonModal>

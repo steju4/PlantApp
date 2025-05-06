@@ -12,6 +12,7 @@ export interface Dilemma {
     contra: ArgumentItem[];
     lastEdit: string;
     color: string;
+    progressbarBlur: boolean
 }
 
 export interface UserData {

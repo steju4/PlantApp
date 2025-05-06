@@ -9,7 +9,7 @@ import ProgressBar from "./ProgressBar";
 import ProList from "./ProList";
 import ContraList from "./ContraList";
 import Popup from "./new_argument_popup";
-import {add, returnDownBackOutline} from "ionicons/icons";
+import {add, eyeOffOutline, returnDownBackOutline, eyeOutline} from "ionicons/icons";
 import "./css/Tab2.css"
 import store from "../db/storage";
 
@@ -18,14 +18,16 @@ type Props = Dilemma & {
     onClose: () => void;
 };
 
-const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClose}) => {
+const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progressbarBlur, onClose}) => {
+    const [blurEffect, setBlurEffect] = useState<string>(progressbarBlur ? "blur(2px)" : "blur(0px)");
     const [greenPercentage, setGreenPercentage] = useState(50);
     const [redPercentage, setRedPercentage] = useState(50);
     const [dilemmaName, setDilemmaName] = useState(name);
     const [dilemma, setDilemma] = useState({
         proArguments: pro,
         conArguments: contra,
-        ID: id
+        ID: id,
+        progressbarBlur: progressbarBlur
     });
 
     useEffect(() => {
@@ -53,9 +55,7 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
 
 
         setGreenPercentage(Math.round((totalProImportance / total) * 100));
-        console.log(greenPercentage)
         setRedPercentage(Math.round((totalContraImportance / total) * 100));
-        console.log(redPercentage)
 
 
     };
@@ -144,6 +144,38 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
         }
     };
 
+    const blurProgressbar = async () => {
+        if (blurEffect === "blur(0px)") {
+            setBlurEffect("blur(2px)")
+            const dilemmacopy = dilemma
+            dilemmacopy.progressbarBlur = true
+            setDilemma(dilemmacopy)
+        } else {
+            setBlurEffect("blur(0px)")
+            const dilemmacopy = dilemma
+            dilemmacopy.progressbarBlur = false
+            setDilemma(dilemmacopy)
+        }
+        const storedUser = await store.get('user') as UserData;
+
+        if (storedUser?.dilemmata?.find(dilemma => dilemma.id === id)) {
+
+            const updatedDilemmata = [...storedUser.dilemmata];
+            const targetUser = updatedDilemmata.find(dilemma => dilemma.id === id)
+            if (targetUser) {
+                targetUser.progressbarBlur = !targetUser.progressbarBlur;
+            }
+            updatedDilemmata.forEach((dilemma) => {
+                    if (dilemma.id === targetUser?.id) {
+                        dilemma.progressbarBlur = targetUser.progressbarBlur;
+                    }
+                }
+            )
+            const updatedUser = {...storedUser, dilemmata: updatedDilemmata};
+            await store.set('user', updatedUser);
+        }
+    }
+
 
     return (
         <IonContent fullscreen className="safe-area">
@@ -154,36 +186,38 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, onClo
             }}
                    addNewProArgument={addNewProArgument}
                    addNewContraArgument={addNewContraArgument}/>
-            <IonToolbar style={{marginTop:"30px"}}>
-                <IonHeader className="ion-no-border" >
+            <IonToolbar style={{marginTop: "30px"}}>
+                <IonHeader className="ion-no-border">
                     <IonLabel className="back-button" onClick={onClose}>
                         <IonIcon icon={returnDownBackOutline} className="back-icon"/>
                     </IonLabel>
                 </IonHeader>
             </IonToolbar>
 
-                <div>
-                    <div className="listen-container">
+            <div>
+                <div className="listen-container">
 
-                        <IonTitle>
-                            <IonInput value={dilemmaName} onIonInput={(e) => setDilemmaName(e.detail.value as string)}>
-                            </IonInput>
-                        </IonTitle>
+                    <IonTitle>
+                        <IonInput value={dilemmaName} onIonInput={(e) => setDilemmaName(e.detail.value as string)}>
+                        </IonInput>
+                    </IonTitle>
 
-                        <div style={{marginRight: "10px", marginTop: "14px", fontSize: "18px"}}>
+                    <div style={{marginRight: "10px", marginTop: "14px", fontSize: "18px"}}>
                         <IonLabel className="date-label" style={{fontWeight: "bold"}}>{lastEdit}</IonLabel>
-                        </div>
+                    </div>
 
-                    </div>
-                    <div style={{margin: "10px"}}>
-                        <ProgressBar greenPercentage={greenPercentage} redPercentage={redPercentage}></ProgressBar>
-                    </div>
+                </div>
+                <div style={{textAlign: "center"}}>
+                    <IonIcon onClick={() => blurProgressbar()} icon={dilemma.progressbarBlur ? eyeOffOutline : eyeOutline}
+                             ></IonIcon>
+
                 </div>
 
-
-            {/*
-                <IonButton onClick={emptyStore}></IonButton>
-*/}
+                <div style={{margin: "0px 10px 0px 10px", filter: blurEffect}} onClick={() => blurProgressbar()}>
+                    <ProgressBar greenPercentage={dilemma.progressbarBlur ? 50 : greenPercentage}
+                                 redPercentage={dilemma.progressbarBlur ? 50 : redPercentage}></ProgressBar>
+                </div>
+            </div>
 
 
             <div className="listen-container">
