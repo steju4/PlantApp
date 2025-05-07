@@ -232,7 +232,7 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
             });
 
             await Share.share({
-                title: 'Teile dein Dilemma!',
+                title: 'Share your Dilemma!',
                 url: savedFile.uri,
             });
 
