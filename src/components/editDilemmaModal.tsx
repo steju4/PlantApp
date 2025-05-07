@@ -49,7 +49,7 @@ const EditDilemmaModal: React.FC<ColorPickerProps> = ({dilemma, clickedDilemmaNa
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>
-            <IonTitle style={{marginTop: "20px"}}>Dilemma umbenennen</IonTitle>
+            <IonTitle style={{marginTop: "20px"}}>Rename Dilemma</IonTitle>
             <div style={{margin: "20px"}}>
                 <IonTextarea className="Textarea" autoGrow  value={clickedDilemmaName} placeholder={"Hier Dilemma-Namen eingeben..."} style={{
                     height: "100%",

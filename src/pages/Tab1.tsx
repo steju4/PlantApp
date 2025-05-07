@@ -216,7 +216,7 @@ const Tab1: React.FC = () => {
 
             <IonToolbar style={{marginTop: "calc(var(--status-bar-height) + 15px)"}}>
 
-                <IonTitle style={{marginTop: "15px"}} className={"title-Tab1"}>Dilemmata</IonTitle>
+                <IonTitle style={{marginTop: "15px"}} className={"title-Tab1"}>Dilemmas</IonTitle>
                 <div className="vertical-line"></div>
             </IonToolbar>
             <IonContent >
