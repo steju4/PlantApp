@@ -200,6 +200,10 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
             BackButton.forEach((button) => {
                 (button as HTMLElement).style.display = 'none';
             });
+            const Eye = document.querySelectorAll('.eye');
+            Eye.forEach((eye) => {
+                (eye as HTMLElement).style.display = 'none';
+            });
 
             // Generiere das Bild
             const canvas = await htmlToImage.toCanvas(element as HTMLElement);
@@ -215,6 +219,9 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
             BackButton.forEach((button) => {
                 (button as HTMLElement).style.display = '';
             });
+            Eye.forEach((eye) => {
+                (eye as HTMLElement).style.display = '';
+            });
 
             // Speichern und Teilen (unverändert)
             const fileName = `shared-image-${Date.now()}.png`;
@@ -225,7 +232,7 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
             });
 
             await Share.share({
-                title: 'Teile dein Bild',
+                title: 'Teile dein Dilemma!',
                 url: savedFile.uri,
             });
 
@@ -245,9 +252,9 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
             }}
                    addNewProArgument={addNewProArgument}
                    addNewContraArgument={addNewContraArgument}/>
-            <IonToolbar style={{marginTop: "30px"}}>
+            <IonToolbar style={{marginTop: "40px"}}>
                 <IonHeader className="ion-no-border">
-                    <div style={{display:"flex", justifyContent: 'space-between', marginRight:"10px"}}>
+                    <div style={{display:"flex", justifyContent: 'space-between', marginRight:"15px"}}>
                     <IonLabel className="back-button" onClick={onClose}>
                         <IonIcon icon={returnDownBackOutline} className="back-icon"/>
                     </IonLabel>
@@ -266,8 +273,17 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
                     <div className="listen-container">
 
                         <IonTitle>
-                            <IonInput value={dilemmaName} onIonInput={(e) => setDilemmaName(e.detail.value as string)}>
-                            </IonInput>
+                            <IonInput
+                                value={dilemmaName}
+                                onIonInput={(e) => setDilemmaName(e.detail.value as string)}
+                                style={{
+                                    textOverflow: "ellipsis",
+                                    overflow: "clip",
+                                    whiteSpace: "nowrap",
+                                    width: "280px" // Maximalbreite anpassen
+                                }}
+                            />
+
                         </IonTitle>
 
 
@@ -276,7 +292,7 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
                         </div>
 
                     </div>
-                    <div style={{textAlign: "center"}}>
+                    <div style={{textAlign: "center"}} className="eye">
                         <IonIcon onClick={() => blurProgressbar()}
                                  icon={dilemma.progressbarBlur ? eyeOffOutline : eyeOutline}
                         ></IonIcon>
