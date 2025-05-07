@@ -19,7 +19,7 @@ import {ColorPicker, Dilemma, UserData} from "../interfaces";
 import {colorOptions} from "../colors";
 import EditDilemmaModal from "../components/editDilemmaModal";
 import NewDilemmaModal from "../components/newDilemmaModal";
-import { StatusBar, Style } from '@capacitor/status-bar';
+import {StatusBar, Style} from '@capacitor/status-bar';
 
 
 const Tab1: React.FC = () => {
@@ -43,6 +43,11 @@ const Tab1: React.FC = () => {
 
 
     useEffect(() => {
+            StatusBar.setStyle({style: Style.Dark});
+        }
+    )
+
+    useEffect(() => {
             const fetchUserData = async () => {
                 const storedUser: UserData | null = await store.get('user');
                 if (storedUser?.dilemmata) {
@@ -56,45 +61,45 @@ const Tab1: React.FC = () => {
 
     const newDilemma = async () => {
         if (dilemmaName.trim() !== "") {
-        if (userData) {
-            const newUserData = [...userData.dilemmata];
-            const newItem = {
-                id: Date.now(),
-                name: dilemmaName,
-                pro: [],
-                contra: [],
-                lastEdit: "",
-                color: selectedColor,
-                progressbarBlur: false
-            }
-            newUserData.push(newItem)
-            userData.dilemmata = newUserData;
-            setUserData(userData);
-            await store.set('user', userData);
-            addDilemmaModal.current?.dismiss();
-            resetColorSelector()
+            if (userData) {
+                const newUserData = [...userData.dilemmata];
+                const newItem = {
+                    id: Date.now(),
+                    name: dilemmaName,
+                    pro: [],
+                    contra: [],
+                    lastEdit: "",
+                    color: selectedColor,
+                    progressbarBlur: false
+                }
+                newUserData.push(newItem)
+                userData.dilemmata = newUserData;
+                setUserData(userData);
+                await store.set('user', userData);
+                addDilemmaModal.current?.dismiss();
+                resetColorSelector()
 
 
-        } else {
-            const newItem = {
-                id: Date.now(),
-                name: dilemmaName,
-                pro: [],
-                contra: [],
-                lastEdit: "",
-                color: selectedColor,
-                progressbarBlur: false
-            }
-            const newUserData = {
-                dilemmata: [newItem],
-                id: Date.now(),
-            }
-            setUserData(newUserData);
-            await store.set('user', newUserData);
-            addDilemmaModal.current?.dismiss();
-            resetColorSelector()
+            } else {
+                const newItem = {
+                    id: Date.now(),
+                    name: dilemmaName,
+                    pro: [],
+                    contra: [],
+                    lastEdit: "",
+                    color: selectedColor,
+                    progressbarBlur: false
+                }
+                const newUserData = {
+                    dilemmata: [newItem],
+                    id: Date.now(),
+                }
+                setUserData(newUserData);
+                await store.set('user', newUserData);
+                addDilemmaModal.current?.dismiss();
+                resetColorSelector()
 
-        }
+            }
         }
         setDilemmaName("")
 
@@ -112,8 +117,8 @@ const Tab1: React.FC = () => {
     const openEditDilemma = async (ID: number) => {
         const clickedDilemma = userData?.dilemmata?.find(d => d.id === ID)
         if (clickedDilemma)
-        setSelectedColor(clickedDilemma.color)
-        if (clickedDilemma?.color != ""){
+            setSelectedColor(clickedDilemma.color)
+        if (clickedDilemma?.color != "") {
             const clickedDilemmaColorIndex = colors.findIndex(color => color.colorcode == clickedDilemma?.color)
             const colorCopy = [...colors]
             colorCopy[clickedDilemmaColorIndex].border = "1px solid grey"
@@ -181,44 +186,28 @@ const Tab1: React.FC = () => {
             colorsCopy = [...colors]
         }
         if (colorsCopy) {
-            if (selectedColor === colorsCopy[selectedColorIndex].colorcode){
+            if (selectedColor === colorsCopy[selectedColorIndex].colorcode) {
                 colorsCopy[selectedColorIndex].border = ""
                 setColors(colorsCopy)
                 resetColorSelector()
-            }
-            else{
-            resetColorSelector()
-            if (colorsCopy) {
-                colorsCopy[selectedColorIndex].border = "1px solid grey"
-                setColors(colorsCopy)
-                setSelectedColor(colorsCopy[selectedColorIndex].colorcode)
-            }
+            } else {
+                resetColorSelector()
+                if (colorsCopy) {
+                    colorsCopy[selectedColorIndex].border = "1px solid grey"
+                    setColors(colorsCopy)
+                    setSelectedColor(colorsCopy[selectedColorIndex].colorcode)
+                }
             }
         }
     }
-    const closeAddDilemmaModal = () =>{
+    const closeAddDilemmaModal = () => {
         addDilemmaModal.current?.dismiss()
         resetColorSelector()
     }
-    const closeEditDilemmaModal = () =>{
+    const closeEditDilemmaModal = () => {
         editDilemmaModal.current?.dismiss()
         resetColorSelector()
     }
-
-
-    useEffect(() => {
-        const configureStatusBar = async () => {
-            try {
-                await StatusBar.setBackgroundColor({ color: '#000000' }); // Schwarz
-                await StatusBar.setStyle({ style: Style.Dark }); // Schwarzer Text
-            } catch (error) {
-                console.error("Error configuring StatusBar:", error);
-            }
-        };
-
-        configureStatusBar();
-    }, []); // Leerer Array: nur beim ersten Rendern aufrufen
-
 
 
     return (
@@ -226,28 +215,33 @@ const Tab1: React.FC = () => {
         <IonPage>
 
             <IonToolbar style={{marginTop: "calc(var(--status-bar-height) + 15px)"}}>
-{/*                <div style={{width:'100%', height:'var(--status-bar-height)', backgroundColor:'lightgray'}}>
 
-                </div>*/}
-                <IonTitle style={{marginTop: "15px"}}>Dilemmata</IonTitle>
+                <IonTitle style={{marginTop: "15px"}} className={"title-Tab1"}>Dilemmata</IonTitle>
                 <div className="vertical-line"></div>
             </IonToolbar>
-            <IonContent>
+            <IonContent >
+                <div style={{paddingLeft:"10px", paddingRight:"10px"}}>
                 {userData?.dilemmata.map(dilemma => (
                     <IonItem key={dilemma.id} lines="none" className="dilemma-item"
                              style={{"--background": dilemma.color}}>
                         <div className={"dilemma-container"}>
 
                             <div className="icon-container">
-                                <IonLabel onClick={() => {{openDilemma(dilemma.id)}
-                                console.log(dilemma.id)}}>
+                                <IonLabel onClick={() => {
+                                    {
+                                        openDilemma(dilemma.id)
+                                    }
+                                    console.log(dilemma.id)
+                                }}>
                                     {dilemma.name}
                                 </IonLabel>
                             </div>
+
                             <IonIcon onClick={() => openEditDilemma(dilemma.id)} className="edit-icon"
                                      icon={create}></IonIcon></div>
                     </IonItem>
                 ))}
+                </div>
                 <IonModal ref={modal2} className="modal-sizer">
                     <DilemmaDetails
                         pro={dilemma.pro}
@@ -266,7 +260,7 @@ const Tab1: React.FC = () => {
                                       selectColor={selectColor} colors={colors} clickedDilemmaName={clickedDilemmaName}
                                       deleteDilemma={deleteDilemma}
                                       setClickedDilemmaName={setClickedDilemmaName}
-                                      resetColorSelector = {resetColorSelector}></EditDilemmaModal>
+                                      resetColorSelector={resetColorSelector}></EditDilemmaModal>
                 </IonModal>
                 <IonModal ref={addDilemmaModal} className="modal-sizer">
                     <NewDilemmaModal newDilemma={newDilemma} colors={colors} selectColor={selectColor}
