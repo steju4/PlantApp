@@ -141,7 +141,7 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages, dilem
                                 <IonItem>
                                     <IonTextarea
                                         autoGrow
-                                        placeholder="Neues Argument..."
+                                        placeholder="New Argument..."
                                         value={currentArgument.description}
                                         onIonInput={(e) =>
                                             setCurrentArgument({

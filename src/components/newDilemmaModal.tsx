@@ -16,13 +16,12 @@ interface ColorPickerProps {
 }
 
 
-
 const NewDilemmaModal: React.FC<ColorPickerProps> = ({colors, selectColor, newDilemma, setDilemmaName, closeAddDilemmaModal}) => {
 
 
     return (
-        <div>
-            <IonHeader>
+        <div >
+            <IonHeader >
                 <IonToolbar>
                     <IonButtons slot="start">
                         <IonButton onClick={() => closeAddDilemmaModal()}>Cancel</IonButton>
@@ -34,9 +33,9 @@ const NewDilemmaModal: React.FC<ColorPickerProps> = ({colors, selectColor, newDi
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>
-            <IonTitle style={{marginTop: "20px"}}>Neues Dilemma anlegen</IonTitle>
+            <IonTitle style={{marginTop: "20px"}}>New Dilemma</IonTitle>
             <div style={{margin: "20px"}}>
-                <IonTextarea className="Textarea" autoGrow placeholder={"Hier Dilemma-Namen eingeben..."}
+                <IonTextarea className="Textarea" autoGrow placeholder={"Enter Dilemma Name..."}
                              style={{
                                  height: "100%",
                                  width: "100%",

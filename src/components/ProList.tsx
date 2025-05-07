@@ -150,7 +150,7 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages, dilemma }) 
                                 <IonItem>
                                     <IonTextarea
                                         autoGrow
-                                        placeholder="Neues Argument..."
+                                        placeholder="New Argument..."
                                         value={currentArgument.description}
                                         onIonInput={(e) =>
                                             setCurrentArgument({

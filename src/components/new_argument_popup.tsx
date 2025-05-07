@@ -93,7 +93,7 @@ const Popup = forwardRef(({ addNewProArgument, addNewContraArgument }: any, ref)
                     <IonItem>
                         <IonTextarea
                             autoGrow
-                            placeholder="Neues Argument..."
+                            placeholder="New Argument..."
                             onIonInput={(e) => setText_value(e.detail.value!)}
                             value={text_value}
                         />
