@@ -19,6 +19,7 @@ import {ColorPicker, Dilemma, UserData} from "../interfaces";
 import {colorOptions} from "../colors";
 import EditDilemmaModal from "../components/editDilemmaModal";
 import NewDilemmaModal from "../components/newDilemmaModal";
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 
 const Tab1: React.FC = () => {
@@ -205,10 +206,30 @@ const Tab1: React.FC = () => {
     }
 
 
+    useEffect(() => {
+        const configureStatusBar = async () => {
+            try {
+                await StatusBar.setBackgroundColor({ color: '#000000' }); // Schwarz
+                await StatusBar.setStyle({ style: Style.Dark }); // Schwarzer Text
+            } catch (error) {
+                console.error("Error configuring StatusBar:", error);
+            }
+        };
+
+        configureStatusBar();
+    }, []); // Leerer Array: nur beim ersten Rendern aufrufen
+
+
+
     return (
+
         <IonPage>
-            <IonToolbar style={{marginTop: "32px"}}>
-                <IonTitle>Dilemmata</IonTitle>
+
+            <IonToolbar style={{marginTop: "calc(var(--status-bar-height) + 15px)"}}>
+{/*                <div style={{width:'100%', height:'var(--status-bar-height)', backgroundColor:'lightgray'}}>
+
+                </div>*/}
+                <IonTitle style={{marginTop: "15px"}}>Dilemmata</IonTitle>
                 <div className="vertical-line"></div>
             </IonToolbar>
             <IonContent>
