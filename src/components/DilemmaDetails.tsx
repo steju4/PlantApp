@@ -9,9 +9,12 @@ import ProgressBar from "./ProgressBar";
 import ProList from "./ProList";
 import ContraList from "./ContraList";
 import Popup from "./NewArgumentPopup";
-import {add, eyeOffOutline, returnDownBackOutline, eyeOutline} from "ionicons/icons";
+import {add, eyeOffOutline, returnDownBackOutline, eyeOutline, shareSocialOutline} from "ionicons/icons";
 import "./css/global.css"
 import store from "../storage/storage";
+import * as htmlToImage from "html-to-image";
+import {Directory, Filesystem} from "@capacitor/filesystem";
+import {Share} from "@capacitor/share";
 
 
 type Props = Dilemma & {
@@ -176,9 +179,65 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
         }
     }
 
+    async function sharePngWithCapacitor(domId: string): Promise<void> {
+        try {
+            const element = document.getElementById(domId);
+            if (!element) {
+                console.error(`Element mit der ID "${domId}" nicht gefunden.`);
+                return;
+            }
+
+            // Trash-Bins ausblenden
+            const trashBins = document.querySelectorAll('.trashbin');
+            trashBins.forEach((bin) => {
+                (bin as HTMLElement).style.display = 'none';
+            });
+            const AddButton = document.querySelectorAll('.AddButton');
+            AddButton.forEach((button) => {
+                (button as HTMLElement).style.display = 'none';
+            });
+            const BackButton = document.querySelectorAll('.ion-no-border');
+            BackButton.forEach((button) => {
+                (button as HTMLElement).style.display = 'none';
+            });
+
+            // Generiere das Bild
+            const canvas = await htmlToImage.toCanvas(element as HTMLElement);
+            const base64Data = canvas.toDataURL('image/png', 1.0); // 1.0 = höchste Qualität
+
+            // Trash-Bins wieder anzeigen
+            trashBins.forEach((bin) => {
+                (bin as HTMLElement).style.display = '';
+            });
+            AddButton.forEach((button) => {
+                (button as HTMLElement).style.display = '';
+            });
+            BackButton.forEach((button) => {
+                (button as HTMLElement).style.display = '';
+            });
+
+            // Speichern und Teilen (unverändert)
+            const fileName = `shared-image-${Date.now()}.png`;
+            const savedFile = await Filesystem.writeFile({
+                path: fileName,
+                data: base64Data.replace('data:image/png;base64,', ''),
+                directory: Directory.Cache,
+            });
+
+            await Share.share({
+                title: 'Teile dein Bild',
+                url: savedFile.uri,
+            });
+
+            console.log('Bild erfolgreich geteilt!');
+        } catch (error) {
+            console.error('Fehler beim Erstellen oder Teilen des Bildes:', error);
+        }
+    }
+
 
     return (
-        <IonContent fullscreen className="safe-area">
+        <IonContent fullscreen className="safe-area" id={"content"}>
             <Popup ref={popupRef} style={{
                 '--width': '100vw',
                 '--height': '100vh',
@@ -188,57 +247,68 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
                    addNewContraArgument={addNewContraArgument}/>
             <IonToolbar style={{marginTop: "30px"}}>
                 <IonHeader className="ion-no-border">
+                    <div style={{display:"flex", justifyContent: 'space-between', marginRight:"10px"}}>
                     <IonLabel className="back-button" onClick={onClose}>
                         <IonIcon icon={returnDownBackOutline} className="back-icon"/>
                     </IonLabel>
+                    <IonLabel onClick={async () => sharePngWithCapacitor("content")}>
+                    <IonIcon size={"large"} icon={shareSocialOutline} >
+
+                    </IonIcon>
+                    </IonLabel>
+                    </div>
                 </IonHeader>
             </IonToolbar>
 
-            <div>
-                <div className="listen-container">
+            <div >
 
-                    <IonTitle>
-                        <IonInput value={dilemmaName} onIonInput={(e) => setDilemmaName(e.detail.value as string)}>
-                        </IonInput>
-                    </IonTitle>
+                <div>
+                    <div className="listen-container">
 
-                    <div style={{marginRight: "10px", marginTop: "14px", fontSize: "18px"}}>
-                        <IonLabel className="date-label" style={{fontWeight: "bold"}}>{lastEdit}</IonLabel>
+                        <IonTitle>
+                            <IonInput value={dilemmaName} onIonInput={(e) => setDilemmaName(e.detail.value as string)}>
+                            </IonInput>
+                        </IonTitle>
+
+
+                        <div style={{marginRight: "10px", marginTop: "14px", fontSize: "18px"}}>
+                            <IonLabel className="date-label" style={{fontWeight: "bold"}}>{lastEdit}</IonLabel>
+                        </div>
+
+                    </div>
+                    <div style={{textAlign: "center"}}>
+                        <IonIcon onClick={() => blurProgressbar()}
+                                 icon={dilemma.progressbarBlur ? eyeOffOutline : eyeOutline}
+                        ></IonIcon>
+
                     </div>
 
+                    <div style={{margin: "0px 10px 0px 10px", filter: blurEffect}} onClick={() => blurProgressbar()}>
+                        <ProgressBar greenPercentage={dilemma.progressbarBlur ? 50 : greenPercentage}
+                                     redPercentage={dilemma.progressbarBlur ? 50 : redPercentage}></ProgressBar>
+                    </div>
                 </div>
-                <div style={{textAlign: "center"}}>
-                    <IonIcon onClick={() => blurProgressbar()} icon={dilemma.progressbarBlur ? eyeOffOutline : eyeOutline}
-                             ></IonIcon>
 
-                </div>
 
-                <div style={{margin: "0px 10px 0px 10px", filter: blurEffect}} onClick={() => blurProgressbar()}>
-                    <ProgressBar greenPercentage={dilemma.progressbarBlur ? 50 : greenPercentage}
-                                 redPercentage={dilemma.progressbarBlur ? 50 : redPercentage}></ProgressBar>
+                <div className="listen-container">
+                    <div className="prolist">
+                        <ProList
+                            items={dilemma.proArguments || []}
+                            updatePercentages={updatePercentages}
+                            dilemma={dilemma}
+                        />
+                    </div>
+                    <div className="separator"></div>
+
+                    <div className="contralist">
+
+                        <ContraList
+                            items={dilemma.conArguments || []}
+                            updatePercentages={updatePercentages}
+                            dilemma={dilemma}
+                        /></div>
                 </div>
             </div>
-
-
-            <div className="listen-container">
-                <div className="prolist">
-                    <ProList
-                        items={dilemma.proArguments || []}
-                        updatePercentages={updatePercentages}
-                        dilemma={dilemma}
-                    />
-                </div>
-                <div className="separator"></div>
-
-                <div className="contralist">
-
-                    <ContraList
-                        items={dilemma.conArguments || []}
-                        updatePercentages={updatePercentages}
-                        dilemma={dilemma}
-                    /></div>
-            </div>
-
 
             <div className="open-argument-edit-button">
                 <IonFabButton onClick={openPopup} className="AddButton">

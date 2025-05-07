@@ -22,7 +22,9 @@ import NewDilemmaModal from "../components/NewDilemmaModal";
 import {StatusBar, Style} from '@capacitor/status-bar';
 
 
-const DilemmaOverview: React.FC = () => {
+
+
+const DilemmaOverview: React.FC =  () => {
     const [colors, setColors] = useState<ColorPicker[]>(colorOptions);
     const [selectedColor, setSelectedColor] = useState("");
     const [userData, setUserData] = useState<UserData>();
@@ -210,6 +212,16 @@ const DilemmaOverview: React.FC = () => {
     }
 
 
+
+
+
+
+
+
+
+
+
+
     return (
 
         <IonPage>
@@ -220,28 +232,30 @@ const DilemmaOverview: React.FC = () => {
                 <div className="vertical-line"></div>
             </IonToolbar>
             <IonContent >
-                <div style={{paddingLeft:"10px", paddingRight:"10px"}}>
-                {userData?.dilemmata.map(dilemma => (
-                    <IonItem key={dilemma.id} lines="none" className="dilemma-item"
-                             style={{"--background": dilemma.color}}>
-                        <div className={"dilemma-container"}>
+                <div style={{paddingLeft: "10px", paddingRight: "10px"}}>
+                    {userData?.dilemmata.map(dilemma => (
+                        <IonItem key={dilemma.id} lines="none" className="dilemma-item"
+                                 style={{"--background": dilemma.color}}>
+                            <div className={"dilemma-container"}>
 
-                            <div className="icon-container">
-                                <IonLabel onClick={() => {
-                                    {
-                                        openDilemma(dilemma.id)
-                                    }
-                                    console.log(dilemma.id)
-                                }}>
-                                    {dilemma.name}
-                                </IonLabel>
-                            </div>
+                                <div className="icon-container">
+                                    <IonLabel onClick={() => {
+                                        {
+                                            openDilemma(dilemma.id)
+                                        }
+                                        console.log(dilemma.id)
+                                    }}>
+                                        {dilemma.name}
+                                    </IonLabel>
+                                </div>
 
-                            <IonIcon onClick={() => openEditDilemma(dilemma.id)} className="edit-icon"
-                                     icon={create}></IonIcon></div>
-                    </IonItem>
-                ))}
+                                <IonIcon onClick={() => openEditDilemma(dilemma.id)} className="edit-icon"
+                                         icon={create}></IonIcon></div>
+
+                        </IonItem>
+                    ))}
                 </div>
+
                 <IonModal ref={modal2} className="modal-sizer">
                     <DilemmaDetails
                         pro={dilemma.pro}

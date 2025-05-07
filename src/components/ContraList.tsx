@@ -162,7 +162,7 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages, dilem
                         </IonBadge>
                         <IonLabel className="label-class" style={{ margin: "5px" }} >{item.description}</IonLabel>
                         <div>
-                            <IonIcon icon={trashBinOutline} size="small" style={{ color: 'rgb(148, 1, 4)' }} onClick={(event) => {
+                            <IonIcon className="trashbin" icon={trashBinOutline} size="small" style={{ color: 'rgb(148, 1, 4)' }} onClick={(event) => {
                                 event.stopPropagation();
                                 DeleteArgument(item.ID);
                             }} />
