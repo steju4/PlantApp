@@ -4,14 +4,14 @@ import {
     IonContent,
     IonTitle, IonFabButton, IonIcon, IonLabel, IonHeader, IonInput, IonToolbar,
 } from '@ionic/react';
-import {ArgumentItem, Dilemma, UserData} from "../interfaces";
+import {ArgumentItem, Dilemma, UserData} from "../constants/interfaces";
 import ProgressBar from "./ProgressBar";
 import ProList from "./ProList";
 import ContraList from "./ContraList";
-import Popup from "./new_argument_popup";
+import Popup from "./NewArgumentPopup";
 import {add, eyeOffOutline, returnDownBackOutline, eyeOutline} from "ionicons/icons";
-import "./css/Tab2.css"
-import store from "../db/storage";
+import "./css/global.css"
+import store from "../storage/storage";
 
 
 type Props = Dilemma & {

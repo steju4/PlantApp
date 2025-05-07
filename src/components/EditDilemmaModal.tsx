@@ -1,10 +1,10 @@
 import React from 'react';
 
 import './css/List.css';
-import {ColorPicker, Dilemma} from "../interfaces";
+import {ColorPicker, Dilemma} from "../constants/interfaces";
 import {IonButton, IonButtons, IonHeader, IonIcon, IonTextarea, IonTitle, IonToolbar} from "@ionic/react";
 import {trashBin} from "ionicons/icons";
-import ColorPickerComponent from "./colorPicker";
+import ColorPickerComponent from "./ColorPicker";
 
 interface ColorPickerProps {
     dilemma: Dilemma;

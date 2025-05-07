@@ -12,17 +12,17 @@ import {
     IonToolbar
 } from "@ionic/react";
 import {add, create} from "ionicons/icons";
-import '../components/css/Tab1.css';
+import '../components/css/DilemmaOverview.css';
 import DilemmaDetails from "../components/DilemmaDetails";
-import store from "../db/storage";
-import {ColorPicker, Dilemma, UserData} from "../interfaces";
-import {colorOptions} from "../colors";
-import EditDilemmaModal from "../components/editDilemmaModal";
-import NewDilemmaModal from "../components/newDilemmaModal";
+import store from "../storage/storage";
+import {ColorPicker, Dilemma, UserData} from "../constants/interfaces";
+import {colorOptions} from "../constants/Colors";
+import EditDilemmaModal from "../components/EditDilemmaModal";
+import NewDilemmaModal from "../components/NewDilemmaModal";
 import {StatusBar, Style} from '@capacitor/status-bar';
 
 
-const Tab1: React.FC = () => {
+const DilemmaOverview: React.FC = () => {
     const [colors, setColors] = useState<ColorPicker[]>(colorOptions);
     const [selectedColor, setSelectedColor] = useState("");
     const [userData, setUserData] = useState<UserData>();
@@ -280,4 +280,4 @@ const Tab1: React.FC = () => {
     );
 };
 
-export default Tab1;
+export default DilemmaOverview;

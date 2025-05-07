@@ -15,8 +15,8 @@ import {
     IonToolbar
 } from '@ionic/react';
 import './css/List.css';
-import { ArgumentItem, Dilemma } from "../interfaces";
-import store from '../db/storage';
+import { ArgumentItem, Dilemma } from "../constants/interfaces";
+import store from '../storage/storage';
 import { trashBinOutline } from "ionicons/icons";
 
 interface ContraListProps {

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './css/List.css';
-import {ColorPicker} from "../interfaces";
+import {ColorPicker} from "../constants/interfaces";
 
 interface ColorPickerProps {
     colors: ColorPicker[];

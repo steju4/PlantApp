@@ -1,9 +1,9 @@
 import React from 'react';
 
 import './css/List.css';
-import {ColorPicker} from "../interfaces";
+import {ColorPicker} from "../constants/interfaces";
 import {IonButton, IonButtons, IonHeader, IonTextarea, IonTitle, IonToolbar} from "@ionic/react";
-import ColorPickerComponent from "./colorPicker";
+import ColorPickerComponent from "./ColorPicker";
 
 interface ColorPickerProps {
     colors: ColorPicker[];
