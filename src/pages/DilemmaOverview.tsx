@@ -46,6 +46,7 @@ const DilemmaOverview: React.FC =  () => {
 
     useEffect(() => {
             StatusBar.setStyle({style: Style.Dark});
+
         }
     )
 
