@@ -207,7 +207,25 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
 
             // Generiere das Bild
             const canvas = await htmlToImage.toCanvas(element as HTMLElement);
-            const base64Data = canvas.toDataURL('image/png', 1.0); // 1.0 = höchste Qualität
+            const context = canvas.getContext('2d');
+
+            const qrImage = new Image();
+            qrImage.src = 'assets/qrcode/qrcode.png';
+            await new Promise((resolve) => (qrImage.onload = resolve));
+
+            const size = 100;
+            context?.drawImage(
+                qrImage,
+                canvas.width - size - 170,
+                20,                      // Abstand von oben
+                220,                    // Feste Breite
+                220                     // Feste Höhe
+            );
+
+
+// Konvertiere das Canvas zu Base64-Daten
+            const base64Data = canvas.toDataURL('image/png', 1.0);
+
 
             // Trash-Bins wieder anzeigen
             trashBins.forEach((bin) => {
@@ -259,7 +277,8 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
                         <IonIcon icon={returnDownBackOutline} className="back-icon"/>
                     </IonLabel>
                     <IonLabel onClick={async () => sharePngWithCapacitor("content")}>
-                    <IonIcon size={"large"} icon={shareSocialOutline} >
+
+                        <IonIcon size={"large"} icon={shareSocialOutline} >
 
                     </IonIcon>
                     </IonLabel>
