@@ -21,8 +21,8 @@ const NewDilemmaModal: React.FC<ColorPickerProps> = ({colors, selectColor, newDi
 
     return (
         <div >
-            <IonHeader  >
-                <IonToolbar>
+            <IonHeader style={{height:"calc(var(--status-bar-height) + 80px)"}}>
+                <IonToolbar style={{position:"absolute", bottom:"0px"}}>
                     <IonButtons slot="start">
                         <IonButton onClick={() => closeAddDilemmaModal()}>Cancel</IonButton>
                     </IonButtons>

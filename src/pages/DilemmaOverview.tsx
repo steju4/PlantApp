@@ -59,6 +59,11 @@ const DilemmaOverview: React.FC =  () => {
             fetchUserData();
         }
     )
+    useEffect(() =>{
+        const statusBarHeight = window.navigator.userAgent.includes('Android') ? 24 : 0;
+        document.documentElement.style.setProperty('--status-bar-height', `${statusBarHeight}px`);
+        console.log(statusBarHeight);
+    })
 
 
     const newDilemma = async () => {

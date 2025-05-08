@@ -280,7 +280,7 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
                                     textOverflow: "ellipsis",
                                     overflow: "clip",
                                     whiteSpace: "nowrap",
-                                    width: "280px" // Maximalbreite anpassen
+                                    width: "100%" // Maximalbreite anpassen
                                 }}
                             />
 
@@ -288,7 +288,8 @@ const DilemmaDetails: React.FC<Props> = ({pro, contra, id, lastEdit, name, progr
 
 
                         <div style={{marginRight: "10px", marginTop: "14px", fontSize: "18px"}}>
-                            <IonLabel className="date-label" style={{fontWeight: "bold"}}>{lastEdit}</IonLabel>
+                            <IonLabel className="date-label"  style={{fontWeight: "bold",     maxWidth: "100%", // Begrenzung auf den Container
+                            }}>{lastEdit}</IonLabel>
                         </div>
 
                     </div>

@@ -24,8 +24,8 @@ const EditDilemmaModal: React.FC<ColorPickerProps> = ({dilemma, clickedDilemmaNa
 
     return (
         <div>
-            <IonHeader>
-                <IonToolbar>
+            <IonHeader style={{height:"calc(var(--status-bar-height) + 80px)"}}>
+                <IonToolbar style={{position:"absolute", bottom:"0px"}}>
                     <IonButtons slot="start">
                         <IonButton onClick={() => {closeEditDilemmaModal()
                             resetColorSelector()} }>Cancel</IonButton>

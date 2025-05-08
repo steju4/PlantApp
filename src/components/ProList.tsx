@@ -107,7 +107,7 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages, dilemma }) 
 
     return (
         <div className="list-div">
-            <IonList className="list">
+            <IonList className="list" style={{ width:"auto"}}>
                 <IonItem>
                     <IonLabel style={{fontWeight: 'bold'}}>Pro</IonLabel>
                 </IonItem>
@@ -116,8 +116,8 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages, dilemma }) 
                     '--height': '100vh',
                     '--border-radius': '0',
                 }}>
-                    <IonHeader>
-                        <IonToolbar>
+                    <IonHeader style={{height:"calc(var(--status-bar-height, 24px) + 80px)"}}>
+                        <IonToolbar style={{position:"absolute", bottom:"0px"}}>
                             <IonButtons slot="start">
                                 <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
                             </IonButtons>
@@ -147,9 +147,10 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages, dilemma }) 
                                         }
                                     />
                                 </IonItem>
-                                <IonItem>
+                                <IonItem >
                                     <IonTextarea
                                         autoGrow
+
                                         placeholder="New Argument..."
                                         value={currentArgument.description}
                                         onIonInput={(e) =>
@@ -165,13 +166,13 @@ const ProList: React.FC<ProListProps> = ({ items, updatePercentages, dilemma }) 
                     </IonContent>
                 </IonModal>
                 {localItems.map((item) => (
-                    <IonItem button key={item.ID} onClick={() => openPopup(item)} >
+                    <IonItem button key={item.ID} onClick={() => openPopup(item)}  >
                         <IonBadge className="badge-class" color="success" >
                             {item.importance}
                         </IonBadge>
-                        <IonLabel className= "label-class" style={{margin:"5px"}} >{item.description}</IonLabel>
+                        <IonLabel style={{ maxWidth:"calc(100% - 50px)", margin:"5px", whiteSpace:"normal", overflowWrap:"break-word",hyphens:"auto",wordWrap:"break-word"}} className= "label-class" >{item.description}</IonLabel>
                             <div >
-                        <IonIcon className= "trashbin" icon={trashBinOutline} size={"small"} style={{ color: 'rgb(148, 1, 4)'}} onClick={(event) => {
+                        <IonIcon  className= "trashbin" icon={trashBinOutline} size={"small"} style={{ color: 'rgb(148, 1, 4)'}} onClick={(event) => {
                             event.stopPropagation();
                             DeleteArgument(item.ID);
                         }}>

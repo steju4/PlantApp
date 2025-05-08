@@ -2,9 +2,20 @@
     height: auto;
     padding: 11px;
 }
-.label-class{
-    font-size: 80% !important;
-}
+
 .badge-class{
     width: auto
+}
+.label-class {
+    font-size: 80% !important;
+    flex: 1; /* Nimmt den verfügbaren Platz ein */
+    white-space: normal; /* Erlaubt Zeilenumbrüche */
+    overflow-wrap: break-word; /* Bricht lange Wörter */
+    hyphens: auto; /* Setzt Bindestriche bei Trennungen */
+}
+
+.trashbin {
+    margin-left: 8px; /* Abstand zwischen Text und Button */
+    flex-shrink: 0; /* Verhindert, dass der Papierkorb mit dem Text skaliert */
+    margin-right: 0px
 }

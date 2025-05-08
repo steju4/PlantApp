@@ -52,8 +52,8 @@ const Popup = forwardRef(({ addNewProArgument, addNewContraArgument }: any, ref)
                 '--height': '100vh',
                 '--border-radius': '0',
             }}>
-                <IonHeader>
-                    <IonToolbar>
+                <IonHeader style={{height:"calc(var(--status-bar-height) + 80px)"}}>
+                    <IonToolbar style={{position:"absolute", bottom:"0px"}}>
                         <IonButtons slot="start">
                             <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
                         </IonButtons>
