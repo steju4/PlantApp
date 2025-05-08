@@ -100,7 +100,7 @@ const ContraList: React.FC<ContraListProps> = ({ items, updatePercentages, dilem
         <div className="list-div">
             <IonList className="list" style={{ width:"auto"}}>
                 <IonItem>
-                    <IonLabel style={{ fontWeight: 'bold' }}>Contra</IonLabel>
+                    <IonLabel style={{ fontWeight: 'bold' }}>Contras</IonLabel>
                 </IonItem>
                 <IonModal ref={modal} style={{
                     '--width': '100vw',
