@@ -26,3 +26,17 @@ export interface ColorPicker {
     border: string;
     id: number;
 }
+
+export interface PlantDetails {
+    id: number;
+    common_name: string;
+    scientific_name: string;
+    origin: string[],
+    watering: string;
+    sunlight: string[];
+    pruning_month: string[];
+    growth_rate: string;
+    description: string
+    default_image : {original_url: string};
+
+}

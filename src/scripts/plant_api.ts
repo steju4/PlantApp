@@ -1,6 +1,6 @@
-import {pingSpeciesAPI} from "./plant_api_species";
+import {PlantDetails} from "../constants/interfaces";
 
-const pingAPI = async (id: number): Promise<void> => {
+export const pingAPI = async (id: number): Promise<PlantDetails> => {
     const url = `https://perenual.com/api/v2/species/details/${id}?key=sk-vXLh681cb4a7a39fe10310`
     try {
         const response = await fetch(url, {
@@ -11,8 +11,8 @@ const pingAPI = async (id: number): Promise<void> => {
             throw new Error(`Fehler beim Pingen der API: ${response.statusText}`);
         }
 
-        const data = await response.json(); // falls die API JSON zurückgibt
-        console.log("API-Antwort:", data);
+        // falls die API JSON zurückgibt
+        return await response.json();
     } catch (error) {
         console.error("API-Ping fehlgeschlagen:", error);
     }
@@ -22,7 +22,9 @@ const pingAPI = async (id: number): Promise<void> => {
 /*
 pingAPI("https://perenual.com/api/v2/species/details/1?key=sk-vXLh681cb4a7a39fe10310");
 */
+/*
 pingAPI(await pingSpeciesAPI("tomato"));
+*/
 
 /*
 https://perenual.com/api/v2/species-list?key=sk-vXLh681cb4a7a39fe10310&q=monstera
