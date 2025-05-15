@@ -3,7 +3,8 @@ import {
     IonButton,
 
     IonContent,
-    IonFooter, IonImg,
+    IonFooter,
+    IonImg,
     IonInput,
     IonItem,
     IonList,
@@ -16,9 +17,8 @@ import { PlantDetails} from "../constants/interfaces";
 import {StatusBar, Style} from '@capacitor/status-bar';
 import {pingSpeciesAPI} from "../scripts/plant_api_species";
 import {pingAPI} from "../scripts/plant_api";
-
-
-
+import RegisterModal from '../components/modals/register';
+import LoginModal from "../components/modals/login";
 
 const DilemmaOverview: React.FC =  () => {
 
@@ -37,7 +37,20 @@ const DilemmaOverview: React.FC =  () => {
     const [visibility, setVisibility] = useState("hidden");
     const [searchterm, setSearchterm] = useState("");
 
+    // Zustand für Login- und RegisterModal
+    const [showLogin, setShowLogin] = useState(false);
+    const [showRegister, setShowRegister] = useState(false);
 
+    // Login verarbeiten
+    const handleLogin = (email: string, password: string) => {
+        console.log('Benutzer eingeloggt:', email);
+        // Hier könntest du Daten im Context speichern oder an ein Backend senden
+    };
+
+    const handleRegister = (firstName: string, email: string, password: string) => {
+        console.log('Benutzer registriert:', email);
+        // Registrierung hier verarbeiten
+    };
 
     useEffect(() => {
             StatusBar.setStyle({style: Style.Dark});
@@ -93,6 +106,11 @@ const DilemmaOverview: React.FC =  () => {
             <IonButton onClick={() => testfun()}>
                 Klick mich
             </IonButton>
+
+            {/* Button zum LoginModal */}
+            <IonButton onClick={() => setShowLogin(true)}>
+                Einloggen
+            </IonButton>
             <div>
             <IonInput
                 onIonInput={(e) =>
@@ -136,6 +154,14 @@ const DilemmaOverview: React.FC =  () => {
             <IonFooter style={{backgroundColor: 'white', width: '100vw', height: '90px'}}>
 
             </IonFooter>
+
+            {/* RegisterModal eingebunden */}
+            <RegisterModal
+                isOpen={showRegister}
+                onClose={() => setShowRegister(false)}
+                onRegister={handleRegister}
+            />
+
         </IonPage>
     );
 };
