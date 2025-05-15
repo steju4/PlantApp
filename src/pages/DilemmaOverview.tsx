@@ -37,20 +37,24 @@ const DilemmaOverview: React.FC =  () => {
     const [visibility, setVisibility] = useState("hidden");
     const [searchterm, setSearchterm] = useState("");
 
-    // Zustand für Login- und RegisterModal
+    // LoginModal Zustand
     const [showLogin, setShowLogin] = useState(false);
+
+    const handleLogin = (email: string, password: string) => {
+        console.log('Benutzer eingeloggt:', email, password);
+        // Optional: Authentifizierung an Backend senden
+    };
+
+    // RegisterModal Zustand
     const [showRegister, setShowRegister] = useState(false);
 
-    // Login verarbeiten
-    const handleLogin = (email: string, password: string) => {
-        console.log('Benutzer eingeloggt:', email);
+    // Registrierung verarbeiten
+    const handleRegister = (name: string, email: string) => {
+        console.log('Benutzer registriert:', name, email);
         // Hier könntest du Daten im Context speichern oder an ein Backend senden
     };
 
-    const handleRegister = (firstName: string, email: string, password: string) => {
-        console.log('Benutzer registriert:', email);
-        // Registrierung hier verarbeiten
-    };
+
 
     useEffect(() => {
             StatusBar.setStyle({style: Style.Dark});
@@ -107,40 +111,40 @@ const DilemmaOverview: React.FC =  () => {
                 Klick mich
             </IonButton>
 
-            {/* Button zum LoginModal */}
             <IonButton onClick={() => setShowLogin(true)}>
                 Einloggen
             </IonButton>
+
             <div>
-            <IonInput
-                onIonInput={(e) =>
-                    setSearchterm(e.target.value as string)
-                }>
+                <IonInput
+                    onIonInput={(e) =>
+                        setSearchterm(e.target.value as string)
+                    }>
 
 
-            </IonInput>
+                </IonInput>
                 <div style={{visibility: visibility}}>
 
 
-                            <div style={{width:'auto', height:'20%', padding:'10px'}}>
-                            <IonList lines="none">
+                    <div style={{width:'auto', height:'20%', padding:'10px'}}>
+                        <IonList lines="none">
 
 
-                                <IonItem  style={{ border: "1px solid #ccc"}}>
-                                    <div>{plants.common_name}
-                                    </div>
-                                    <div style={{position:"relative" ,maxWidth: '70px', maxHeight: '70px', marginRight:'auto'}}>
+                            <IonItem  style={{ border: "1px solid #ccc"}}>
+                                <div>{plants.common_name}
+                                </div>
+                                <div style={{position:"relative" ,maxWidth: '70px', maxHeight: '70px', marginRight:'auto'}}>
                                     <IonImg
 
-                                    src={plants.default_image.original_url}>
+                                        src={plants.default_image.original_url}>
 
                                     </IonImg>
-                                    </div>
-                                </IonItem>
-
-
-                            </IonList>
                                 </div>
+                            </IonItem>
+
+
+                        </IonList>
+                    </div>
 
 
 
@@ -155,10 +159,23 @@ const DilemmaOverview: React.FC =  () => {
 
             </IonFooter>
 
+            <LoginModal
+                isOpen={showLogin}
+                onClose={() => setShowLogin(false)}
+                onLogin={handleLogin}
+                onShowRegister={() => {
+                    setShowLogin(false);     // Login schließen
+                    setShowRegister(true);   // Register öffnen
+                }}
+            />
+
             {/* RegisterModal eingebunden */}
             <RegisterModal
                 isOpen={showRegister}
-                onClose={() => setShowRegister(false)}
+                onClose={() => {
+                    setShowRegister(false); // Schließt das Register Modal
+                    setShowLogin(true); // Öffnet das Login Modal
+                }}
                 onRegister={handleRegister}
             />
 
