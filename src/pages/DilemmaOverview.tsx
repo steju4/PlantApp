@@ -16,6 +16,7 @@ import { PlantDetails} from "../constants/interfaces";
 import {StatusBar, Style} from '@capacitor/status-bar';
 import {pingSpeciesAPI} from "../scripts/plant_api_species";
 import {pingAPI} from "../scripts/plant_api";
+import RegisterModal from '../components/modals/register';
 
 
 
@@ -36,6 +37,15 @@ const DilemmaOverview: React.FC =  () => {
     });
     const [visibility, setVisibility] = useState("hidden");
     const [searchterm, setSearchterm] = useState("");
+
+    // RegisterModal Zustand
+    const [showRegister, setShowRegister] = useState(false);
+
+    // Registrierung verarbeiten
+    const handleRegister = (name: string, email: string) => {
+        console.log('Benutzer registriert:', name, email);
+        // Hier könntest du Daten im Context speichern oder an ein Backend senden
+    };
 
 
 
@@ -93,6 +103,10 @@ const DilemmaOverview: React.FC =  () => {
             <IonButton onClick={() => testfun()}>
                 Klick mich
             </IonButton>
+
+            <IonButton onClick={() => setShowRegister(true)}>
+                Registrieren
+            </IonButton>
             <div>
             <IonInput
                 onIonInput={(e) =>
@@ -136,6 +150,14 @@ const DilemmaOverview: React.FC =  () => {
             <IonFooter style={{backgroundColor: 'white', width: '100vw', height: '90px'}}>
 
             </IonFooter>
+
+            {/* RegisterModal eingebunden */}
+            <RegisterModal
+                isOpen={showRegister}
+                onClose={() => setShowRegister(false)}
+                onRegister={handleRegister}
+            />
+
         </IonPage>
     );
 };
