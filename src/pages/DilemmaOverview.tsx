@@ -3,7 +3,8 @@ import {
     IonButton,
 
     IonContent,
-    IonFooter, IonImg,
+    IonFooter,
+    IonImg,
     IonInput,
     IonItem,
     IonList,
@@ -17,9 +18,7 @@ import {StatusBar, Style} from '@capacitor/status-bar';
 import {pingSpeciesAPI} from "../scripts/plant_api_species";
 import {pingAPI} from "../scripts/plant_api";
 import RegisterModal from '../components/modals/register';
-
-
-
+import LoginModal from "../components/modals/login";
 
 const DilemmaOverview: React.FC =  () => {
 
@@ -37,6 +36,14 @@ const DilemmaOverview: React.FC =  () => {
     });
     const [visibility, setVisibility] = useState("hidden");
     const [searchterm, setSearchterm] = useState("");
+
+    // LoginModal Zustand
+    const [showLogin, setShowLogin] = useState(false);
+
+    const handleLogin = (email: string, password: string) => {
+        console.log('Benutzer eingeloggt:', email, password);
+        // Optional: Authentifizierung an Backend senden
+    };
 
     // RegisterModal Zustand
     const [showRegister, setShowRegister] = useState(false);
@@ -104,39 +111,40 @@ const DilemmaOverview: React.FC =  () => {
                 Klick mich
             </IonButton>
 
-            <IonButton onClick={() => setShowRegister(true)}>
-                Registrieren
+            <IonButton onClick={() => setShowLogin(true)}>
+                Einloggen
             </IonButton>
+
             <div>
-            <IonInput
-                onIonInput={(e) =>
-                    setSearchterm(e.target.value as string)
-                }>
+                <IonInput
+                    onIonInput={(e) =>
+                        setSearchterm(e.target.value as string)
+                    }>
 
 
-            </IonInput>
+                </IonInput>
                 <div style={{visibility: visibility}}>
 
 
-                            <div style={{width:'auto', height:'20%', padding:'10px'}}>
-                            <IonList lines="none">
+                    <div style={{width:'auto', height:'20%', padding:'10px'}}>
+                        <IonList lines="none">
 
 
-                                <IonItem  style={{ border: "1px solid #ccc"}}>
-                                    <div>{plants.common_name}
-                                    </div>
-                                    <div style={{position:"relative" ,maxWidth: '70px', maxHeight: '70px', marginRight:'auto'}}>
+                            <IonItem  style={{ border: "1px solid #ccc"}}>
+                                <div>{plants.common_name}
+                                </div>
+                                <div style={{position:"relative" ,maxWidth: '70px', maxHeight: '70px', marginRight:'auto'}}>
                                     <IonImg
 
-                                    src={plants.default_image.original_url}>
+                                        src={plants.default_image.original_url}>
 
                                     </IonImg>
-                                    </div>
-                                </IonItem>
-
-
-                            </IonList>
                                 </div>
+                            </IonItem>
+
+
+                        </IonList>
+                    </div>
 
 
 
@@ -151,10 +159,23 @@ const DilemmaOverview: React.FC =  () => {
 
             </IonFooter>
 
+            <LoginModal
+                isOpen={showLogin}
+                onClose={() => setShowLogin(false)}
+                onLogin={handleLogin}
+                onShowRegister={() => {
+                    setShowLogin(false);     // Login schließen
+                    setShowRegister(true);   // Register öffnen
+                }}
+            />
+
             {/* RegisterModal eingebunden */}
             <RegisterModal
                 isOpen={showRegister}
-                onClose={() => setShowRegister(false)}
+                onClose={() => {
+                    setShowRegister(false); // Schließt das Register Modal
+                    setShowLogin(true); // Öffnet das Login Modal
+                }}
                 onRegister={handleRegister}
             />
 

@@ -1,66 +1,75 @@
-/* Container für alle Eingabefelder */
-.input-container {
+/* CSS wirkt nur innerhalb von .register-modal */
+
+.register-modal .input-container {
     margin-bottom: 16px;
-    width: 90%; /* Gleiche Breite wie der Button */
-    margin-left: 5%; /* 5% Abstand von der linken Seite */
-    flex-grow: 0; /* Verhindert, dass Eingabefelder den verfügbaren Platz unnötig ausfüllen */
+    width: 90%;
+    margin-left: 5%;
+    flex-grow: 0;
 }
 
-/* Abstand nur für das Vorname-Container nach oben */
-.input-container:first-child {
-    margin-top: 40px; /* Abstand nach oben nur für das erste Eingabefeld (Vorname) */
+.register-modal .input-container:first-child {
+    margin-top: 40px;
 }
 
-/* Flex-Container für Vorname und Nachname nebeneinander */
-.name-container {
+.register-modal .name-container {
     display: flex;
     justify-content: space-between;
     width: 90%;
     margin: 40px auto 16px auto;
 }
 
-.name-container .input-item {
-    width: 48%; /* Beide Felder nebeneinander */
+.register-modal .name-container .input-item {
+    width: 48%;
 }
 
-/* Flex-Container für PLZ und Wohnort nebeneinander */
-.plz-wohnort-container {
+.register-modal .plz-wohnort-container {
     display: flex;
     justify-content: space-between;
     margin-bottom: 16px;
-    width: 90%; /* Gleiche Breite wie die anderen Eingabefelder */
-    margin-left: 5%; /* 5% Abstand von der linken Seite */
+    width: 90%;
+    margin-left: 5%;
 }
 
-.input-item.plz,
-.input-item.wohnort {
-    width: 48%; /* Beide Felder nebeneinander */
+.register-modal .input-item.plz,
+.register-modal .input-item.wohnort {
+    width: 48%;
 }
 
-/* Standard Styles für die Buttons */
-ion-button.register-button {
+.register-modal ion-button.register-button {
     --background: linear-gradient(135deg, #4CAF50, #8BC34A);
     --color: white;
     font-weight: bold;
     font-size: 16px;
     border-radius: 8px;
-    width: 90%; /* 90% der Breite */
-    margin-left: 5%; /* 5% Abstand von der linken Seite */
+    width: 90%;
+    margin-left: 5%;
     padding: 12px 0;
     --box-shadow: none;
     --border-radius: 8px;
     transition: background 0.3s ease, transform 0.1s ease;
-    flex-shrink: 0; /* Verhindert, dass der Button schrumpft */
+    flex-shrink: 0;
+    margin-bottom: 0;
 }
 
-/* Fehlernachricht zentrieren und responsiv machen */
-.error-message {
+.register-modal ion-button.cancel-button {
+    width: 90%;
+    margin-left: 5%;
+    padding: 12px 0;
+    border-radius: 8px;
+    --border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 0;
+}
+
+.register-modal .error-message {
     color: red;
     text-align: center;
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 14px;
     font-weight: bold;
-    width: 90%; /* Gleiche Breite wie die Eingabefelder und Buttons */
-    margin-left: 5%; /* Damit sie genauso wie die Eingabefelder zentriert wird */
+    width: 90%;
+    margin-left: 5%;
 }
