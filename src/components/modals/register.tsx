@@ -57,8 +57,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, onRegist
             firstName: firstName.trim(),
             lastName: lastName.trim(),
             email: email.trim(),
-            postalCode: postalCode.trim(),
-            city: city.trim(),
+            zipCode: postalCode.trim(),
+            cityName: city.trim(),
             password: password.trim()
         });
         onRegister(firstName.trim(), email.trim(), password.trim());
