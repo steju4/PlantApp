@@ -40,9 +40,10 @@ const DilemmaOverview: React.FC =  () => {
     // LoginModal Zustand
     const [showLogin, setShowLogin] = useState(false);
 
-    const handleLogin = (email: string, password: string) => {
-        console.log('Benutzer eingeloggt:', email, password);
-        // Optional: Authentifizierung an Backend senden
+    const handleLogin = (email: string) => {
+        console.log('Benutzer eingeloggt:', email);
+        const newToken = sessionStorage.getItem('token');
+        setToken(newToken);
     };
 
     // RegisterModal Zustand
@@ -51,7 +52,6 @@ const DilemmaOverview: React.FC =  () => {
     // Registrierung verarbeiten
     const handleRegister = (name: string, email: string) => {
         console.log('Benutzer registriert:', name, email);
-        // Hier könntest du Daten im Context speichern oder an ein Backend senden
     };
 
 
@@ -86,14 +86,24 @@ const DilemmaOverview: React.FC =  () => {
             console.log("Description: " + result.description);
             console.log("default_image: " + result.default_image.original_url);
         }
-
-
-
-
     }
 
-
-
+    // Authentifizierung mit token
+    const [userName, setUserName] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+    useEffect(() => {
+        if (token) {
+            fetch('http://localhost:8080/auth/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.firstName) setUserName(data.firstName);
+            });
+        }
+    }, [token]);
 
 
 
@@ -114,6 +124,11 @@ const DilemmaOverview: React.FC =  () => {
             <IonButton onClick={() => setShowLogin(true)}>
                 Einloggen
             </IonButton>
+            {userName && (
+                <div style={{margin: '16px', fontWeight: 'bold'}}>
+                    Hello, {userName}!
+                </div>
+            )}
 
             <div>
                 <IonInput
@@ -141,15 +156,8 @@ const DilemmaOverview: React.FC =  () => {
                                     </IonImg>
                                 </div>
                             </IonItem>
-
-
                         </IonList>
                     </div>
-
-
-
-
-
                 </div>
             </div>
             <IonContent >
