@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     IonModal,
     IonHeader,
@@ -14,24 +14,56 @@ import '../css/login.css';
 interface LoginModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onLogin: (email: string, password: string) => void;
+    onLogin: (email: string) => void;
     onShowRegister: () => void;
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onShowRegister }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const emailRef = useRef<HTMLIonInputElement>(null);
+    const passwordRef = useRef<HTMLIonInputElement>(null);
     const [error, setError] = useState<string>('');
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
+        const email = emailRef.current?.value?.toString().trim() || '';
+        const password = passwordRef.current?.value?.toString() || '';
         if (!email || !password) {
             setError('Bitte füllen Sie alle Felder aus.');
             return;
         }
+        const url = 'http://localhost:8080/auth/login';
+
+        try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        if (!res.ok) {
+            if (res.status === 401) {
+                setError('E-Mail oder Passwort ist falsch.');
+            } else {
+                setError('Fehler beim Login. Bitte versuche es erneut.');
+            }
+            return;
+        }
+
+        const data = await res.json();
+        if (data.token) {
+            console.log('Login erfolgreich mit Token:', data);
+            sessionStorage.setItem('token', data.token);
+        }
         setError('');
-        onLogin(email, password);
+        onLogin(email);
         onClose();
-    };
+
+    } catch (err) {
+        setError('Serverfehler. Bitte versuche es später erneut.');
+        console.error('Fehler:', err);
+    }
+};
+    
+    
 
     return (
         <IonModal isOpen={isOpen}
@@ -48,8 +80,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
                         <IonLabel position="stacked">E-Mail</IonLabel>
                         <IonInput
                             type="email"
-                            value={email}
-                            onIonChange={(e) => setEmail(e.detail.value!)}
+                            ref = {emailRef}
                             placeholder="E-Mail-Adresse"
                         />
                     </div>
@@ -57,8 +88,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
                         <IonLabel position="stacked">Passwort</IonLabel>
                         <IonInput
                             type="password"
-                            value={password}
-                            onIonChange={(e) => setPassword(e.detail.value!)}
+                            ref = {passwordRef}
                             placeholder="Passwort"
                         />
                     </div>
