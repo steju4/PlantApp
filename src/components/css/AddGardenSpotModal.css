@@ -1,0 +1,86 @@
+.add-garden-spot-modal .input-container {
+    margin-bottom: 16px;
+    width: 90%;
+    margin-left: 5%;
+    flex-grow: 0;
+}
+
+.add-garden-spot-modal .input-container:first-child {
+    margin-top: 40px;
+}
+
+.add-garden-spot-modal ion-button.confirm-button {
+    --background: linear-gradient(135deg, #4CAF50, #8BC34A);
+    --color: white;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 8px;
+    width: 90%;
+    margin-left: 5%;
+    padding: 12px 0;
+    --box-shadow: none;
+    --border-radius: 8px;
+    transition: background 0.3s ease, transform 0.1s ease;
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+.add-garden-spot-modal ion-button.cancel-button {
+    width: 90%;
+    margin-left: 5%;
+    padding: 12px 0;
+    border-radius: 8px;
+    --border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 0;
+}
+
+.add-garden-spot-modal .error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    width: 90%;
+    margin-left: 5%;
+}
+
+.add-garden-spot-modal .input-container ion-textarea,
+.add-garden-spot-modal .input-container ion-input {
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.add-garden-spot-modal .input-container ion-label {
+    background-color: transparent;
+}
+
+/* Flexbox Layout für die Felder Street und Street Number */
+.add-garden-spot-modal .input-container.flex-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.add-garden-spot-modal .input-container .input-column {
+    width: 48%;
+}
+
+/* Flexbox Layout für die Felder Postal Code und City */
+.add-garden-spot-modal .input-container.flex-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.add-garden-spot-modal .input-container .input-column {
+    width: 48%;
+}
