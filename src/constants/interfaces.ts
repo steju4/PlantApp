@@ -37,6 +37,6 @@ export interface PlantDetails {
     pruning_month: string[];
     growth_rate: string;
     description: string
-    default_image : {original_url: string};
+    default_image : {thumbnail: string};
 
 }

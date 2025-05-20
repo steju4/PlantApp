@@ -40,5 +40,7 @@
     --status-bar-height: env(safe-area-inset-top);
 }
 .title-Tab1{
-    font-size: 23px;
+    font-size: 28px;
+
+
 }

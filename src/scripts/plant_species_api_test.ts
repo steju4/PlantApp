@@ -11,10 +11,14 @@ export const pingSpeciesAPI = async (name: string) =>{
         }
 
         const data = await response.json(); // falls die API JSON zurückgibt
-
-        console.log(data);
-
-        return data.data[0].id
+        const results = []
+        let plant
+        for (const item in data.data) {
+            plant = data.data[item]
+            results.push(plant)
+        }
+        console.log(results);
+        return results
     } catch (error) {
         console.error("API-Ping fehlgeschlagen:", error);
     }
@@ -26,12 +30,3 @@ export const pingSpeciesAPI = async (name: string) =>{
 
 
 
-// Beispielaufruf
-/*
-pingAPI("https://perenual.com/api/v2/species/details/1?key=sk-vXLh681cb4a7a39fe10310");
-*/
-
-
-/*
-https://perenual.com/api/v2/species-list?key=sk-vXLh681cb4a7a39fe10310&q=monstera
-*/
