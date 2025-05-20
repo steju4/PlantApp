@@ -20,6 +20,7 @@ Willkommen bei **PlantApp** – deiner Anwendung zur Verwaltung von Pflanzen und
   ```
 - **Gradle Wrapper** ist im Backend-Projekt enthalten (kein globales Gradle nötig).
 
+
 ### 📢 WICHTIG: Java 21 erforderlich!
 
 > **Achtung:**  
@@ -92,6 +93,24 @@ Die wichtigsten Komponenten sind:
 ./gradlew bootRun
 ```
 **im Backend-Verzeichnis ausführst.**
+
+---
+
+## 🌐 Externe Pflanzen-API
+
+Für alle Pflanzendaten (inkl. Bilder, Namen, Beschreibungen etc.) nutzt PlantApp die [Perenual Plant API](https://perenual.com/docs/api).
+
+- **API-URL:**  
+  `https://perenual.com/api/v2/`
+- **Verwendete Endpunkte:**  
+  - `/species-list` (Suche nach Pflanzen)
+  - `/species/details/:id` (Details zu einer Pflanze)
+- **Daten:**  
+  - Pflanzenname, wissenschaftlicher Name, Herkunft, Sonnenlichtbedarf, Wachstumsrate, Beschreibung, Bilder u.v.m.
+
+> **Hinweis:**  
+> Für die Nutzung der API wird ein API-Key benötigt. Dieser ist im Quellcode hinterlegt und kann für eine begrenzte Anzahl an Requests verwendet werden.
+Er wird nur für dieses Projekt verwendet.
 
 ---
 
