@@ -7,8 +7,11 @@ import {
     IonContent,
     IonLabel,
     IonInput,
-    IonButton
+    IonButton,
+    IonButtons,
+    IonIcon
 } from '@ionic/react';
+import { close } from 'ionicons/icons';
 import '../css/register.css';
 
 interface RegisterModalProps {
@@ -38,17 +41,17 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, onRegist
         const confirmPassword = confirmPasswordRef.current?.value?.toString() || '';
 
         if (!firstName.trim() || !lastName.trim() || !email.trim() || !postalCode.trim() || !city.trim() || !password.trim() || !confirmPassword.trim()) {
-            setPasswordError('Bitte füllen Sie alle Felder aus.');
+            setPasswordError('Please fill in all fields.');
             return;
         }
 
         if (emailExists) {
-            setPasswordError('Diese E-Mail ist bereits vergeben.');
+            setPasswordError('This email is already taken.');
             return;
         }
 
         if (password !== confirmPassword) {
-            setPasswordError('Die Passwörter stimmen nicht überein.');
+            setPasswordError('Passwords do not match.');
             return;
         }
 
@@ -94,7 +97,6 @@ const handleSubmit = async (formData: any) => {
 
       const data = await res.json();
       console.log(data);
-      // z. B. JWT speichern oder auf Startseite weiterleiten
 
     } catch (err) {
       console.error('Fehler:', err);
@@ -109,30 +111,35 @@ const handleSubmit = async (formData: any) => {
         >
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Registrieren</IonTitle>
+                    <IonButtons slot="start">
+                    <IonButton onClick={onClose}>
+                        <IonIcon icon={close} />
+                    </IonButton>
+                </IonButtons>
+                    <IonTitle>Register</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
                 <div className="register-modal">
                     <div className="name-container">
                         <div className="input-item">
-                            <IonLabel position="stacked">Vorname</IonLabel>
-                            <IonInput ref={firstNameRef} placeholder="Dein Vorname" type="text" />
+                            <IonLabel position="stacked">First name</IonLabel>
+                            <IonInput ref={firstNameRef} placeholder="Your first name" type="text" />
                         </div>
                         <div className="input-item">
-                            <IonLabel position="stacked">Nachname</IonLabel>
-                            <IonInput ref={lastNameRef} placeholder="Dein Nachname" type="text" />
+                            <IonLabel position="stacked">Last name</IonLabel>
+                            <IonInput ref={lastNameRef} placeholder="Your last name" type="text" />
                         </div>
                     </div>
 
                     <div className="plz-wohnort-container">
                         <div className="input-item plz">
-                            <IonLabel position="stacked">PLZ</IonLabel>
-                            <IonInput ref={postalCodeRef} placeholder="PLZ" />
+                            <IonLabel position="stacked">Postal Code</IonLabel>
+                            <IonInput ref={postalCodeRef} placeholder="Postal Code" />
                         </div>
                         <div className="input-item wohnort">
-                            <IonLabel position="stacked">Wohnort</IonLabel>
-                            <IonInput ref={cityRef} placeholder="Wohnort" />
+                            <IonLabel position="stacked">City</IonLabel>
+                            <IonInput ref={cityRef} placeholder="City" />
                         </div>
                     </div>
 
@@ -141,36 +148,36 @@ const handleSubmit = async (formData: any) => {
                         <IonInput
                             ref={emailRef}
                             type="email"
-                            placeholder="Deine E-Mail-Adresse"
+                            placeholder="Your email address"
                             onIonBlur={e => checkEmail(e.target.value as string)}
                         />
                     </div>
 
                     <div className="input-container">
-                        <IonLabel position="stacked">Passwort</IonLabel>
+                        <IonLabel position="stacked">Password</IonLabel>
                         <IonInput
                             type="password"
                             ref={passwordRef}
-                            placeholder="Dein Passwort"
+                            placeholder="Your password"
                         />
                     </div>
 
                     <div className="input-container">
-                        <IonLabel position="stacked">Passwort wiederholen</IonLabel>
+                        <IonLabel position="stacked">Repeat Password</IonLabel>
                         <IonInput
                             type="password"
                             ref={confirmPasswordRef}
-                            placeholder="Passwort wiederholen"
+                            placeholder="Repeat Password"
                         />
                     </div>
 
                     {passwordError && <p className="error-message">{passwordError}</p>}
 
                     <IonButton className="register-button" onClick={handleRegister}>
-                        Registrieren
+                        Register
                     </IonButton>
                     <IonButton className="cancel-button" expand="block" fill="clear" color="medium" onClick={onClose}>
-                        Abbrechen
+                        Cancel
                     </IonButton>
                 </div>
             </IonContent>

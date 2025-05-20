@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { close } from 'ionicons/icons';
 import {
     IonModal,
     IonHeader,
@@ -7,8 +8,11 @@ import {
     IonContent,
     IonLabel,
     IonInput,
-    IonButton
+    IonButton,
+    IonButtons,
+    IonIcon
 } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 import '../css/login.css';
 
 interface LoginModalProps {
@@ -22,12 +26,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
     const emailRef = useRef<HTMLIonInputElement>(null);
     const passwordRef = useRef<HTMLIonInputElement>(null);
     const [error, setError] = useState<string>('');
+    const history = useHistory();
 
     const handleLogin = async () => {
         const email = emailRef.current?.value?.toString().trim() || '';
         const password = passwordRef.current?.value?.toString() || '';
         if (!email || !password) {
-            setError('Bitte füllen Sie alle Felder aus.');
+            setError('Please fill in all fields.');
             return;
         }
         const url = 'http://localhost:8080/auth/login';
@@ -41,16 +46,19 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
 
         if (!res.ok) {
             if (res.status === 401) {
-                setError('E-Mail oder Passwort ist falsch.');
+                setError('Email or password is incorrect.');
             } else {
-                setError('Fehler beim Login. Bitte versuche es erneut.');
+                setError('Error logging in. Please try again.');
             }
             return;
+        }
+        else {
+            history.push('/tab1');
         }
 
         const data = await res.json();
         if (data.token) {
-            console.log('Login erfolgreich mit Token:', data);
+            console.log('Login successful with token:', data);
             sessionStorage.setItem('token', data.token);
         }
         setError('');
@@ -58,8 +66,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
         onClose();
 
     } catch (err) {
-        setError('Serverfehler. Bitte versuche es später erneut.');
-        console.error('Fehler:', err);
+        setError('Server error. Please try again later.');
+        console.error('Error:', err);
     }
 };
     
@@ -71,6 +79,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
                   style={{ '--width': '100vw', '--height': '100vh', '--border-radius': '0' }}>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot="start">
+                    <IonButton onClick={onClose}>
+                        <IonIcon icon={close} />
+                    </IonButton>
+                </IonButtons>
                     <IonTitle>Login</IonTitle>
                 </IonToolbar>
             </IonHeader>
@@ -81,27 +94,27 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
                         <IonInput
                             type="email"
                             ref = {emailRef}
-                            placeholder="E-Mail-Adresse"
+                            placeholder="Email address"
                         />
                     </div>
                     <div className="input-container">
-                        <IonLabel position="stacked">Passwort</IonLabel>
+                        <IonLabel position="stacked">Password</IonLabel>
                         <IonInput
                             type="password"
                             ref = {passwordRef}
-                            placeholder="Passwort"
+                            placeholder="Password"
                         />
                     </div>
                     {error && <p className="error-message">{error}</p>}
                     <IonButton expand="block" onClick={handleLogin}>
-                        Einloggen
+                        Login
                     </IonButton>
 
                     <div className="register-hint">
                         <span>
-                            Sie haben noch keinen Account?{' '}
+                            Don't have an account?{' '}
                             <a href="#" onClick={(e) => { e.preventDefault(); onShowRegister(); }}>
-                                Jetzt registrieren
+                                Register now
                             </a>
                         </span>
                     </div>
