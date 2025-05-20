@@ -6,7 +6,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import DilemmaOverview from './pages/DilemmaOverview';
+import Dashboard from './pages/dashboard';
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/structure.css';
@@ -34,7 +34,7 @@ const App: React.FC = () => {
 
               {/* Tab1 Route */}
               <Route exact path="/tab1">
-                <DilemmaOverview />
+                <Dashboard />
               </Route>
             </IonRouterOutlet>
           </IonTabs>
