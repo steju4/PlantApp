@@ -25,7 +25,7 @@ import LoginModal from "../components/modals/login";
 import AddGardenSpotModal from "../components/modals/AddGardenSpotModal";
 import OpenGardenSpotModal from "../components/modals/OpenGardenSpotModal";
 
-const DilemmaOverview: React.FC = () => {
+const Dashboard: React.FC = () => {
 
     const [plants, setPlants] = useState<PlantDetails>({
         id: 0,
@@ -218,4 +218,4 @@ const DilemmaOverview: React.FC = () => {
     );
 };
 
-export default DilemmaOverview;
+export default Dashboard;
