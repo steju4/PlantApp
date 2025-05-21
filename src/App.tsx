@@ -7,7 +7,8 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Dashboard from './pages/dashboard';
-import LandingPage from './pages/landingpage';
+import LoginModal from './components/modals/login';
+import RegisterModal from './components/modals/register';
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/structure.css';
@@ -20,6 +21,7 @@ setupIonicReact();
 
 const App: React.FC = () => {
   const [redirectToDashboard, setRedirectToDashboard] = useState<boolean>(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   useEffect(() => {
     StatusBar.setStyle({ style: Style.Dark });
@@ -36,10 +38,29 @@ const App: React.FC = () => {
             <IonRouterOutlet>
               {/* Redirect to Tab1 when the app starts */}
               <Route exact path="/">
-                {redirectToDashboard ? <Redirect to="/tab1" /> : <LandingPage />}
+                {redirectToDashboard ? <Redirect to="/tab1" /> : (
+                  <>
+                    <LoginModal
+                      isOpen={!redirectToDashboard}
+                      onClose={() => {}}
+                      onLogin={() => {}}
+                      onShowRegister={() => setShowRegister(true)}
+                    />
+                    <RegisterModal
+                      isOpen={showRegister}
+                      onClose={() => setShowRegister(false)}
+                      onRegister={() => setShowRegister(false)}
+                    />
+                  </>
+                )}
               </Route>
-              <Route exact path="/landingpage">
-                <LandingPage />
+              <Route exact path="/loginmodal">
+                <LoginModal
+                  isOpen={true}
+                  onClose={() => {}}
+                  onLogin={() => {}}
+                  onShowRegister={() => {}}
+                />
               </Route>
               <Route exact path="/tab1">
                 <Dashboard />
