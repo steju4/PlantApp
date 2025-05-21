@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
 
     // Authentifizierung mit token
     const [userName, setUserName] = useState<string | null>(null);
-    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+    const [token, setToken] = useState<string | null>(sessionStorage.getItem('token'));
 
     useEffect(() => {
         if (token) {

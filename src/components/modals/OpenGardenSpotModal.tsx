@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import {pingSpeciesAPI} from "../../scripts/plant_species_api_test";
 import {PlantDetails} from "../../constants/interfaces";
-//import {sample} from "../pages/sample";
+import {sample} from "../../pages/sample";
 
 interface GardenSpotProps {
 
