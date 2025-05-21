@@ -17,7 +17,13 @@ export interface Dilemma {
 
 export interface UserData {
     id: number;
-    dilemmata: Dilemma[];
+    garden_spots: Spot[];
+    email_adress: string, 
+    first_name: string,
+    last_name: string,
+    postal_code: string,
+    city: string,
+    passowrd: string
 }
 
 export interface ColorPicker {
@@ -39,4 +45,21 @@ export interface PlantDetails {
     description: string
     default_image : {thumbnail: string};
 
+}
+export interface Spot{
+    id: number;
+    name: string, 
+    postal_code: string,
+    street: string, 
+    street_number: number, 
+    city: string, 
+    plants: Plant[]
+    logo: string
+}
+
+export interface Plant {
+    id: number,
+    name: string, 
+    value: number,
+    thumbnail: string
 }

@@ -17,7 +17,7 @@ import {
 import {StatusBar, Style} from '@capacitor/status-bar';
 import {add} from "ionicons/icons";
 import "../components/css/DilemmaOverview.css";
-import { PlantDetails} from "../constants/interfaces";
+import { PlantDetails, UserData} from "../constants/interfaces";
 import {pingSpeciesAPI} from "../scripts/plant_api_species";
 import {pingAPI} from "../scripts/plant_api";
 import RegisterModal from '../components/modals/register';
@@ -26,13 +26,43 @@ import AddGardenSpotModal from "../components/modals/AddGardenSpotModal";
 import OpenGardenSpotModal from "../components/modals/OpenGardenSpotModal";
 
 const Dashboard: React.FC = () => {
+    const [userData, setUserData] = useState<UserData>();
 
+
+
+
+    useEffect(() => {
+        setUserData({
+            id: 187,
+            garden_spots: [{id: Date.now(),
+                name: "Gartenhaus", 
+                postal_code: "187777",
+                street: "Peniskopfallee", 
+                street_number: 21, 
+                city: "Friedrichshafen", 
+                plants: [],
+                logo: ""},{id: Date.now(),
+                    name: "Gewächshaus", 
+                    postal_code: "187777",
+                    street: "Peniskopfallee", 
+                    street_number: 21, 
+                    city: "Friedrichshafen", 
+                    plants: [],
+                    logo: ""}],
+            email_adress: "penis.kopf", 
+            first_name: "Jürgi",
+            last_name: "Schneider",
+            postal_code: "187777",
+            city: "Hurensohnhausen",
+            passowrd: "IchBinToll123"
+        })
+    })
     const [plants, setPlants] = useState<PlantDetails>({
         id: 0,
         common_name: "",
         pruning_month: [],
         scientific_name: "",
-        default_image: {original_url: ""},
+        default_image: {thumbnail: ""},
         description: "",
         growth_rate: "",
         origin: [""],
@@ -98,7 +128,7 @@ const Dashboard: React.FC = () => {
             console.log("Pruning Months: " + result.pruning_month);
             console.log("Growth Rate: " + result.growth_rate);
             console.log("Description: " + result.description);
-            console.log("default_image: " + result.default_image.original_url);
+            console.log("default_image: " + result.default_image.thumbnail);
         }
     };
 
@@ -150,32 +180,36 @@ const Dashboard: React.FC = () => {
                             <IonItem style={{border: "1px solid #ccc"}}>
                                 <div>{plants.common_name}</div>
                                 <div style={{position: "relative", maxWidth: '70px', maxHeight: '70px', marginRight: 'auto'}}>
-                                    <IonImg src={plants.default_image.original_url} />
+                                    <IonImg src={plants.default_image.thumbnail} />
                                 </div>
                             </IonItem>
                         </IonList>
                     </div>
                 </div>
             </div>
-
-            <div
-                style={{
-                    border: "1px solid black",
-                    borderRadius: "10px",
-                    margin: "10px",
-                    height: "150px",
-                    width: "150px"
-                }}
-                onClick={() => {
-                    if (openGardenSpotModal.current) {
-                        openGardenSpotModal.current.present();
-                    } else {
-                        console.error("Modal reference is not set!");
-                    }
-                }}
-            >
-                Garden Spot
-            </div>
+<div>
+            {userData?.garden_spots.map(spot =>(
+               <div
+               style={{
+                   border: "1px solid black",
+                   borderRadius: "10px",
+                   margin: "10px",
+                   height: "150px",
+                   width: "150px"
+               }}
+               onClick={() => {
+                   if (openGardenSpotModal.current) {
+                       openGardenSpotModal.current.present();
+                   } else {
+                       console.error("Modal reference is not set!");
+                   }
+               }}
+           >
+            {spot.name}
+           </div>
+            ))}
+</div>
+            
 
             <IonModal ref={openGardenSpotModal} className="modal-sizer">
                 <OpenGardenSpotModal openGardenSpot={openGardenSpot} closeGardenSpotModal={closeGardenSpotModal} />
