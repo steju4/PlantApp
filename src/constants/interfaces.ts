@@ -23,7 +23,7 @@ export interface UserData {
     last_name: string,
     postal_code: string,
     city: string,
-    passowrd: string
+    password: string
 }
 
 export interface ColorPicker {
