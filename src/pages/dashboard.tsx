@@ -12,6 +12,8 @@ import {
   IonToolbar,
   IonFabButton,
   IonIcon,
+  IonHeader,
+  IonButtons,
   IonModal,
 } from "@ionic/react";
 // import { StatusBar, Style } from "@capacitor/status-bar";
@@ -25,6 +27,7 @@ import LoginModal from "../components/modals/login";
 import AddGardenSpotModal from "../components/modals/AddGardenSpotModal";
 import OpenGardenSpotModal from "../components/modals/OpenGardenSpotModal";
 import Gardenspots from "../components/Gardenspots_Cards";
+import Logo from '../../public/assets/icon/logo.png';
 
 const Dashboard: React.FC = () => {
   const [userData, setUserData] = useState<UserData>();
@@ -170,49 +173,21 @@ const Dashboard: React.FC = () => {
 
   return (
     <IonPage>
-      <IonToolbar
-        style={{ marginTop: "calc(var(--status-bar-height) + 15px)" }}
-      >
-        <IonTitle style={{ marginTop: "15px" }} className={"title-Tab1"}>
-          Plants
-        </IonTitle>
-        <div className="vertical-line"></div>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <img src={Logo} alt="Logo" style={{ height: 50, marginLeft: 10, marginRight: 0 }} />
+          </IonButtons>
+          <IonTitle style={{ paddingLeft: "7px" }}>PlantApp</IonTitle>
       </IonToolbar>
-
-      <IonButton onClick={() => testfun()}>Klick mich</IonButton>
-
-      <IonButton onClick={() => setShowLogin(true)}>Einloggen</IonButton>
-
+    </IonHeader>
+      
       {userName && (
         <div style={{ margin: "16px", fontWeight: "bold" }}>
           Hello, {userName}!
         </div>
       )}
 
-      <div>
-        <IonInput
-          onIonInput={(e) => setSearchterm(e.target.value as string)}
-        ></IonInput>
-        <div style={{ visibility: visibility }}>
-          <div style={{ width: "auto", height: "20%", padding: "10px" }}>
-            <IonList lines="none">
-              <IonItem style={{ border: "1px solid #ccc" }}>
-                <div>{plants.common_name}</div>
-                <div
-                  style={{
-                    position: "relative",
-                    maxWidth: "70px",
-                    maxHeight: "70px",
-                    marginRight: "auto",
-                  }}
-                >
-                  <IonImg src={plants.default_image.thumbnail} />
-                </div>
-              </IonItem>
-            </IonList>
-          </div>
-        </div>
-      </div>
       <Gardenspots
   userData={userData}
   closeGardenSpotsModal={() => openGardenSpotModal.current?.dismiss()}
@@ -237,18 +212,22 @@ const Dashboard: React.FC = () => {
       </IonModal>
 
       <IonContent></IonContent>
-
-      <IonFooter
-        style={{ backgroundColor: "white", width: "100vw", height: "90px" }}
-      >
-        <div className="open-modal-button">
-          <IonFabButton
-            className={"AddButton"}
-            onClick={() => addGardenSpot.current?.present()}
-          >
-            <IonIcon icon={add}></IonIcon>
-          </IonFabButton>
-        </div>
+      
+      <IonFooter style={{backgroundColor: 'white', width: '100vw', height: '70px'}}>
+                <IonToolbar style={{ 
+                    background: 'white', 
+                    border: 'none',  
+                    justifyContent: 'center', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    height: '100%'   
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+                        <IonFabButton className="AddButton" onClick={() => addGardenSpot.current?.present()}>
+                            <IonIcon icon={add}></IonIcon>
+                        </IonFabButton>
+                    </div>
+                </IonToolbar>
       </IonFooter>
 
       <LoginModal
