@@ -6,6 +6,7 @@ import { sample } from "../../pages/sample";
 import { chevronForward } from 'ionicons/icons';  // Chevron-Symbol für den Pfeil
 import '../css/OpenGardenSpotModal.css';
 import Header from "../Header";
+import PlantDetailsModal from "./PlantDetailsModal"; // Importiere die neue Modal-Komponente
 
 interface GardenSpotProps {
     openGardenSpot: () => void;
@@ -18,6 +19,8 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeG
     const [searchterm, setSearchterm] = useState("");
     const [plants, setPlants] = useState<PlantDetails[]>([]);
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [selectedPlant, setSelectedPlant] = useState<PlantDetails | null>(null); // Zustand für die ausgewählte Pflanze
+    const [showDetailsModal, setShowDetailsModal] = useState(false); // Zustand für das Details-Modal
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const testfun = async () => {
@@ -31,6 +34,12 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeG
     const handleSelection = (plant: PlantDetails) => {
         setSearchterm(plant.common_name);
         setDropdownVisible(false);
+        setSelectedPlant(plant); // Pflanze setzen
+        setShowDetailsModal(true); // Details Modal öffnen
+    };
+
+    const handleCloseDetailsModal = () => {
+        setShowDetailsModal(false); // Modal schließen
     };
 
     const handleAddPlant = (plant: PlantDetails) => {
@@ -116,7 +125,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeG
                                     }}
                                     className="add-button"
                                 >
-                                    <IonIcon icon={chevronForward} size="small" color="medium" /> {/* Grauer Pfeil */}
+                                    <IonIcon icon={chevronForward} size="small" color="medium" />
                                 </IonButton>
                             </IonItem>
                         ))}
@@ -137,6 +146,13 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeG
                     </div>
                 ))}
             </div>
+
+            {/* Modal für Pflanzendetails */}
+            <PlantDetailsModal
+                isOpen={showDetailsModal}
+                onDismiss={handleCloseDetailsModal}
+                plant={selectedPlant}
+            />
         </div>
     );
 };

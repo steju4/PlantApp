@@ -1,0 +1,32 @@
+/* PlantDetailsModal.css */
+
+/* Modal-Stil für Pflanzendetails */
+.plant-details-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+}
+
+.plant-detail-image {
+    max-width: 150px;
+    max-height: 150px;
+    margin-bottom: 20px;
+}
+
+.plant-detail-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.plant-detail-scientific {
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.plant-detail-description {
+    color: #555;
+    margin-top: 10px;
+}
