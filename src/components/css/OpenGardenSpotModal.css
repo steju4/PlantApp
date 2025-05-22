@@ -1,0 +1,108 @@
+/* Allgemeines Layout */
+.open-garden-container {
+    padding: 0 5%;
+}
+
+/* Eingabefeld */
+.search-input {
+    width: 100%;
+    border: 0.5px solid gray;
+    border-radius: 10px;
+    font-size: 14px;
+    padding: 10px 15px;
+}
+
+/* Dropdown-Stil */
+.dropdown {
+    position: absolute;
+    top: calc(var(--status-bar-height) + 150px);
+    width: 90%;
+    left: 5%;
+    background: white;
+    border: 0.5px solid gray;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+/* Einzelnes Item in der Dropdown-Liste */
+.dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 5px;
+    border-bottom: 1px solid #ccc;
+    position: relative; /* Für das Positionieren des Buttons */
+}
+
+/* Plus-Button */
+.add-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    padding: 5px;
+}
+
+/* Pflanzenbild in der Liste */
+.dropdown-item-img {
+    max-width: 50px;
+    max-height: 50px;
+    margin-right: 10px;
+}
+
+/* Pflanzenname + wissenschaftlicher Name */
+.dropdown-item-text {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Grid Container */
+.plant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Flexibel, aber mindestens 2 Spalten */
+    gap: 10px;
+    margin-top: 20px;
+    padding: 0 5%;
+    overflow-y: auto; /* Fügt das vertikale Scrollen hinzu */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    max-height: 440px; /* Maximalhöhe des Containers, bei Überschreiten wird gescrollt */
+    padding-bottom: 10px;
+    margin-bottom: 5%;
+}
+
+/* Einzelnes Pflanzen-Kästchen */
+.plant-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 5px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-color: white;
+}
+
+.plant-box img {
+    max-width: 100px;
+    max-height: 100px;
+    margin-bottom: 10px;
+}
+
+.plant-name {
+    font-weight: bold;
+    color: black;
+}
+
+.plant-scientific {
+    font-style: italic;
+    color: green;
+}
