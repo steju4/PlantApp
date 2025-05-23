@@ -1,6 +1,6 @@
 import React from "react";
 
-import "../components/css/DilemmaOverview.css";
+import "../components/css/dashboard.css";
 import { UserData } from "../constants/interfaces";
 interface Gardenspots_Props {
   userData: UserData;

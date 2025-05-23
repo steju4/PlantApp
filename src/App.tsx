@@ -22,6 +22,8 @@ setupIonicReact();
 const App: React.FC = () => {
   const [redirectToDashboard, setRedirectToDashboard] = useState<boolean>(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [token, setToken] = useState<string | null>(sessionStorage.getItem('token'));
+
 
   useEffect(() => {
     StatusBar.setStyle({ style: Style.Dark });
@@ -43,8 +45,9 @@ const App: React.FC = () => {
                     <LoginModal
                       isOpen={!redirectToDashboard}
                       onClose={() => {}}
-                      onLogin={() => {}}
+                      onLogin={() => setRedirectToDashboard(true)}
                       onShowRegister={() => setShowRegister(true)}
+                      setToken={setToken}
                     />
                     <RegisterModal
                       isOpen={showRegister}
@@ -60,10 +63,11 @@ const App: React.FC = () => {
                   onClose={() => {}}
                   onLogin={() => {}}
                   onShowRegister={() => {}}
+                  setToken={setToken}
                 />
               </Route>
               <Route exact path="/tab1">
-                <Dashboard />
+                <Dashboard token={token} />
               </Route>
             </IonRouterOutlet>
           </IonTabs>
