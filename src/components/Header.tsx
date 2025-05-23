@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ title, onClose, onConfirm, showConfirm 
                         <IonIcon icon={close} />
                     </IonButton>
                 </IonButtons>
-                <IonTitle className="ion-text-left">{title}</IonTitle>
+                <IonTitle>{title}</IonTitle>
                 {showConfirm && onConfirm && (
                     <IonButtons slot="end">
                         <IonButton strong={true} onClick={onConfirm}>
