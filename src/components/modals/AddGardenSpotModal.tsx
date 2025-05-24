@@ -12,7 +12,8 @@ import {
     IonIcon
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
-import '../css/AddGardenSpotModal.css'; // Stelle sicher, dass du das korrekte CSS importierst
+import '../css/AddGardenSpotModal.css';
+import Header from "../Header";
 
 interface GardenSpotProps {
     newGardenSpot: () => void;
@@ -67,16 +68,9 @@ const AddGardenSpotModal: React.FC<GardenSpotProps> = ({
             onDidDismiss={closeGardenSpotDilemma}
             style={{ '--width': '100vw', '--height': '100vh', '--border-radius': '0' }}
         >
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonButton onClick={closeGardenSpotDilemma}>
-                            <IonIcon icon={close} />
-                        </IonButton>
-                    </IonButtons>
-                    <IonTitle>{gardenSpotName ? gardenSpotName : 'New Garden Spot'}</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+            {/* Verwenden der Header-Komponente */}
+            <Header title={gardenSpotName ? gardenSpotName : 'New Garden Spot'} onClose={closeGardenSpotDilemma} />
+
             <IonContent className="ion-padding">
                 <div className="add-garden-spot-modal">
                     <div className="input-container">

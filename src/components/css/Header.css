@@ -1,0 +1,39 @@
+/* Styling für den Header */
+.header-container {
+    --background: #ffffff;
+    --color: #000000;
+}
+
+.header-container .ion-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+}
+
+.header-container .ion-buttons {
+    display: flex;
+    align-items: center;
+    z-index: 1; /* Buttons sollen nicht von Titel überlagert werden */
+}
+
+.header-container ion-title {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    pointer-events: none; /* Klicks auf Titel blockieren nicht die Buttons */
+}
+
+.header-container ion-button {
+    --background: transparent;
+    --color: #000000;
+    --border: none;
+    --box-shadow: none;
+}
+
+.header-container ion-icon {
+    font-size: 24px;
+}

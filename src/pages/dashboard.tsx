@@ -87,6 +87,9 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
 
   const [userName, setUserName] = useState<string | null>(null);
 
+  const [selectedGardenSpotName, setSelectedGardenSpotName] = useState<string>("");
+
+
   useEffect(() => {
     if (token) {
       fetch("http://localhost:8080/auth/me", {
@@ -143,6 +146,11 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   }
   const addGardenSpot = useRef<HTMLIonModalElement>(null);
   const openGardenSpotModal = useRef<HTMLIonModalElement>(null);
+
+  const showOpenGardenSpotModal = (gardenSpotName: string) => {
+    setSelectedGardenSpotName(gardenSpotName);
+    openGardenSpotModal.current?.present(); // aktuelle Ref nutzen
+  };
 
   const closeGardenSpotDilemma = () => {
     addGardenSpot.current?.dismiss();
@@ -215,14 +223,27 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   closeGardenSpotsModal={() => openGardenSpotModal.current?.dismiss()}
   editSpot={editSpot}
   deleteSpot={deleteSpot}
-  openGardenSpotModal={() => openGardenSpotModal.current?.present()}
+  openGardenSpotModal={(name: string) => {
+    setSelectedGardenSpotName(name);
+    openGardenSpotModal.current?.present();
+  }}
 />
 
 
-      <IonModal ref={openGardenSpotModal} className="modal-sizer">
+      <IonModal
+          ref={openGardenSpotModal}
+          style={{
+            '--width': '100vw',
+            '--height': '100vh',
+            '--border-radius': '0',
+            '--max-width': '100vw',
+            '--max-height': '100vh'
+          }}
+      >
         <OpenGardenSpotModal
           openGardenSpot={openGardenSpot}
           closeGardenSpotModal={closeGardenSpotModal}
+          gardenSpotName={selectedGardenSpotName}
         />
       </IonModal>
 

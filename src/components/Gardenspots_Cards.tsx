@@ -34,7 +34,7 @@ const Gardenspots: React.FC<Gardenspots_Props> = ({
           }}
           
           onClick={() => {
-            openGardenSpotModal();
+            openGardenSpotModal(spot.name); // Hier übergeben wir den Namen des Gartenplatzes
           }}
         >
             <div style={{justifyItems:"center", fontWeight:"bold"}}>
