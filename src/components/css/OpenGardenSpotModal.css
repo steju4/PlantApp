@@ -1,6 +1,15 @@
 /* Allgemeines Layout */
 .open-garden-container {
+    position: relative; /* Wichtig für das absolute Positionieren des Dropdowns */
     padding: 0 5%;
+    margin-top: 2em;
+}
+
+/* Responsive Anpassung */
+@media (max-width: 600px) {
+    .open-garden-container {
+        margin-top: 1.2em;
+    }
 }
 
 /* Eingabefeld */
@@ -10,14 +19,15 @@
     border-radius: 10px;
     font-size: 14px;
     padding: 10px 15px;
+    margin-bottom: 0; /* Kein zusätzlicher Abstand */
 }
 
-/* Dropdown-Stil */
+/* Dropdown direkt unter der Suchleiste */
 .dropdown {
     position: absolute;
-    top: calc(var(--status-bar-height) + 150px);
-    width: 90%;
+    top: 100%; /* Direkt unter dem Input */
     left: 5%;
+    width: 90%;
     background: white;
     border: 0.5px solid gray;
     border-radius: 8px;
@@ -25,7 +35,7 @@
     z-index: 10;
     max-height: 300px;
     overflow-y: auto;
-    margin-top: 20px;
+    margin-top: 0; /* KEIN Abstand zwischen Input und Dropdown */
 }
 
 /* Einzelnes Item in der Dropdown-Liste */
@@ -36,7 +46,7 @@
     padding: 10px;
     margin: 5px;
     border-bottom: 1px solid #ccc;
-    position: relative; /* Für das Positionieren des Buttons */
+    position: relative;
 }
 
 /* Plus-Button */
@@ -65,15 +75,15 @@
 /* Grid Container */
 .plant-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Flexibel, aber mindestens 2 Spalten */
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 10px;
     margin-top: 20px;
     padding: 0 5%;
-    overflow-y: auto; /* Fügt das vertikale Scrollen hinzu */
+    overflow-y: auto;
     position: absolute;
     bottom: 0;
     width: 100%;
-    max-height: 440px; /* Maximalhöhe des Containers, bei Überschreiten wird gescrollt */
+    max-height: 440px;
     padding-bottom: 10px;
     margin-bottom: 5%;
 }
