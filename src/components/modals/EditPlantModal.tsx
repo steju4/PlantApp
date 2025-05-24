@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonModal, IonImg, IonButton, IonIcon, IonContent } from '@ionic/react';
 import { add, remove } from 'ionicons/icons';
 import { PlantDetails } from '../../constants/interfaces';
 import Header from "../Header";
-import '../css/PlantDetailsModal.css';
+import '../css/PlantDetailsModal.css'; // gleiche CSS wird verwendet
 
-interface PlantDetailsModalProps {
+interface EditPlantModalProps {
     isOpen: boolean;
     onDismiss: () => void;
-    onConfirm: () => void;
+    onConfirm: (quantity: number) => void;
     plant: PlantDetails | null;
 }
 
-const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({ isOpen, onDismiss, onConfirm, plant }) => {
+const EditPlantModal: React.FC<EditPlantModalProps> = ({ isOpen, onDismiss, onConfirm, plant }) => {
     const [quantity, setQuantity] = useState<number>(1);
+
+    useEffect(() => {
+        if (plant?.quantity) {
+            setQuantity(plant.quantity);
+        }
+    }, [plant]);
 
     if (!plant) return null;
 
@@ -33,9 +39,9 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({ isOpen, onDismiss
             }}
         >
             <Header
-                title={plant.common_name || "Pflanzen Details"}
+                title={plant.common_name || "Bearbeite Pflanze"}
                 onClose={onDismiss}
-                onConfirm={onConfirm}
+                onConfirm={() => onConfirm(quantity)}
                 showConfirm={true}
             />
 
@@ -54,10 +60,7 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({ isOpen, onDismiss
                     <div className="plant-detail-scientific">{plant.scientific_name}</div>
 
                     <div className="plant-detail-quantity">
-                        <IonButton
-                            onClick={decreaseQuantity}
-                            className="quantity-button"
-                        >
+                        <IonButton onClick={decreaseQuantity} className="quantity-button">
                             <IonIcon icon={remove} />
                         </IonButton>
 
@@ -84,25 +87,14 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({ isOpen, onDismiss
                             className="quantity-input"
                         />
 
-                        <IonButton
-                            onClick={increaseQuantity}
-                            className="quantity-button"
-                        >
+                        <IonButton onClick={increaseQuantity} className="quantity-button">
                             <IonIcon icon={add} />
                         </IonButton>
                     </div>
-
-                    <IonButton
-                        expand="block"
-                        className="add-to-cart-button"
-                        onClick={() => console.log('Added', quantity)}
-                    >
-                        ADD
-                    </IonButton>
                 </div>
             </IonContent>
         </IonModal>
     );
 };
 
-export default PlantDetailsModal;
+export default EditPlantModal;

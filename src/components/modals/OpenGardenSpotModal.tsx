@@ -14,6 +14,7 @@ import { chevronForward } from 'ionicons/icons';
 import '../css/OpenGardenSpotModal.css';
 import Header from "../Header";
 import PlantDetailsModal from "./PlantDetailsModal";
+import EditPlantModal from "./EditPlantModal";
 
 interface GardenSpotProps {
     openGardenSpot: () => void;
@@ -21,13 +22,20 @@ interface GardenSpotProps {
     gardenSpotName: string;
 }
 
-const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeGardenSpotModal, gardenSpotName }) => {
+const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
+                                                            openGardenSpot,
+                                                            closeGardenSpotModal,
+                                                            gardenSpotName
+                                                        }) => {
     const inputRef = useRef<HTMLIonInputElement>(null);
-    const [searchterm, setSearchterm] = useState("");
+    const [searchterm, setSearchterm] = useState('');
     const [plants, setPlants] = useState<PlantDetails[]>([]);
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedPlant, setSelectedPlant] = useState<PlantDetails | null>(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [editPlant, setEditPlant] = useState<PlantDetails | null>(null);
+    const [showEditModal, setShowEditModal] = useState(false);
+
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const testfun = async () => {
@@ -51,7 +59,16 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeG
 
     const handleAddPlant = (plant: PlantDetails) => {
         console.log('Hinzufügen der Pflanze:', plant);
-        // Hier Logik zum Hinzufügen der Pflanze einfügen, falls gewünscht
+    };
+
+    const handlePlantBoxClick = (plant: PlantDetails) => {
+        setEditPlant(plant);
+        setShowEditModal(true);
+    };
+
+    const handleConfirmEdit = (quantity: number) => {
+        console.log('Pflanze aktualisiert:', { ...editPlant, quantity });
+        setShowEditModal(false);
     };
 
     useEffect(() => {
@@ -90,10 +107,12 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeG
                     ref={inputRef}
                     className="search-input"
                     value={searchterm}
-                    placeholder="Pflanzennamen eingeben"
+                    placeholder="Enter plant name"
                     onIonInput={(e) => setSearchterm(e.target.value as string)}
                     onFocus={handleInputFocus}
-                    onKeyPress={(e) => { if (e.key === 'Enter') testfun(); }}
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') testfun();
+                    }}
                 />
 
                 {dropdownVisible && (
@@ -103,15 +122,18 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeG
                                 <IonItem
                                     key={index}
                                     button
-                                    detail={true}  // Hier wird der Chevron automatisch angezeigt
+                                    detail={true}
                                     onClick={() => handleSelection(plant)}
                                     lines="none"
                                     className="dropdown-item"
                                 >
                                     <IonImg
-                                        src={plant.default_image.thumbnail !== "https://perenual.com/storage/image/upgrade_access.jpg"
-                                            ? plant.default_image.thumbnail
-                                            : "assets/fallback_picture/monstera.png"}
+                                        src={
+                                            plant.default_image.thumbnail !==
+                                            'https://perenual.com/storage/image/upgrade_access.jpg'
+                                                ? plant.default_image.thumbnail
+                                                : 'assets/fallback_picture/monstera.png'
+                                        }
                                         className="dropdown-item-img"
                                     />
                                     <div className="dropdown-item-text">
@@ -127,11 +149,19 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeG
 
             <div className="plant-grid">
                 {sample.map((plant, index) => (
-                    <div className="plant-box" key={index}>
+                    <div
+                        className="plant-box"
+                        key={index}
+                        onClick={() => handlePlantBoxClick(plant)}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <IonImg
-                            src={plant.default_image.thumbnail !== "https://perenual.com/storage/image/upgrade_access.jpg"
-                                ? plant.default_image.thumbnail
-                                : "assets/fallback_picture/monstera.png"}
+                            src={
+                                plant.default_image.thumbnail !==
+                                'https://perenual.com/storage/image/upgrade_access.jpg'
+                                    ? plant.default_image.thumbnail
+                                    : 'assets/fallback_picture/monstera.png'
+                            }
                         />
                         <div className="plant-name">{plant.common_name}</div>
                         <div className="plant-scientific">{plant.scientific_name}</div>
@@ -142,7 +172,15 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({ openGardenSpot, closeG
             <PlantDetailsModal
                 isOpen={showDetailsModal}
                 onDismiss={handleCloseDetailsModal}
+                onConfirm={() => handleAddPlant(selectedPlant!)}
                 plant={selectedPlant}
+            />
+
+            <EditPlantModal
+                isOpen={showEditModal}
+                onDismiss={() => setShowEditModal(false)}
+                onConfirm={handleConfirmEdit}
+                plant={editPlant}
             />
         </div>
     );

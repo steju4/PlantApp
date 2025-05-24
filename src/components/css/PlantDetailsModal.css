@@ -1,12 +1,15 @@
-/* PlantDetailsModal.css */
+.modal-content {
+    --padding-top: 12px;
+    padding-left: 5%;
+    padding-right: 5%;
+    background-color: transparent;
+}
 
-.plant-details-modal {
+.plant-details-modal-content {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 0;
-    width: 90%;
-    margin-left: 5%;
     text-align: center;
 }
 
@@ -27,11 +30,6 @@
     margin-bottom: 10px;
 }
 
-.plant-detail-description {
-    color: #555;
-    margin-top: 10px;
-}
-
 .plant-detail-quantity {
     display: flex;
     align-items: center;
@@ -40,55 +38,47 @@
     margin: 20px 0;
 }
 
-/* Plus/Minus Buttons */
-.plant-detail-quantity ion-button {
-    --background: #f0fdf4 !important;       /* dauerhafter hellgrüner Hintergrund */
-    --border-color: #4CAF50 !important;     /* grüner Rahmen */
-    --color: white !important;               /* Schrift und Icon weiß */
-    --border-radius: 6px !important;
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-    padding: 0 !important;
-
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* Kein Fokusrahmen */
-.plant-detail-quantity ion-button:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* IonIcon innerhalb der Buttons */
-.plant-detail-quantity ion-button ion-icon {
-    color: white !important;    /* Icon immer weiß */
-    font-size: 20px;            /* gut sichtbar */
-    pointer-events: none;       /* damit Klicks nicht am Icon „hängen bleiben“ */
-}
-
-/* Hover und Active: dunkleres grün mit weißem Icon */
-.plant-detail-quantity ion-button:hover,
-.plant-detail-quantity ion-button:active {
-    --background: #4CAF50 !important; /* dunklerer Grünton */
+/* Neue Größe und Stil für die Plus/Minus-Buttons */
+.quantity-button {
+    --background: linear-gradient(135deg, #4CAF50, #8BC34A) !important;
+    --border-color: transparent !important;
     --color: white !important;
+    --border-radius: 6px !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
-.plant-detail-quantity ion-button:hover ion-icon,
-.plant-detail-quantity ion-button:active ion-icon {
-    color: white !important;
+.quantity-button ion-icon {
+    font-size: 24px;
+    color: white;
+    pointer-events: none;
 }
 
-.quantity-number {
-    font-size: 1.2rem;
-    min-width: 32px;
+/* Input für Menge */
+.quantity-input {
+    width: 60px;
     text-align: center;
-    padding: 4px 12px;
+    font-size: 1.2rem;
+    padding: 4px 8px;
     border: 2px solid #4CAF50;
     border-radius: 6px;
     color: #333;
     background-color: #f0fdf4;
+    margin: 0 8px;
+    -moz-appearance: textfield;
+}
+
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .add-to-cart-button {
@@ -98,8 +88,7 @@
     font-size: 16px;
     border-radius: 8px;
     width: 90%;
-    margin-left: 5%;
+    margin: 0 auto;
     padding: 12px 0;
     --box-shadow: none;
-    --border-radius: 8px;
 }
