@@ -18,7 +18,8 @@ import {
 } from "@ionic/react";
 // import { StatusBar, Style } from "@capacitor/status-bar";
 import { add } from "ionicons/icons";
-import "../components/css/DilemmaOverview.css";
+import "../components/css/dashboard.css";
+import "../components/css/global.css";
 import { PlantDetails, UserData } from "../constants/interfaces";
 import { pingSpeciesAPI } from "../scripts/plant_api_species";
 import { pingAPI } from "../scripts/plant_api";
@@ -29,7 +30,11 @@ import OpenGardenSpotModal from "../components/modals/OpenGardenSpotModal";
 import Gardenspots from "../components/Gardenspots_Cards";
 import Logo from '../../public/assets/icon/logo.png';
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  token: string | null;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   const [userData, setUserData] = useState<UserData>();
 
   useEffect(() => {
@@ -80,25 +85,7 @@ const Dashboard: React.FC = () => {
   const [visibility, setVisibility] = useState("hidden");
   const [searchterm, setSearchterm] = useState("");
 
-  // LoginModal Zustand
-  const [showLogin, setShowLogin] = useState(false);
-  const handleLogin = (email: string) => {
-    console.log("Benutzer eingeloggt:", email);
-    const newToken = sessionStorage.getItem("token");
-    setToken(newToken);
-  };
-
-  // RegisterModal Zustand
-  const [showRegister, setShowRegister] = useState(false);
-  const handleRegister = (name: string, email: string) => {
-    console.log("Benutzer registriert:", name, email);
-  };
-
-  // Authentifizierung mit token
   const [userName, setUserName] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(
-    sessionStorage.getItem("token")
-  );
 
   const [selectedGardenSpotName, setSelectedGardenSpotName] = useState<string>("");
 
@@ -106,9 +93,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     if (token) {
       fetch("http://localhost:8080/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
         .then((data) => {
@@ -116,6 +101,8 @@ const Dashboard: React.FC = () => {
         });
     }
   }, [token]);
+
+    
 
 //   useEffect(() => {
 //     StatusBar.setStyle({ style: Style.Dark });
@@ -186,15 +173,50 @@ const Dashboard: React.FC = () => {
           <IonButtons slot="start">
             <img src={Logo} alt="Logo" style={{ height: 50, marginLeft: 10, marginRight: 0 }} />
           </IonButtons>
-          <IonTitle style={{ paddingLeft: "7px" }}>PlantApp</IonTitle>
+          <IonTitle style={{ paddingLeft: "5px" }}>PlantApp</IonTitle>
       </IonToolbar>
     </IonHeader>
-      
-      {userName && (
-        <div style={{ margin: "16px", fontWeight: "bold" }}>
-          Hello, {userName}!
-        </div>
-      )}
+    <div
+      style={{
+        maxWidth: "100%",
+        background: "linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%)",
+        color: "white",
+        padding: "20px 2.5% 15px 2.5%",
+        textAlign: "center",
+        marginBottom: "0px",
+        margin: "0",
+      }}
+    >
+      <h1 style={{ margin: 0, fontWeight: 700, fontSize: "2rem", letterSpacing: "1px" }}>
+        Welcome{userName ? `, ${userName}` : ""}!
+      </h1>
+      <p style={{ fontSize: "1rem", fontWeight: 400 }}>
+        We're glad you're here. Here you can see all your locations and plants at a glance.
+      </p>
+    </div>
+
+    <div
+      style={{
+        textAlign: "center",
+      }}
+    >
+      <h2
+        style={{
+          display: "inline-block",
+          background: "linear-gradient(90deg, #388E3C 0%, #81C784 100%)",
+          color: "white",
+          padding: "10px 36px",
+          borderRadius: "18px",
+          fontWeight: 600,
+          fontSize: "1.3rem",
+          boxShadow: "0 2px 8px rgba(56,142,60,0.08)",
+          letterSpacing: "0.5px",
+        }}
+      >
+        Your Locations
+      </h2>
+    </div>
+
 
       <Gardenspots
   userData={userData}
@@ -234,7 +256,7 @@ const Dashboard: React.FC = () => {
 
       <IonContent></IonContent>
       
-      <IonFooter style={{backgroundColor: 'white', width: '100vw', height: '70px'}}>
+      <IonFooter style={{backgroundColor: 'white', width: '100vw', height: '60px'}}>
                 <IonToolbar style={{ 
                     background: 'white', 
                     border: 'none',  
@@ -250,25 +272,6 @@ const Dashboard: React.FC = () => {
                     </div>
                 </IonToolbar>
       </IonFooter>
-
-      <LoginModal
-        isOpen={showLogin}
-        onClose={() => setShowLogin(false)}
-        onLogin={handleLogin}
-        onShowRegister={() => {
-          setShowLogin(false); // Login schließen
-          setShowRegister(true); // Register öffnen
-        }}
-      />
-
-      <RegisterModal
-        isOpen={showRegister}
-        onClose={() => {
-          setShowRegister(false); // Schließt das Register Modal
-          setShowLogin(true); // Öffnet das Login Modal
-        }}
-        onRegister={handleRegister}
-      />
     </IonPage>
   );
 };

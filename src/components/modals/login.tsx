@@ -15,15 +15,17 @@ import {
 import { useHistory } from 'react-router-dom';
 import '../css/login.css';
 import Logo from '../../../public/assets/icon/logo.png';
+import { setAssetPath } from 'ionicons';
 
 interface LoginModalProps {
     isOpen: boolean;
     onClose: () => void;
     onLogin: (email: string) => void;
     onShowRegister: () => void;
+    setToken: (token: string) => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onShowRegister }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onShowRegister, setToken }) => {
     const emailRef = useRef<HTMLIonInputElement>(null);
     const passwordRef = useRef<HTMLIonInputElement>(null);
     const [error, setError] = useState<string>('');
@@ -61,6 +63,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
         if (data.token) {
             console.log('Login successful with token:', data);
             sessionStorage.setItem('token', data.token);
+            setToken(data.token);
+            onLogin(email);
+            onClose();
+            history.push('/tab1');
         }
         setError('');
         onLogin(email);

@@ -75,8 +75,8 @@
     bottom: 25px;
 }
 .AddButton{
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
 }
 .safe-area {
     padding: var(--ion-safe-area-top) var(--ion-safe-area-right) var(--ion-safe-area-bottom) var(--ion-safe-area-left);
