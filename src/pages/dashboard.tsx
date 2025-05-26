@@ -29,6 +29,7 @@ import AddGardenSpotModal from "../components/modals/AddGardenSpotModal";
 import OpenGardenSpotModal from "../components/modals/OpenGardenSpotModal";
 import Gardenspots from "../components/Gardenspots_Cards";
 import Logo from '../../public/assets/icon/logo.png';
+import { useHistory } from "react-router-dom";
 
 interface DashboardProps {
   token: string | null;
@@ -36,6 +37,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   const [userData, setUserData] = useState<UserData>();
+  const history = useHistory();
 
   useEffect(() => {
     setUserData({
@@ -102,7 +104,10 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
     }
   }, [token]);
 
-    
+  const logout = () => {
+    sessionStorage.removeItem("token");
+    history.push("/");
+  }
 
 //   useEffect(() => {
 //     StatusBar.setStyle({ style: Style.Dark });
@@ -174,6 +179,11 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
             <img src={Logo} alt="Logo" style={{ height: 50, marginLeft: 10, marginRight: 0 }} />
           </IonButtons>
           <IonTitle style={{ paddingLeft: "5px" }}>PlantApp</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={logout} color="danger" style={{ marginRight: "10px" }}>
+              Logout
+            </IonButton>
+          </IonButtons>
       </IonToolbar>
     </IonHeader>
     <div

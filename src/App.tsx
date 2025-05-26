@@ -67,7 +67,11 @@ const App: React.FC = () => {
                 />
               </Route>
               <Route exact path="/tab1">
-                <Dashboard token={token} />
+                {redirectToDashboard ? (
+                  <Dashboard token={token} />
+                ) : (
+                  <Redirect to="/" />
+                )}
               </Route>
             </IonRouterOutlet>
           </IonTabs>
