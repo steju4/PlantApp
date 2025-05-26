@@ -55,9 +55,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
             }
             return;
         }
-        else {
-            history.push('/tab1');
-        }
 
         const data = await res.json();
         if (data.token) {
@@ -66,11 +63,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
             setToken(data.token);
             onLogin(email);
             onClose();
-            history.push('/tab1');
         }
         setError('');
-        onLogin(email);
-        onClose();
 
     } catch (err) {
         setError('Server error. Please try again later.');

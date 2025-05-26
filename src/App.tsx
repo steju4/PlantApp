@@ -20,18 +20,18 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 setupIonicReact();
 
 const App: React.FC = () => {
-  const [redirectToDashboard, setRedirectToDashboard] = useState<boolean>(false);
   const [showRegister, setShowRegister] = useState(false);
   const [token, setToken] = useState<string | null>(sessionStorage.getItem('token'));
+  const [showLogin, setShowLogin] = useState(!token);
 
 
   useEffect(() => {
     StatusBar.setStyle({ style: Style.Dark });
-    const token = sessionStorage.getItem('token');
-    if (token) {
-      setRedirectToDashboard(true);
-    }
   }, []);
+
+  useEffect(() => {
+  if (token) setShowLogin(false);
+}, [token]);
 
   return (
       <IonApp>
@@ -40,12 +40,12 @@ const App: React.FC = () => {
             <IonRouterOutlet>
               {/* Redirect to Tab1 when the app starts */}
               <Route exact path="/">
-                {redirectToDashboard ? <Redirect to="/tab1" /> : (
+                {token ? <Redirect to="/tab1" /> : (
                   <>
                     <LoginModal
-                      isOpen={!redirectToDashboard}
-                      onClose={() => {}}
-                      onLogin={() => setRedirectToDashboard(true)}
+                      isOpen={showLogin}
+                      onClose={() => setShowLogin(false)}
+                      onLogin={() => {}}
                       onShowRegister={() => setShowRegister(true)}
                       setToken={setToken}
                     />
@@ -57,17 +57,8 @@ const App: React.FC = () => {
                   </>
                 )}
               </Route>
-              <Route exact path="/loginmodal">
-                <LoginModal
-                  isOpen={true}
-                  onClose={() => {}}
-                  onLogin={() => {}}
-                  onShowRegister={() => {}}
-                  setToken={setToken}
-                />
-              </Route>
               <Route exact path="/tab1">
-                {redirectToDashboard ? (
+                {token ? (
                   <Dashboard token={token} />
                 ) : (
                   <Redirect to="/" />
