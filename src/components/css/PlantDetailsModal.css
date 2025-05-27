@@ -3,13 +3,20 @@
     padding-left: 5%;
     padding-right: 5%;
     background-color: transparent;
+
+    /* Neu hinzugefügt für Zentrierung */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .plant-details-modal-content {
     width: 100%;
+    flex: 1; /* Nimmt den verfügbaren Raum unter dem Header ein */
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center; /* Vertikal zentrieren */
     text-align: center;
 }
 

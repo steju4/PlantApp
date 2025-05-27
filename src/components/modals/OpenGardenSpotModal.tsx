@@ -33,11 +33,11 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [editPlant, setEditPlant] = useState<PlantDetails | null>(null);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [sample, setSample] = useState<PlantDetails[]>(initialSample); // Lokaler Zustand
+    const [sample, setSample] = useState<PlantDetails[]>(initialSample);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const testfun = async () => {
+    const searchPlants = async () => {
         const result = await pingSpeciesAPI(searchterm);
         if (result) {
             setPlants(result);
@@ -57,7 +57,9 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     };
 
     const handleAddPlant = (plant: PlantDetails) => {
-        console.log('Hinzufügen der Pflanze:', plant);
+        const newPlant = { ...plant, quantity: 1 };
+        setSample(prev => [...prev, newPlant]);
+        setShowDetailsModal(false);
     };
 
     const handlePlantBoxClick = (plant: PlantDetails) => {
@@ -106,6 +108,11 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
         }
     };
 
+    const getImageSrc = (url: string) =>
+        url !== 'https://perenual.com/storage/image/upgrade_access.jpg'
+            ? url
+            : 'assets/fallback_picture/monstera.png';
+
     return (
         <div>
             <Header
@@ -124,7 +131,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                     onIonInput={(e) => setSearchterm(e.target.value as string)}
                     onFocus={handleInputFocus}
                     onKeyPress={(e) => {
-                        if (e.key === 'Enter') testfun();
+                        if (e.key === 'Enter') searchPlants();
                     }}
                 />
 
@@ -141,12 +148,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                                     className="dropdown-item"
                                 >
                                     <IonImg
-                                        src={
-                                            plant.default_image.thumbnail !==
-                                            'https://perenual.com/storage/image/upgrade_access.jpg'
-                                                ? plant.default_image.thumbnail
-                                                : 'assets/fallback_picture/monstera.png'
-                                        }
+                                        src={getImageSrc(plant.default_image.thumbnail)}
                                         className="dropdown-item-img"
                                     />
                                     <div className="dropdown-item-text">
@@ -168,19 +170,10 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                         onClick={() => handlePlantBoxClick(plant)}
                         style={{ cursor: 'pointer', position: 'relative' }}
                     >
-                        <IonImg
-                            src={
-                                plant.default_image.thumbnail !==
-                                'https://perenual.com/storage/image/upgrade_access.jpg'
-                                    ? plant.default_image.thumbnail
-                                    : 'assets/fallback_picture/monstera.png'
-                            }
-                        />
+                        <IonImg src={getImageSrc(plant.default_image.thumbnail)} />
                         <div className="plant-name">{plant.common_name}</div>
                         <div className="plant-scientific">{plant.scientific_name}</div>
-                        <div className="plant-quantity-badge">
-                            x{plant.quantity ?? 1}
-                        </div>
+                        <div className="plant-quantity-badge">x{plant.quantity ?? 1}</div>
                     </div>
                 ))}
             </div>
