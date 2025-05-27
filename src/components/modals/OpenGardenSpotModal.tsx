@@ -7,6 +7,7 @@ import {
     IonList
 } from "@ionic/react";
 import { pingSpeciesAPI } from "../../scripts/plant_species_api_test";
+import { fetchPlantDetailsById } from "../../scripts/plant_species_details";
 import { PlantDetails } from "../../constants/interfaces";
 import { sample as initialSample } from "../../pages/sample";
 import '../css/OpenGardenSpotModal.css';
@@ -26,6 +27,8 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                                                             gardenSpotName
                                                         }) => {
     const inputRef = useRef<HTMLIonInputElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
     const [searchterm, setSearchterm] = useState('');
     const [plants, setPlants] = useState<PlantDetails[]>([]);
     const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -33,11 +36,9 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [editPlant, setEditPlant] = useState<PlantDetails | null>(null);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [sample, setSample] = useState<PlantDetails[]>(initialSample); // Lokaler Zustand
+    const [sample, setSample] = useState<PlantDetails[]>(initialSample);
 
-    const dropdownRef = useRef<HTMLDivElement>(null);
-
-    const testfun = async () => {
+    const searchPlants = async () => {
         const result = await pingSpeciesAPI(searchterm);
         if (result) {
             setPlants(result);
@@ -45,19 +46,25 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
         }
     };
 
-    const handleSelection = (plant: PlantDetails) => {
+    const handleSelection = async (plant: PlantDetails) => {
         setSearchterm(plant.common_name);
         setDropdownVisible(false);
-        setSelectedPlant(plant);
-        setShowDetailsModal(true);
+
+        const fullDetails = await fetchPlantDetailsById(plant.id);
+        if (fullDetails) {
+            setSelectedPlant(fullDetails);
+            setShowDetailsModal(true);
+        } else {
+            alert("Fehler beim Laden der Pflanzendetails.");
+        }
     };
 
-    const handleCloseDetailsModal = () => {
-        setShowDetailsModal(false);
-    };
+    const handleCloseDetailsModal = () => setShowDetailsModal(false);
 
     const handleAddPlant = (plant: PlantDetails) => {
-        console.log('Hinzufügen der Pflanze:', plant);
+        const newPlant = { ...plant, quantity: 1 };
+        setSample(prev => [...prev, newPlant]);
+        setShowDetailsModal(false);
     };
 
     const handlePlantBoxClick = (plant: PlantDetails) => {
@@ -67,18 +74,15 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
 
     const handleConfirmEdit = (quantity: number) => {
         if (!editPlant) return;
-
         const updated = sample.map(p =>
             p === editPlant ? { ...p, quantity } : p
         );
-
         setSample(updated);
         setShowEditModal(false);
     };
 
     const handleDeletePlant = () => {
         if (!editPlant) return;
-
         const updated = sample.filter(p => p !== editPlant);
         setSample(updated);
         setShowEditModal(false);
@@ -101,10 +105,13 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     }, []);
 
     const handleInputFocus = () => {
-        if (plants.length > 0) {
-            setDropdownVisible(true);
-        }
+        if (plants.length > 0) setDropdownVisible(true);
     };
+
+    const getImageSrc = (url: string) =>
+        url !== 'https://perenual.com/storage/image/upgrade_access.jpg'
+            ? url
+            : 'assets/fallback_picture/monstera.png';
 
     return (
         <div>
@@ -124,7 +131,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                     onIonInput={(e) => setSearchterm(e.target.value as string)}
                     onFocus={handleInputFocus}
                     onKeyPress={(e) => {
-                        if (e.key === 'Enter') testfun();
+                        if (e.key === 'Enter') searchPlants();
                     }}
                 />
 
@@ -141,12 +148,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                                     className="dropdown-item"
                                 >
                                     <IonImg
-                                        src={
-                                            plant.default_image.thumbnail !==
-                                            'https://perenual.com/storage/image/upgrade_access.jpg'
-                                                ? plant.default_image.thumbnail
-                                                : 'assets/fallback_picture/monstera.png'
-                                        }
+                                        src={getImageSrc(plant.default_image?.thumbnail)}
                                         className="dropdown-item-img"
                                     />
                                     <div className="dropdown-item-text">
@@ -168,19 +170,10 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                         onClick={() => handlePlantBoxClick(plant)}
                         style={{ cursor: 'pointer', position: 'relative' }}
                     >
-                        <IonImg
-                            src={
-                                plant.default_image.thumbnail !==
-                                'https://perenual.com/storage/image/upgrade_access.jpg'
-                                    ? plant.default_image.thumbnail
-                                    : 'assets/fallback_picture/monstera.png'
-                            }
-                        />
+                        <IonImg src={getImageSrc(plant.default_image?.thumbnail)} />
                         <div className="plant-name">{plant.common_name}</div>
                         <div className="plant-scientific">{plant.scientific_name}</div>
-                        <div className="plant-quantity-badge">
-                            x{plant.quantity ?? 1}
-                        </div>
+                        <div className="plant-quantity-badge">x{plant.quantity ?? 1}</div>
                     </div>
                 ))}
             </div>

@@ -3,42 +3,89 @@
     padding-left: 5%;
     padding-right: 5%;
     background-color: transparent;
+
+    /* Modal-Layout */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .plant-details-modal-content {
     width: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
     text-align: center;
+    padding-top: 20px;
 }
 
+/* Bild */
 .plant-detail-image {
     max-width: 150px;
     max-height: 150px;
     margin-bottom: 20px;
 }
 
+/* Pflanzenname */
 .plant-detail-name {
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
+/* Wissenschaftlicher Name */
 .plant-detail-scientific {
     font-style: italic;
+    font-size: 14px;
+    color: #555;
     margin-bottom: 10px;
 }
 
+/* Accordion-Gruppe auf 80% Breite zentriert */
+ion-accordion-group {
+    width: 80%;
+    margin: 12px auto 0;
+}
+
+/* Einzelnes Accordion */
+ion-accordion {
+    --border-width: 0 0 1px 0;
+    --border-style: solid;
+    --border-color: #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+/* Inhalt im Accordion */
+ion-accordion .ion-padding {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+    text-align: left;
+}
+
+/* Beschreibung im Accordion */
+.plant-detail-description {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Menge-Auswahl */
 .plant-detail-quantity {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin: 20px 0;
+    margin: 24px 0 16px;
 }
 
-/* Neue Größe und Stil für die Plus/Minus-Buttons */
+/* Plus/Minus-Buttons */
 .quantity-button {
     --background: linear-gradient(135deg, #4CAF50, #8BC34A) !important;
     --border-color: transparent !important;
@@ -61,7 +108,7 @@
     pointer-events: none;
 }
 
-/* Input für Menge */
+/* Eingabefeld für Anzahl */
 .quantity-input {
     width: 60px;
     text-align: center;
@@ -81,14 +128,33 @@
     margin: 0;
 }
 
+/* Hinzufügen-Button */
 .add-to-cart-button {
     --background: linear-gradient(135deg, #4CAF50, #8BC34A) !important;
     --color: white !important;
     font-weight: bold;
     font-size: 16px;
     border-radius: 8px;
-    width: 90%;
-    margin: 0 auto;
+    width: 80%;
+    margin: 0 auto 20px;
     padding: 12px 0;
     --box-shadow: none;
+}
+
+.delete-button {
+    width: 80%;
+    margin: 20px auto 0; /* zentriert über auto */
+    --background: linear-gradient(135deg, #f44336, #e53935) !important;
+    --color: white !important;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 8px;
+    padding: 12px 0;
+    --box-shadow: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Abstand zwischen Icon und Text */
 }
