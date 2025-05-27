@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { IonModal, IonImg, IonButton, IonIcon, IonContent } from '@ionic/react';
-import { add, remove } from 'ionicons/icons';
+import { add, remove, trash } from 'ionicons/icons';
 import { PlantDetails } from '../../constants/interfaces';
 import Header from "../Header";
-import '../css/PlantDetailsModal.css'; // gleiche CSS wird verwendet
+import '../css/PlantDetailsModal.css';
 
 interface EditPlantModalProps {
     isOpen: boolean;
     onDismiss: () => void;
     onConfirm: (quantity: number) => void;
+    onDelete: () => void; // <--- Neue Prop
     plant: PlantDetails | null;
 }
 
-const EditPlantModal: React.FC<EditPlantModalProps> = ({ isOpen, onDismiss, onConfirm, plant }) => {
+const EditPlantModal: React.FC<EditPlantModalProps> = ({ isOpen, onDismiss, onConfirm, onDelete, plant }) => {
     const [quantity, setQuantity] = useState<number>(1);
 
     useEffect(() => {
-        if (plant?.quantity) {
-            setQuantity(plant.quantity);
+        if (isOpen && plant) {
+            setQuantity(plant.quantity ?? 1);
         }
-    }, [plant]);
+    }, [isOpen, plant]);
 
     if (!plant) return null;
 
@@ -91,6 +92,17 @@ const EditPlantModal: React.FC<EditPlantModalProps> = ({ isOpen, onDismiss, onCo
                             <IonIcon icon={add} />
                         </IonButton>
                     </div>
+
+                    {/* Delete Button */}
+                    <IonButton
+                        color="danger"
+                        expand="block"
+                        onClick={onDelete}
+                        style={{ marginTop: '20px' }}
+                    >
+                        <IonIcon icon={trash} slot="start" />
+                        Delete plant
+                    </IonButton>
                 </div>
             </IonContent>
         </IonModal>
