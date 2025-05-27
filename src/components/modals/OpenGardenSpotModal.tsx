@@ -4,13 +4,11 @@ import {
     IonImg,
     IonInput,
     IonItem,
-    IonList,
-    IonIcon
+    IonList
 } from "@ionic/react";
 import { pingSpeciesAPI } from "../../scripts/plant_species_api_test";
 import { PlantDetails } from "../../constants/interfaces";
-import { sample } from "../../pages/sample";
-import { chevronForward } from 'ionicons/icons';
+import { sample as initialSample } from "../../pages/sample";
 import '../css/OpenGardenSpotModal.css';
 import Header from "../Header";
 import PlantDetailsModal from "./PlantDetailsModal";
@@ -35,6 +33,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [editPlant, setEditPlant] = useState<PlantDetails | null>(null);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [sample, setSample] = useState<PlantDetails[]>(initialSample); // Lokaler Zustand
 
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +66,21 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     };
 
     const handleConfirmEdit = (quantity: number) => {
-        console.log('Pflanze aktualisiert:', { ...editPlant, quantity });
+        if (!editPlant) return;
+
+        const updated = sample.map(p =>
+            p === editPlant ? { ...p, quantity } : p
+        );
+
+        setSample(updated);
+        setShowEditModal(false);
+    };
+
+    const handleDeletePlant = () => {
+        if (!editPlant) return;
+
+        const updated = sample.filter(p => p !== editPlant);
+        setSample(updated);
         setShowEditModal(false);
     };
 
@@ -153,7 +166,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                         className="plant-box"
                         key={index}
                         onClick={() => handlePlantBoxClick(plant)}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', position: 'relative' }}
                     >
                         <IonImg
                             src={
@@ -165,6 +178,9 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                         />
                         <div className="plant-name">{plant.common_name}</div>
                         <div className="plant-scientific">{plant.scientific_name}</div>
+                        <div className="plant-quantity-badge">
+                            x{plant.quantity ?? 1}
+                        </div>
                     </div>
                 ))}
             </div>
@@ -180,6 +196,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 isOpen={showEditModal}
                 onDismiss={() => setShowEditModal(false)}
                 onConfirm={handleConfirmEdit}
+                onDelete={handleDeletePlant}
                 plant={editPlant}
             />
         </div>
