@@ -4,27 +4,35 @@ import {
     IonImg,
     IonInput,
     IonItem,
-    IonList
+    IonList,
+    IonIcon
 } from "@ionic/react";
 import { pingSpeciesAPI } from "../../scripts/plant_species_api_test";
 import { fetchPlantDetailsById } from "../../scripts/plant_species_details";
-import { PlantDetails } from "../../constants/interfaces";
-import { sample as initialSample } from "../../pages/sample";
+import { PlantDetails, StoredGardenPlant } from "../../constants/interfaces";
 import '../css/OpenGardenSpotModal.css';
 import Header from "../Header";
 import PlantDetailsModal from "./PlantDetailsModal";
 import EditPlantModal from "./EditPlantModal";
+import { search as searchIcon } from 'ionicons/icons';
+import { trash } from 'ionicons/icons';
 
 interface GardenSpotProps {
     openGardenSpot: () => void;
     closeGardenSpotModal: () => void;
+    deleteSpot: (id: number) => void;
     gardenSpotName: string;
+    gardenSpotId: number;
+    token: string | null;
 }
 
 const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                                                             openGardenSpot,
                                                             closeGardenSpotModal,
-                                                            gardenSpotName
+                                                            deleteSpot,
+                                                            gardenSpotName,
+                                                            gardenSpotId,
+                                                            token
                                                         }) => {
     const inputRef = useRef<HTMLIonInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -34,15 +42,99 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedPlant, setSelectedPlant] = useState<PlantDetails | null>(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
-    const [editPlant, setEditPlant] = useState<PlantDetails | null>(null);
+    const [editStoredPlant, setEditStoredPlant] = useState<StoredGardenPlant | null>(null);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [sample, setSample] = useState<PlantDetails[]>(initialSample);
+    const [storedPlants, setStoredPlants] = useState<StoredGardenPlant[]>([]);
+    const [loadingPlants, setLoadingPlants] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (token && gardenSpotId) {
+            setLoadingPlants(true);
+            fetch(`http://localhost:8080/auth/api/gardenspots/${gardenSpotId}/plants`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then(res => {
+                if (!res.ok) {
+                    console.error(`HTTP error! status: ${res.status}`);
+                    return [];
+                }
+                return res.json();
+            })
+            .then((data: StoredGardenPlant[]) => {
+                setStoredPlants(data);
+            })
+            .catch(err => {
+                console.error("Fehler beim Laden der Pflanzen für GardenSpot:", err);
+                setStoredPlants([]);
+            })
+            .finally(() => {
+                setLoadingPlants(false);
+            });
+        }
+    }, [token, gardenSpotId]);
+
+        const handleAddPlantToGardenSpot = async (plantToAdd: PlantDetails, quantity: number) => {
+        if (!token || !plantToAdd || !gardenSpotId) {
+            alert("Fehler: Token, Pflanzendetails oder GardenSpot ID fehlen.");
+            return;
+        }
+
+        const plantData = {
+            externalPlantId: plantToAdd.id,
+            commonName: plantToAdd.common_name,
+            thumbnail: plantToAdd.default_image?.thumbnail || null,
+            amount: quantity,
+            sunlight: plantToAdd.sunlight?.join(', ') || null,
+            watering: plantToAdd.watering || null,
+            careLevel: plantToAdd.care_level || null, // Achte auf den Namen: care_level in PlantDetails
+            pruningMonth: plantToAdd.pruning_month?.join(', ') || null,
+            cycle: plantToAdd.cycle || null,
+            growthRate: plantToAdd.growth_rate || null,
+            droughtTolerant: plantToAdd.drought_tolerant || false,
+            indoor: plantToAdd.indoor || false,
+            medicinal: plantToAdd.medicinal || false,
+            description: plantToAdd.description || null,
+            origin: plantToAdd.origin?.join(', ') || null,
+        };
+
+        try {
+            const res = await fetch(`http://localhost:8080/auth/api/gardenspots/${gardenSpotId}/plants`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(plantData),
+            });
+
+            if (!res.ok) {
+                const errorBody = await res.text();
+                throw new Error(`HTTP error! status: ${res.status}, body: ${errorBody}`);
+            }
+            const newStoredPlant: StoredGardenPlant = await res.json();
+            setStoredPlants(prev => [...prev, newStoredPlant]);
+            setShowDetailsModal(false);
+            setSearchterm('');
+            setPlants([]);
+        } catch (error) {
+            console.error("Fehler beim Hinzufügen der Pflanze:", error);
+            alert(`Fehler beim Hinzufügen der Pflanze: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    };
 
     const searchPlants = async () => {
+        if (!searchterm.trim()) {
+            setPlants([]);
+            setDropdownVisible(false);
+            return;
+        }
         const result = await pingSpeciesAPI(searchterm);
         if (result) {
             setPlants(result);
             setDropdownVisible(true);
+        } else {
+            setPlants([]);
+            setDropdownVisible(false);
         }
     };
 
@@ -55,37 +147,73 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             setSelectedPlant(fullDetails);
             setShowDetailsModal(true);
         } else {
-            alert("Fehler beim Laden der Pflanzendetails.");
+            setSelectedPlant(plant); 
+            setShowDetailsModal(true);
         }
     };
 
-    const handleCloseDetailsModal = () => setShowDetailsModal(false);
-
-    const handleAddPlant = (plant: PlantDetails) => {
-        const newPlant = { ...plant, quantity: 1 };
-        setSample(prev => [...prev, newPlant]);
+    const handleCloseDetailsModal = () => {
         setShowDetailsModal(false);
+        setSelectedPlant(null);
     };
 
-    const handlePlantBoxClick = (plant: PlantDetails) => {
-        setEditPlant(plant);
+    const handleStoredPlantClick = (plant: StoredGardenPlant) => {
+        setEditStoredPlant(plant);
         setShowEditModal(true);
     };
 
-    const handleConfirmEdit = (quantity: number) => {
-        if (!editPlant) return;
-        const updated = sample.map(p =>
-            p === editPlant ? { ...p, quantity } : p
-        );
-        setSample(updated);
-        setShowEditModal(false);
+    const handleConfirmPlantEdit = async (updatedAmount: number) => {
+        if (!token || !editStoredPlant) {
+            alert("Fehler: Token oder zu bearbeitende Pflanze fehlt.");
+            return;
+        }
+
+        try {
+            const res = await fetch(`http://localhost:8080/auth/api/gardenspotplants/${editStoredPlant.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ amount: updatedAmount }),
+            });
+
+            if (!res.ok) {
+                const errorBody = await res.text();
+                throw new Error(`HTTP error! status: ${res.status}, body: ${errorBody}`);
+            }
+            const updatedPlantFromServer: StoredGardenPlant = await res.json();
+            setStoredPlants(prev => prev.map(p => p.id === updatedPlantFromServer.id ? updatedPlantFromServer : p));
+            setShowEditModal(false);
+            setEditStoredPlant(null);
+        } catch (error) {
+            console.error("Fehler beim Aktualisieren der Pflanze:", error);
+            alert(`Fehler beim Aktualisieren der Pflanze: ${error instanceof Error ? error.message : String(error)}`);
+        }
     };
 
-    const handleDeletePlant = () => {
-        if (!editPlant) return;
-        const updated = sample.filter(p => p !== editPlant);
-        setSample(updated);
-        setShowEditModal(false);
+    const handleDeleteStoredPlant = async () => {
+        if (!token || !editStoredPlant) {
+            alert("Fehler: Token oder zu löschende Pflanze fehlt.");
+            return;
+        }
+        try {
+            const res = await fetch(`http://localhost:8080/auth/api/gardenspotplants/${editStoredPlant.id}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (!res.ok && res.status !== 204) {
+                const errorBody = await res.text();
+                throw new Error(`HTTP error! status: ${res.status}, body: ${errorBody}`);
+            }
+            setStoredPlants(prev => prev.filter(p => p.id !== editStoredPlant.id));
+            setShowEditModal(false);
+            setEditStoredPlant(null);
+        } catch (error) {
+            console.error("Fehler beim Löschen der Pflanze:", error);
+            alert(`Fehler beim Löschen der Pflanze: ${error instanceof Error ? error.message : String(error)}`);
+        }
     };
 
     useEffect(() => {
@@ -108,10 +236,13 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
         if (plants.length > 0) setDropdownVisible(true);
     };
 
-    const getImageSrc = (url: string) =>
-        url !== 'https://perenual.com/storage/image/upgrade_access.jpg'
-            ? url
-            : 'assets/fallback_picture/monstera.png';
+    const getImageSrc = (url: string | null | undefined): string => {
+        
+        if (!url || url === 'https://perenual.com/storage/image/upgrade_access.jpg') {
+            return 'assets/fallback_picture/monstera.png';
+        }
+        return url;
+    };
 
     return (
         <div>
@@ -119,32 +250,52 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 title={gardenSpotName}
                 onClose={closeGardenSpotModal}
                 onConfirm={openGardenSpot}
-                showConfirm={true}
+                showConfirm={false}
             />
+            <IonButton
+                fill="clear"
+                color="danger"
+                onClick={() => deleteSpot(gardenSpotId)}
+                style={{
+                position: 'absolute',
+                top: '6px',    
+                right: '16px',  
+                zIndex: 20
+                }}
+            >
+                <IonIcon icon={trash} />
+            </IonButton>
 
-            <div className="open-garden-container">
+            <div
+                className="open-garden-container"
+                style={{ display: 'flex', alignItems: 'center' }}
+            >       
                 <IonInput
                     ref={inputRef}
                     className="search-input"
                     value={searchterm}
-                    placeholder="Enter plant name"
+                    placeholder="Enter plant name to add"
                     onIonInput={(e) => setSearchterm(e.target.value as string)}
                     onFocus={handleInputFocus}
                     onKeyPress={(e) => {
                         if (e.key === 'Enter') searchPlants();
                     }}
+                    style={{ flex: 1, marginRight: '8px' }}
                 />
+                <IonButton onClick={searchPlants}>
+                    <IonIcon icon={searchIcon} />
+                </IonButton>
+                
 
-                {dropdownVisible && (
+                {dropdownVisible && plants.length > 0 && (
                     <div className="dropdown" ref={dropdownRef}>
-                        <IonList>
-                            {plants.map((plant, index) => (
+                        <IonList lines="none">
+                            {plants.map((plant) => (
                                 <IonItem
-                                    key={index}
+                                    key={plant.id}
                                     button
                                     detail={true}
                                     onClick={() => handleSelection(plant)}
-                                    lines="none"
                                     className="dropdown-item"
                                 >
                                     <IonImg
@@ -163,35 +314,75 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             </div>
 
             <div className="plant-grid">
-                {sample.map((plant, index) => (
+                {!loadingPlants && storedPlants.length === 0 ? (
+                    <div
+                    style={{
+                        textAlign: 'center',
+                        width: '100%',
+                        marginTop: '2rem',
+                        color: '#888',
+                        fontStyle: 'italic'
+                    }}
+                    >
+                    No plants added yet.
+                    </div>
+                ) : (
+                    !loadingPlants &&
+                    storedPlants.map((sPlant) => (
                     <div
                         className="plant-box"
-                        key={index}
-                        onClick={() => handlePlantBoxClick(plant)}
+                        key={sPlant.id}
+                        onClick={() => handleStoredPlantClick(sPlant)}
                         style={{ cursor: 'pointer', position: 'relative' }}
                     >
-                        <IonImg src={getImageSrc(plant.default_image?.thumbnail)} />
-                        <div className="plant-name">{plant.common_name}</div>
-                        <div className="plant-scientific">{plant.scientific_name}</div>
-                        <div className="plant-quantity-badge">x{plant.quantity ?? 1}</div>
+                        <IonImg src={getImageSrc(sPlant.thumbnail)} />
+                        <div className="plant-name">{sPlant.commonName}</div>
+                        {/*<div className="plant-scientific">{sPlant.scientific_name}</div>*/}
+                        <div className="plant-quantity-badge">x{sPlant.amount ?? 1}</div>
                     </div>
-                ))}
+                )))}
             </div>
 
+            {selectedPlant && (
             <PlantDetailsModal
                 isOpen={showDetailsModal}
                 onDismiss={handleCloseDetailsModal}
-                onConfirm={() => handleAddPlant(selectedPlant!)}
+                onConfirm={(quantityFromModal) => handleAddPlantToGardenSpot(selectedPlant, quantityFromModal)}
                 plant={selectedPlant}
             />
+            )}
 
-            <EditPlantModal
-                isOpen={showEditModal}
-                onDismiss={() => setShowEditModal(false)}
-                onConfirm={handleConfirmEdit}
-                onDelete={handleDeletePlant}
-                plant={editPlant}
-            />
+            {editStoredPlant && (
+                <EditPlantModal
+                    isOpen={showEditModal}
+                    onDismiss={() => {
+                        setShowEditModal(false);
+                        setEditStoredPlant(null); 
+                    }}
+                    onConfirm={handleConfirmPlantEdit}
+                    onDelete={handleDeleteStoredPlant}
+                    
+                    plant={{
+                        id: editStoredPlant.externalPlantId,
+                        common_name: editStoredPlant.commonName,
+                        default_image: { thumbnail: editStoredPlant.thumbnail || '' },
+                        sunlight: editStoredPlant.sunlight?.split(',').map(s => s.trim()) || [],
+                        watering: editStoredPlant.watering || '',
+                        care_level: editStoredPlant.careLevel || '',
+                        pruning_month: editStoredPlant.pruningMonth?.split(',').map(s => s.trim()) || [],
+                        cycle: editStoredPlant.cycle || '',
+                        growth_rate: editStoredPlant.growthRate || '',
+                        drought_tolerant: editStoredPlant.droughtTolerant,
+                        indoor: editStoredPlant.indoor,
+                        medicinal: editStoredPlant.medicinal,
+                        description: editStoredPlant.description || '',
+                        origin: editStoredPlant.origin?.split(',').map(s => s.trim()) || [],
+                        scientific_name: [], // Wird nicht im Backend gespeichert, da nur angezeigt bei Suche
+
+                    }}
+                    initialQuantity={editStoredPlant.amount}
+                />
+            )}
         </div>
     );
 };

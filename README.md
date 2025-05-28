@@ -149,6 +149,19 @@ npm run dev
 
 ---
 
+
+> ## 📱!! Nutzung der App im Browser 
+> **PlantApp wurde speziell für mobile Endgeräte  konzipiert und optimiert.**  
+> Um ein realistisches und voll funktionsfähiges Nutzererlebnis zu erhalten, solltest du die Anwendung im  Desktop-Browser stets in der mobilen Ansicht testen:
+> 
+> 
+> 1. Öffne die Entwicklertools (F12 oder Rechtsklick → „Untersuchen“).  
+> 2. Klicke auf das Gerätetool-Icon („Toggle device emulation“).  
+> 3. Wähle ein Smartphone- oder Tablet-Profil (z. B. iPhone, Pixel).  
+> 
+> So prüfst du nicht nur responsives Layout, sondern auch Touch-Interaktionen und mobile Gesten.  
+> Hinweis: Safari bietet nur eingeschränkte Emulationsmöglichkeiten. Nutze idealerweise  Chrome oder Firefox für ein vollständiges mobiles Testen.  
+
 ## 📝 Hinweise
 
 - **CORS:** Die CORS-Konfiguration ist so eingestellt, dass das Frontend auf allen gängigen lokalen Ports mit dem Backend kommunizieren kann.

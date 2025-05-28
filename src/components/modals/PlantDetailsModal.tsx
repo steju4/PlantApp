@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     IonModal,
     IonImg,
@@ -18,7 +18,7 @@ import '../css/PlantDetailsModal.css';
 interface PlantDetailsModalProps {
     isOpen: boolean;
     onDismiss: () => void;
-    onConfirm: () => void;
+    onConfirm: (quantity: number) => void;
     plant: PlantDetails | null;
 }
 
@@ -29,6 +29,12 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({
                                                                  plant
                                                              }) => {
     const [quantity, setQuantity] = useState<number>(1);
+
+    useEffect(() => {
+        if (isOpen) {
+            setQuantity(1);
+        }
+    }, [isOpen]);
 
     if (!plant) return null;
 
@@ -47,8 +53,8 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({
             <Header
                 title={plant.common_name || "Pflanzen Details"}
                 onClose={onDismiss}
-                onConfirm={onConfirm}
-                showConfirm={true}
+                onConfirm={() => onConfirm(quantity)}
+                showConfirm={false}
             />
 
             <IonContent fullscreen className="modal-content">
@@ -161,7 +167,7 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({
                     <IonButton
                         expand="block"
                         className="add-to-cart-button"
-                        onClick={() => console.log('Added', quantity)}
+                        onClick={() => onConfirm(quantity)}
                     >
                         Pflanze hinzufügen
                     </IonButton>
@@ -172,3 +178,4 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({
 };
 
 export default PlantDetailsModal;
+

@@ -2,15 +2,19 @@ import React from "react";
 
 import "../components/css/dashboard.css";
 import { UserData } from "../constants/interfaces";
+import { Spot } from "../constants/interfaces";
+
 interface Gardenspots_Props {
-  userData: UserData;
+  gardenSpots: Spot[];
+  userData?: UserData;
   closeGardenSpotsModal: () => void;
   editSpot: (ID: number) => void;
   deleteSpot: (ID: number) => void;
-  openGardenSpotModal: () => void;
+  openGardenSpotModal: (spot: Spot) => void;
 }
 
 const Gardenspots: React.FC<Gardenspots_Props> = ({
+  gardenSpots,
   userData,
   closeGardenSpotsModal,
   editSpot,
@@ -19,22 +23,26 @@ const Gardenspots: React.FC<Gardenspots_Props> = ({
 }) => {
 
 
- 
 
   return (
-    <div style={{display:"flex", justifyContent:"center"}}>
-      {userData?.garden_spots.map((spot) => (
+    <div style={{display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    margin: "0 auto"}}>
+      {gardenSpots.map((spot) => (
         <div
+          key={spot.id}
           style={{
-            border: "1px solid black",
-            borderRadius: "10px",
-            margin: "10px",
-            height: "200px",
-            width: "200px",
+            flex: "0 0 calc(50% - 20px)",    // zwei Spalten
+          margin: "10px",
+          boxSizing: "border-box",
+          border: "1px solid black",
+          borderRadius: "10px",
+          height: "200px"
           }}
           
           onClick={() => {
-            openGardenSpotModal(spot.name); // Hier übergeben wir den Namen des Gartenplatzes
+            openGardenSpotModal(spot); // Hier übergeben wir das gesamte Spot-Objekt
           }}
         >
             <div style={{justifyItems:"center", fontWeight:"bold"}}>

@@ -18,9 +18,10 @@ import '../css/PlantDetailsModal.css';
 interface EditPlantModalProps {
     isOpen: boolean;
     onDismiss: () => void;
-    onConfirm: (quantity: number) => void;
+    onConfirm: (newQuantity: number) => void;
     onDelete: () => void;
     plant: PlantDetails | null;
+    initialQuantity?: number;
 }
 
 const EditPlantModal: React.FC<EditPlantModalProps> = ({
@@ -28,15 +29,16 @@ const EditPlantModal: React.FC<EditPlantModalProps> = ({
                                                            onDismiss,
                                                            onConfirm,
                                                            onDelete,
-                                                           plant
+                                                           plant,
+                                                           initialQuantity
                                                        }) => {
     const [quantity, setQuantity] = useState<number>(1);
 
     useEffect(() => {
-        if (isOpen && plant) {
-            setQuantity(plant.quantity ?? 1);
+        if (isOpen) {
+            setQuantity(initialQuantity ?? 1);
         }
-    }, [isOpen, plant]);
+    }, [isOpen, initialQuantity]);
 
     if (!plant) return null;
 

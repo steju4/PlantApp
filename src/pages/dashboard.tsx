@@ -20,63 +20,42 @@ import {
 import { add } from "ionicons/icons";
 import "../components/css/dashboard.css";
 import "../components/css/global.css";
-import { PlantDetails, UserData } from "../constants/interfaces";
+import { Spot, StoredGardenPlant, PlantDetails, UserData } from "../constants/interfaces";
 import { pingSpeciesAPI } from "../scripts/plant_api_species";
 import { pingAPI } from "../scripts/plant_api";
-import RegisterModal from "../components/modals/register";
-import LoginModal from "../components/modals/login";
 import AddGardenSpotModal from "../components/modals/AddGardenSpotModal";
 import OpenGardenSpotModal from "../components/modals/OpenGardenSpotModal";
 import Gardenspots from "../components/Gardenspots_Cards";
 import Logo from '../../public/assets/icon/logo.png';
 import { useHistory } from "react-router-dom";
-
 interface DashboardProps {
   token: string | null;
 }
 
+
 const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   const [userData, setUserData] = useState<UserData>();
   const history = useHistory();
+  const [gardenSpots, setGardenSpots] = useState<Spot[]>([]);
+  const [selectedGardenSpotId, setSelectedGardenSpotId] = useState<number | null>(null);
+
 
   useEffect(() => {
-    setUserData({
-      id: 187,
-      garden_spots: [
-        {
-          id: Date.now(),
-          name: "Gartenhaus",
-          postal_code: "187777",
-          street: "Peniskopfallee",
-          street_number: 21,
-          city: "Friedrichshafen",
-          plants: [],
-          logo: "",
-        },
-        {
-          id: Date.now(),
-          name: "Gewächshaus",
-          postal_code: "187777",
-          street: "Peniskopfallee",
-          street_number: 21,
-          city: "Friedrichshafen",
-          plants: [],
-          logo: "",
-        },
-      ],
-      email_adress: "penis.kopf",
-      first_name: "Jürgi",
-      last_name: "Schneider",
-      postal_code: "187777",
-      city: "Hurensohnhausen",
-      password: "IchBinToll123",
-    });
-  });
+  if (token) {
+    fetch("http://localhost:8080/auth/api/gardenspots", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => setGardenSpots(data))
+      .catch((err) => console.error("Fehler beim Laden der Gardenspots:", err));
+  }
+}, [token]);
+
   const [plants, setPlants] = useState<PlantDetails>({
     id: 0,
     common_name: "",
     pruning_month: [],
-    scientific_name: "",
+    scientific_name: [""],
     default_image: { thumbnail: "" },
     description: "",
     growth_rate: "",
@@ -106,7 +85,7 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
 
   const logout = () => {
     sessionStorage.removeItem("token");
-    history.push("/");
+    window.location.reload();
   }
 
 //   useEffect(() => {
@@ -123,24 +102,6 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
 //     );
 //   });
 
-  const testfun = async () => {
-    const result = await pingAPI(await pingSpeciesAPI(searchterm));
-    if (result) {
-      setPlants(result);
-      setVisibility("visible");
-      console.log("MARKER1");
-      console.log(searchterm);
-      console.log("ID: " + result.id);
-      console.log("Common Name: " + result.common_name);
-      console.log("Scientific Name: " + result.scientific_name);
-      console.log("Origin: " + result.origin);
-      console.log("Sunlight: " + result.sunlight);
-      console.log("Pruning Months: " + result.pruning_month);
-      console.log("Growth Rate: " + result.growth_rate);
-      console.log("Description: " + result.description);
-      console.log("default_image: " + result.default_image.thumbnail);
-    }
-  };
  
   const editSpot = () => {
     console.log("editSpot")
@@ -152,9 +113,10 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   const addGardenSpot = useRef<HTMLIonModalElement>(null);
   const openGardenSpotModal = useRef<HTMLIonModalElement>(null);
 
-  const showOpenGardenSpotModal = (gardenSpotName: string) => {
-    setSelectedGardenSpotName(gardenSpotName);
-    openGardenSpotModal.current?.present(); // aktuelle Ref nutzen
+  const showOpenGardenSpotModal = (gardenSpot: Spot) => { 
+    setSelectedGardenSpotName(gardenSpot.name);
+    setSelectedGardenSpotId(gardenSpot.id);
+    openGardenSpotModal.current?.present();
   };
 
   const closeGardenSpotDilemma = () => {
@@ -171,6 +133,67 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
     console.log("openGardenSpot");
   };
 
+  const [newSpotName, setNewSpotName] = useState("");
+  const [newStreet, setNewStreet] = useState("");
+  const [newStreetNumber, setNewStreetNumber] = useState("");
+  const [newPostalCode, setNewPostalCode] = useState("");
+  const [newCity, setNewCity] = useState("");
+  const addGardenSpotToDB = async (spot: Spot) => {
+  if (!token) return;
+  const res = await fetch("http://localhost:8080/auth/api/gardenspots", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(spot),
+  });
+  if (res.ok) {
+    // Nach dem Hinzufügen neu laden:
+    const newSpot = await res.json();
+    setGardenSpots(prev => [...prev, newSpot]);
+  } else {
+    alert("Fehler beim Anlegen des GardenSpots");
+  }
+};
+
+  const handleCreateGardenSpot = () => {
+  const spot: Spot = {
+    id: 0, 
+    name: newSpotName,
+    street: newStreet,
+    streetNumber: newStreetNumber,
+    postalCode: newPostalCode,
+    city: newCity,
+    plants: [],
+    logo: ""
+  };
+  addGardenSpotToDB(spot);
+  // Felder zurücksetzen und Modal schließen
+  setNewSpotName("");
+  setNewStreet("");
+  setNewStreetNumber("");
+  setNewPostalCode("");
+  setNewCity("");
+  closeGardenSpotDilemma();
+};
+
+const handleDeleteSpot = async (id: number) => {
+  if (!token) return;
+  try {
+    const res = await fetch(`http://localhost:8080/auth/api/gardenspots/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
+    setGardenSpots(prev => prev.filter(s => s.id !== id));
+    closeGardenSpotModal();
+  } catch (err) {
+    console.error("Error deleting spot:", err);
+    alert(`Error deleting spot: ${err instanceof Error ? err.message : String(err)}`);
+  }
+};
+
   return (
     <IonPage>
       <IonHeader>
@@ -186,6 +209,7 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
           </IonButtons>
       </IonToolbar>
     </IonHeader>
+    <IonContent style={{ paddingBottom: '60px' }}>
     <div
       style={{
         maxWidth: "100%",
@@ -229,14 +253,14 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
 
 
       <Gardenspots
-  userData={userData}
-  closeGardenSpotsModal={() => openGardenSpotModal.current?.dismiss()}
-  editSpot={editSpot}
-  deleteSpot={deleteSpot}
-  openGardenSpotModal={(name: string) => {
-    setSelectedGardenSpotName(name);
-    openGardenSpotModal.current?.present();
-  }}
+        gardenSpots={gardenSpots}
+        userData={userData}
+        closeGardenSpotsModal={() => openGardenSpotModal.current?.dismiss()}
+        editSpot={editSpot}
+        deleteSpot={deleteSpot}
+        openGardenSpotModal={(spot: Spot) => { 
+            showOpenGardenSpotModal(spot);
+        }}
 />
 
 
@@ -248,25 +272,34 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
             '--border-radius': '0',
             '--max-width': '100vw',
             '--max-height': '100vh'
-          }}
+          }
+        }
       >
-        <OpenGardenSpotModal
-          openGardenSpot={openGardenSpot}
-          closeGardenSpotModal={closeGardenSpotModal}
-          gardenSpotName={selectedGardenSpotName}
-        />
+        {selectedGardenSpotId && selectedGardenSpotName && ( // Sicherstellen, dass beide Werte vorhanden sind
+            <OpenGardenSpotModal
+            openGardenSpot={openGardenSpot} // Diese Funktion muss ggf. überarbeitet werden
+            closeGardenSpotModal={closeGardenSpotModal}
+            deleteSpot={handleDeleteSpot} // Funktion zum Löschen des Spots
+            gardenSpotName={selectedGardenSpotName}
+            gardenSpotId={selectedGardenSpotId} // ID übergeben
+            token={token} // Token übergeben
+            />
+        )}
       </IonModal>
 
       <IonModal ref={addGardenSpot} className="modal-sizer">
         <AddGardenSpotModal
-          newGardenSpot={newGardenSpot}
+          newGardenSpot={handleCreateGardenSpot}
+          setGardenSpotName={setNewSpotName}
+          setStreet={setNewStreet}
+          setStreetNumber={setNewStreetNumber}
+          setPostCode={setNewPostalCode}
+          setCity={setNewCity}
           closeGardenSpotDilemma={closeGardenSpotDilemma}
         />
       </IonModal>
-
-      <IonContent></IonContent>
-      
-      <IonFooter style={{backgroundColor: 'white', width: '100vw', height: '60px'}}>
+      </IonContent>
+      <IonFooter slot="fixed" style={{backgroundColor: 'white', width: '100vw', height: '60px'}}>
                 <IonToolbar style={{ 
                     background: 'white', 
                     border: 'none',  
