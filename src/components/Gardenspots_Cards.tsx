@@ -24,6 +24,7 @@ const Gardenspots: React.FC<Gardenspots_Props> = ({
 
 
 
+  // ...existing code...
   return (
     <div style={{display: "flex",
     flexWrap: "wrap",
@@ -33,26 +34,43 @@ const Gardenspots: React.FC<Gardenspots_Props> = ({
         <div
           key={spot.id}
           style={{
-            flex: "0 0 calc(50% - 20px)",    // zwei Spalten
-          margin: "10px",
-          boxSizing: "border-box",
-          border: "1px solid black",
-          borderRadius: "10px",
-          height: "200px"
+            flex: "0 0 calc(50% - 20px)", 
+            margin: "10px",
+            boxSizing: "border-box",
+            border: "1px solid black",
+            borderRadius: "10px",
+            height: "200px", 
+            display: "flex", 
+            flexDirection: "column", 
+            padding: "10px" 
           }}
-          
           onClick={() => {
-            openGardenSpotModal(spot); // Hier übergeben wir das gesamte Spot-Objekt
+            openGardenSpotModal(spot);
           }}
         >
-            <div style={{justifyItems:"center", fontWeight:"bold"}}>
-          {spot.name}
-          <div style={{maxWidth:"200px",maxHeight:"200px", marginTop:"10px", opacity:"0.05"}}>
-          <img src="https://cdn-icons-png.flaticon.com/512/13825/13825771.png" />
-
-          </div>
-
-          </div>
+            {/* Spot Name */}
+            <div style={{fontWeight:"bold", textAlign: "center", marginBottom: "5px", flexShrink: 0}}>
+              {spot.name}
+            </div>
+            {/* Bild Container */}
+            <div style={{
+              flexGrow: 1, 
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              opacity:"0.05",
+              overflow: "hidden", 
+              width: "100%" 
+            }}>
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/13825/13825771.png"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain"
+                }}
+              />
+            </div>
         </div>
       ))}
     </div>
