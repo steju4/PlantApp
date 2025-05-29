@@ -287,27 +287,36 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 </IonButton>
                 
 
-                {dropdownVisible && plants.length > 0 && (
+                {dropdownVisible && ( // Zeige das Dropdown-Div, wenn eine Suche aktiv war
                     <div className="dropdown" ref={dropdownRef}>
                         <IonList lines="none">
-                            {plants.map((plant) => (
-                                <IonItem
-                                    key={plant.id}
-                                    button
-                                    detail={true}
-                                    onClick={() => handleSelection(plant)}
-                                    className="dropdown-item"
-                                >
-                                    <IonImg
-                                        src={getImageSrc(plant.default_image?.thumbnail)}
-                                        className="dropdown-item-img"
-                                    />
-                                    <div className="dropdown-item-text">
-                                        <div>{plant.common_name}</div>
-                                        <div className="plant-scientific">{plant.scientific_name}</div>
+                            {plants.length > 0 ? (
+                                plants.map((plant) => (
+                                    <IonItem
+                                        key={plant.id}
+                                        button
+                                        detail={true}
+                                        onClick={() => handleSelection(plant)}
+                                        className="dropdown-item"
+                                    >
+                                        <IonImg
+                                            src={getImageSrc(plant.default_image?.thumbnail)}
+                                            className="dropdown-item-img"
+                                        />
+                                        <div className="dropdown-item-text">
+                                            <div>{plant.common_name}</div>
+                                            <div className="plant-scientific">{plant.scientific_name}</div>
+                                        </div>
+                                    </IonItem>
+                                ))
+                            ) : (
+                                // Nachricht, wenn keine Pflanzen gefunden wurden, aber das Dropdown sichtbar ist
+                                <IonItem lines="none" className="dropdown-item-no-results">
+                                    <div style={{ padding: '10px', textAlign: 'center', width: '100%' }}>
+                                        No results found.
                                     </div>
                                 </IonItem>
-                            ))}
+                            )}
                         </IonList>
                     </div>
                 )}
