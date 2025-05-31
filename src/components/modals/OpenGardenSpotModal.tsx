@@ -252,19 +252,6 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 onConfirm={openGardenSpot}
                 showConfirm={false}
             />
-            <IonButton
-                fill="clear"
-                color="danger"
-                onClick={() => deleteSpot(gardenSpotId)}
-                style={{
-                position: 'absolute',
-                top: '6px',    
-                right: '16px',  
-                zIndex: 20
-                }}
-            >
-                <IonIcon icon={trash} />
-            </IonButton>
 
             <div
                 className="open-garden-container"
@@ -354,7 +341,19 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                         ))
                     )}
                 </div>
+
+                {/* Immer direkt unter der Pflanzengrid sichtbar */}
+                <div className="delete-button-wrapper" style={{ marginTop: '2rem', textAlign: 'center' }}>
+                    <IonButton
+                        className="delete-button"
+                        onClick={() => deleteSpot(gardenSpotId)}
+                    >
+                        <IonIcon icon={trash} />
+                        Garden Spot löschen
+                    </IonButton>
+                </div>
             </div>
+
 
             {selectedPlant && (
             <PlantDetailsModal

@@ -144,3 +144,26 @@
     border-radius: 12px;
     font-weight: bold;
 }
+/* === Löschen-Button === */
+.delete-button-wrapper {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.delete-button {
+    width: 80%;
+    margin: 20px auto 0;
+    --background: linear-gradient(135deg, #f44336, #e53935) !important;
+    --color: white !important;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 8px;
+    padding: 12px 0;
+    --box-shadow: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
