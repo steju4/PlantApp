@@ -16,6 +16,7 @@ import com.webengineering.plantapp.backend.model.GardenSpotPlant;
 import com.webengineering.plantapp.backend.repository.GardenSpotPlantRepository;
 import com.webengineering.plantapp.backend.repository.GardenSpotRepository;
 import com.webengineering.plantapp.backend.dto.PlantDataRequest;
+import com.webengineering.plantapp.backend.dto.GardenSpotPlantResponseDTO;
 
 import java.util.Map;
 import java.util.Optional;
@@ -200,11 +201,12 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPlant);
     }
 
-    @PutMapping("/api/gardenspotplants/{gardenSpotPlantId}")
-    public ResponseEntity<GardenSpotPlant> updateGardenSpotPlant(
+       @PutMapping("/api/gardenspotplants/{gardenSpotPlantId}")
+    @Transactional
+    public ResponseEntity<GardenSpotPlantResponseDTO> updateGardenSpotPlant( // Rückgabetyp ist bereits korrekt
             @RequestHeader("Authorization") String authHeader,
             @PathVariable Long gardenSpotPlantId,
-            @RequestBody Map<String, Integer> payload) { // Erwartet {"amount": newAmount}
+            @RequestBody Map<String, Integer> payload) {
         String email = jwtUtil.extractUsername(authHeader.replace("Bearer ", ""));
         Optional<User> userOpt = userService.findByEmail(email);
         if (userOpt.isEmpty()) {
@@ -227,8 +229,27 @@ public class AuthController {
             return ResponseEntity.badRequest().body(null); // Oder spezifischere Fehlermeldung
         }
         plant.setAmount(newAmount);
-        GardenSpotPlant updatedPlant = gardenSpotPlantRepository.save(plant);
-        return ResponseEntity.ok(updatedPlant);
+        GardenSpotPlant updatedPlantEntity = gardenSpotPlantRepository.save(plant); // Umbenannt zur Klarheit
+
+        GardenSpotPlantResponseDTO responseDto = new GardenSpotPlantResponseDTO(
+            updatedPlantEntity.getId(),
+            updatedPlantEntity.getExternalPlantId(),
+            updatedPlantEntity.getCommonName(),
+            updatedPlantEntity.getThumbnail(),
+            updatedPlantEntity.getAmount(),
+            updatedPlantEntity.getSunlight(),
+            updatedPlantEntity.getWatering(),
+            updatedPlantEntity.getCareLevel(),
+            updatedPlantEntity.getPruningMonth(),
+            updatedPlantEntity.getCycle(),
+            updatedPlantEntity.getGrowthRate(),
+            updatedPlantEntity.isDroughtTolerant(),
+            updatedPlantEntity.isIndoor(),
+            updatedPlantEntity.isMedicinal(),
+            updatedPlantEntity.getDescription(),
+            updatedPlantEntity.getOrigin()
+        );
+        return ResponseEntity.ok(responseDto); // Jetzt das DTO zurückgeben
     }
 
     @DeleteMapping("/api/gardenspotplants/{gardenSpotPlantId}")

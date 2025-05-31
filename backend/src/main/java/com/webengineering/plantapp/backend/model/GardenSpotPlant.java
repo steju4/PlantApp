@@ -2,6 +2,8 @@ package com.webengineering.plantapp.backend.model;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class GardenSpotPlant {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +31,7 @@ public class GardenSpotPlant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "garden_spot_id", nullable = false)
+    @JsonIgnore
     private GardenSpot gardenSpot;
 
 
