@@ -252,19 +252,6 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 onConfirm={openGardenSpot}
                 showConfirm={false}
             />
-            <IonButton
-                fill="clear"
-                color="danger"
-                onClick={() => deleteSpot(gardenSpotId)}
-                style={{
-                position: 'absolute',
-                top: '6px',    
-                right: '16px',  
-                zIndex: 20
-                }}
-            >
-                <IonIcon icon={trash} />
-            </IonButton>
 
             <div
                 className="open-garden-container"
@@ -322,35 +309,51 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 )}
             </div>
 
-            <div className="plant-grid">
-                {!loadingPlants && storedPlants.length === 0 ? (
-                    <div
-                    style={{
-                        textAlign: 'center',
-                        width: '100%',
-                        marginTop: '2rem',
-                        color: '#888',
-                        fontStyle: 'italic'
-                    }}
+            <div className="plant-grid-wrapper">
+                <div className="plant-grid-title">Meine Pflanzen</div>
+
+                <div className="plant-grid">
+                    {!loadingPlants && storedPlants.length === 0 ? (
+                        <div
+                            style={{
+                                textAlign: 'center',
+                                width: '100%',
+                                marginTop: '2rem',
+                                color: '#888',
+                                fontStyle: 'italic',
+                            }}
+                        >
+                            No plants added yet.
+                        </div>
+                    ) : (
+                        !loadingPlants &&
+                        storedPlants.map((sPlant) => (
+                            <div
+                                className="plant-box"
+                                key={sPlant.id}
+                                onClick={() => handleStoredPlantClick(sPlant)}
+                                style={{ cursor: 'pointer', position: 'relative' }}
+                            >
+                                <IonImg src={getImageSrc(sPlant.thumbnail)} />
+                                <div className="plant-name">{sPlant.commonName}</div>
+                                <div className="plant-quantity-badge">x{sPlant.amount ?? 1}</div>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {/* Immer direkt unter der Pflanzengrid sichtbar */}
+                <div className="delete-button-wrapper" style={{ marginTop: '2rem', textAlign: 'center' }}>
+                    <IonButton
+                        className="delete-button"
+                        onClick={() => deleteSpot(gardenSpotId)}
                     >
-                    No plants added yet.
-                    </div>
-                ) : (
-                    !loadingPlants &&
-                    storedPlants.map((sPlant) => (
-                    <div
-                        className="plant-box"
-                        key={sPlant.id}
-                        onClick={() => handleStoredPlantClick(sPlant)}
-                        style={{ cursor: 'pointer', position: 'relative' }}
-                    >
-                        <IonImg src={getImageSrc(sPlant.thumbnail)} />
-                        <div className="plant-name">{sPlant.commonName}</div>
-                        {/*<div className="plant-scientific">{sPlant.scientific_name}</div>*/}
-                        <div className="plant-quantity-badge">x{sPlant.amount ?? 1}</div>
-                    </div>
-                )))}
+                        <IonIcon icon={trash} />
+                        Garden Spot löschen
+                    </IonButton>
+                </div>
             </div>
+
 
             {selectedPlant && (
             <PlantDetailsModal

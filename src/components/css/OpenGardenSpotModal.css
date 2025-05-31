@@ -1,6 +1,6 @@
-/* Allgemeines Layout */
+/* === Allgemeines Layout für die Seite === */
 .open-garden-container {
-    position: relative; /* Wichtig für das absolute Positionieren des Dropdowns */
+    position: relative; /* Wichtig für das Dropdown */
     padding: 0 5%;
     margin-top: 2em;
 }
@@ -12,20 +12,20 @@
     }
 }
 
-/* Eingabefeld */
+/* === Suchfeld === */
 .search-input {
     width: 100%;
     border: 0.5px solid gray;
     border-radius: 10px;
     font-size: 14px;
     padding: 10px 10px 10px 8px;
-    margin-bottom: 0; /* Kein zusätzlicher Abstand */
+    margin-bottom: 0;
 }
 
-/* Dropdown direkt unter der Suchleiste */
+/* === Dropdown-Liste === */
 .dropdown {
     position: absolute;
-    top: 100%; /* Direkt unter dem Input */
+    top: 100%;
     left: 5%;
     width: 90%;
     background: white;
@@ -35,10 +35,9 @@
     z-index: 10;
     max-height: 300px;
     overflow-y: auto;
-    margin-top: 0; /* KEIN Abstand zwischen Input und Dropdown */
+    margin-top: 0;
 }
 
-/* Einzelnes Item in der Dropdown-Liste */
 .dropdown-item {
     display: flex;
     justify-content: space-between;
@@ -49,7 +48,17 @@
     position: relative;
 }
 
-/* Plus-Button */
+.dropdown-item-img {
+    max-width: 50px;
+    max-height: 50px;
+    margin-right: 10px;
+}
+
+.dropdown-item-text {
+    display: flex;
+    flex-direction: column;
+}
+
 .add-button {
     position: absolute;
     right: 10px;
@@ -59,44 +68,49 @@
     padding: 5px;
 }
 
-/* Pflanzenbild in der Liste */
-.dropdown-item-img {
-    max-width: 50px;
-    max-height: 50px;
-    margin-right: 10px;
+/* === Wrapper für Grid & Titel === */
+.plant-grid-wrapper {
+    width: 100%;
+    padding: 0 5%;
+    margin-top: 20px;
+    text-align: center; /* wichtig für zentrierten Titel */
 }
 
-/* Pflanzenname + wissenschaftlicher Name */
-.dropdown-item-text {
-    display: flex;
-    flex-direction: column;
+/* Titel über dem Grid – im Button-Stil */
+.plant-grid-title {
+    display: inline-block;
+    margin: 0 auto 1rem auto;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(to right, #4CAF50, #81C784);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Grid Container */
+/* === Pflanzen-Grid === */
 .plant-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 10px;
-    margin-top: 20px;
-    padding: 0 5%;
     overflow-y: auto;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    max-height: 440px;
+    max-height: 370px;
     padding-bottom: 10px;
-    margin-bottom: 5%;
 }
 
-/* Einzelnes Pflanzen-Kästchen */
+/* === Einzelne Pflanzen-Karte === */
 .plant-box {
-    position: relative; /* Für Badge-Positionierung */
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 10px;
+    padding-bottom: 40px;
     box-shadow: 5px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     background-color: white;
@@ -116,10 +130,10 @@
 .plant-scientific {
     font-style: italic;
     color: green;
-    margin-bottom: 18px; /* Platz schaffen für Badge */
+    margin-bottom: 18px;
 }
 
-/* Mengen-Badge unten rechts */
+/* === Mengen-Badge === */
 .plant-quantity-badge {
     position: absolute;
     bottom: 8px;
@@ -130,4 +144,27 @@
     padding: 2px 6px;
     border-radius: 12px;
     font-weight: bold;
+}
+/* === Löschen-Button === */
+.delete-button-wrapper {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.delete-button {
+    width: 80%;
+    margin: 20px auto 0;
+    --background: linear-gradient(135deg, #f44336, #e53935) !important;
+    --color: white !important;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 8px;
+    padding: 12px 0;
+    --box-shadow: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
