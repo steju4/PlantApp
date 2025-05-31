@@ -322,34 +322,38 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 )}
             </div>
 
-            <div className="plant-grid">
-                {!loadingPlants && storedPlants.length === 0 ? (
-                    <div
-                    style={{
-                        textAlign: 'center',
-                        width: '100%',
-                        marginTop: '2rem',
-                        color: '#888',
-                        fontStyle: 'italic'
-                    }}
-                    >
-                    No plants added yet.
-                    </div>
-                ) : (
-                    !loadingPlants &&
-                    storedPlants.map((sPlant) => (
-                    <div
-                        className="plant-box"
-                        key={sPlant.id}
-                        onClick={() => handleStoredPlantClick(sPlant)}
-                        style={{ cursor: 'pointer', position: 'relative' }}
-                    >
-                        <IonImg src={getImageSrc(sPlant.thumbnail)} />
-                        <div className="plant-name">{sPlant.commonName}</div>
-                        {/*<div className="plant-scientific">{sPlant.scientific_name}</div>*/}
-                        <div className="plant-quantity-badge">x{sPlant.amount ?? 1}</div>
-                    </div>
-                )))}
+            <div className="plant-grid-wrapper">
+                <div className="plant-grid-title">Meine Pflanzen</div>
+
+                <div className="plant-grid">
+                    {!loadingPlants && storedPlants.length === 0 ? (
+                        <div
+                            style={{
+                                textAlign: 'center',
+                                width: '100%',
+                                marginTop: '2rem',
+                                color: '#888',
+                                fontStyle: 'italic',
+                            }}
+                        >
+                            No plants added yet.
+                        </div>
+                    ) : (
+                        !loadingPlants &&
+                        storedPlants.map((sPlant) => (
+                            <div
+                                className="plant-box"
+                                key={sPlant.id}
+                                onClick={() => handleStoredPlantClick(sPlant)}
+                                style={{ cursor: 'pointer', position: 'relative' }}
+                            >
+                                <IonImg src={getImageSrc(sPlant.thumbnail)} />
+                                <div className="plant-name">{sPlant.commonName}</div>
+                                <div className="plant-quantity-badge">x{sPlant.amount ?? 1}</div>
+                            </div>
+                        ))
+                    )}
+                </div>
             </div>
 
             {selectedPlant && (
