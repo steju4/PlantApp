@@ -1,4 +1,3 @@
-// filepath: backend/src/main/java/com/webengineering/plantapp/backend/controller/AuthController.java
 package com.webengineering.plantapp.backend.controller;
 
 import com.webengineering.plantapp.backend.model.User;
@@ -203,7 +202,7 @@ public class AuthController {
 
        @PutMapping("/api/gardenspotplants/{gardenSpotPlantId}")
     @Transactional
-    public ResponseEntity<GardenSpotPlantResponseDTO> updateGardenSpotPlant( // Rückgabetyp ist bereits korrekt
+    public ResponseEntity<GardenSpotPlantResponseDTO> updateGardenSpotPlant( 
             @RequestHeader("Authorization") String authHeader,
             @PathVariable Long gardenSpotPlantId,
             @RequestBody Map<String, Integer> payload) {
@@ -219,17 +218,17 @@ public class AuthController {
         }
 
         GardenSpotPlant plant = plantOpt.get();
-        // Sicherheitscheck: Gehört diese Pflanze zu einem GardenSpot des aktuellen Users?
+        // Gehört diese Pflanze zu einem GardenSpot des aktuellen Users?
         if (!plant.getGardenSpot().getUser().getId().equals(userOpt.get().getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         Integer newAmount = payload.get("amount");
         if (newAmount == null || newAmount < 0) {
-            return ResponseEntity.badRequest().body(null); // Oder spezifischere Fehlermeldung
+            return ResponseEntity.badRequest().body(null);
         }
         plant.setAmount(newAmount);
-        GardenSpotPlant updatedPlantEntity = gardenSpotPlantRepository.save(plant); // Umbenannt zur Klarheit
+        GardenSpotPlant updatedPlantEntity = gardenSpotPlantRepository.save(plant); 
 
         GardenSpotPlantResponseDTO responseDto = new GardenSpotPlantResponseDTO(
             updatedPlantEntity.getId(),
@@ -249,7 +248,7 @@ public class AuthController {
             updatedPlantEntity.getDescription(),
             updatedPlantEntity.getOrigin()
         );
-        return ResponseEntity.ok(responseDto); // Jetzt das DTO zurückgeben
+        return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/api/gardenspotplants/{gardenSpotPlantId}")

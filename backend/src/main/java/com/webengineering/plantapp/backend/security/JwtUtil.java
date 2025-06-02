@@ -1,4 +1,3 @@
-// filepath: backend/src/main/java/com/webengineering/plantapp/backend/security/JwtUtil.java
 package com.webengineering.plantapp.backend.security;
 
 import io.jsonwebtoken.Claims;
@@ -10,7 +9,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "dein_geheimer_schluessel"; // Am besten in application.properties auslagern!
+    private final String SECRET_KEY = "dein_geheimer_schluessel"; 
 
     public String generateToken(String email) {
         return Jwts.builder()

@@ -1,4 +1,3 @@
-// filepath: backend/src/main/java/com/webengineering/plantapp/demo/repository/UserRepository.java
 package com.webengineering.plantapp.backend.repository;
 
 import com.webengineering.plantapp.backend.model.User;

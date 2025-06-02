@@ -86,7 +86,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             amount: quantity,
             sunlight: plantToAdd.sunlight?.join(', ') || null,
             watering: plantToAdd.watering || null,
-            careLevel: plantToAdd.care_level || null, // Achte auf den Namen: care_level in PlantDetails
+            careLevel: plantToAdd.care_level || null,
             pruningMonth: plantToAdd.pruning_month?.join(', ') || null,
             cycle: plantToAdd.cycle || null,
             growthRate: plantToAdd.growth_rate || null,

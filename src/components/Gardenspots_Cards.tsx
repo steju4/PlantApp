@@ -22,9 +22,6 @@ const Gardenspots: React.FC<Gardenspots_Props> = ({
   openGardenSpotModal,
 }) => {
 
-
-
-  // ...existing code...
   return (
     <div style={{display: "flex",
     flexWrap: "wrap",

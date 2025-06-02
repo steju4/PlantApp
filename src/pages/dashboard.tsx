@@ -149,7 +149,6 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
     body: JSON.stringify(spot),
   });
   if (res.ok) {
-    // Nach dem Hinzufügen neu laden:
     const newSpot = await res.json();
     setGardenSpots(prev => [...prev, newSpot]);
   } else {
@@ -169,7 +168,6 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
     logo: ""
   };
   addGardenSpotToDB(spot);
-  // Felder zurücksetzen und Modal schließen
   setNewSpotName("");
   setNewStreet("");
   setNewStreetNumber("");
@@ -275,14 +273,14 @@ const handleDeleteSpot = async (id: number) => {
           }
         }
       >
-        {selectedGardenSpotId && selectedGardenSpotName && ( // Sicherstellen, dass beide Werte vorhanden sind
+        {selectedGardenSpotId && selectedGardenSpotName && ( 
             <OpenGardenSpotModal
-            openGardenSpot={openGardenSpot} // Diese Funktion muss ggf. überarbeitet werden
+            openGardenSpot={openGardenSpot} 
             closeGardenSpotModal={closeGardenSpotModal}
-            deleteSpot={handleDeleteSpot} // Funktion zum Löschen des Spots
+            deleteSpot={handleDeleteSpot} 
             gardenSpotName={selectedGardenSpotName}
-            gardenSpotId={selectedGardenSpotId} // ID übergeben
-            token={token} // Token übergeben
+            gardenSpotId={selectedGardenSpotId} 
+            token={token} 
             />
         )}
       </IonModal>

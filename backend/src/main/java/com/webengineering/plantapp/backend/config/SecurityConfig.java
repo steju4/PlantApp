@@ -1,4 +1,3 @@
-// filepath: backend/src/main/java/com/webengineering/plantapp/demo/config/SecurityConfig.java
 package com.webengineering.plantapp.backend.config;
 
 import org.springframework.context.annotation.Bean;
@@ -17,9 +16,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors() // CORS aktivieren
+            .cors() 
             .and()
-            .csrf().disable() // Für Entwicklung, ggf. anpassen!
+            .csrf().disable() 
             .authorizeRequests()
             .anyRequest().permitAll();
         return http.build();

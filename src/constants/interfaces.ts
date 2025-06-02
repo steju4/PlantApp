@@ -44,7 +44,6 @@ export interface PlantDetails {
     growth_rate: string;
     description: string
     default_image : {thumbnail: string};
-    //Frontend-erweitert
     quantity?: number; 
     care_level?: string; 
     cycle?: string;
@@ -60,17 +59,17 @@ export interface StoredGardenPlant {
     thumbnail: string | null;
     amount: number;
     gardenSpotId?: number;
-    sunlight: string | null; // war string[]
+    sunlight: string | null;
     watering: string | null;
-    careLevel: string | null; // im Backend careLevel, im Frontend PlantDetails care_level
-    pruningMonth: string | null; // war string[]
+    careLevel: string | null;
+    pruningMonth: string | null; 
     cycle: string | null;
     growthRate: string | null;
     droughtTolerant: boolean;
     indoor: boolean;
     medicinal: boolean;
     description: string | null;
-    origin: string | null; // war string[] 
+    origin: string | null;  
 }
 
 export interface Spot{

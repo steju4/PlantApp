@@ -10,21 +10,21 @@ public class GardenSpotPlant {
     private Long id;
 
     private Long externalPlantId;
-    private String commonName; // Name der Pflanze
+    private String commonName; 
     private String thumbnail;
-    private int amount;   // Anzahl der Pflanzen
-    @Column(length = 1024) // Längere Strings erlauben
-    private String sunlight; // Wird als kommaseparierter String gespeichert
+    private int amount;  
+    @Column(length = 1024) 
+    private String sunlight; 
     private String watering;
     private String careLevel;
     @Column(length = 1024)
-    private String pruningMonth; // Wird als kommaseparierter String gespeichert
+    private String pruningMonth; 
     private String cycle;
     private String growthRate;
     private boolean droughtTolerant;
     private boolean indoor;
     private boolean medicinal;
-    @Column(columnDefinition = "TEXT") // Für längere Beschreibungen
+    @Column(columnDefinition = "TEXT") 
     private String description;
     @Column(length = 1024)
     private String origin;
