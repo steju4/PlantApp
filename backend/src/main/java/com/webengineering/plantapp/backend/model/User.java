@@ -1,4 +1,3 @@
-// filepath: backend/src/main/java/com/webengineering/plantapp/backend/model/User.java
 package com.webengineering.plantapp.backend.model;
 
 import javax.persistence.*;
@@ -18,7 +17,7 @@ public class User {
     private String cityName;
     private String zipCode;
 
-    
+    // Getter/Setter
     public Long getId() {
         return id;
     }
