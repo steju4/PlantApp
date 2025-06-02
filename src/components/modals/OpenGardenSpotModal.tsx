@@ -310,7 +310,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             </div>
 
             <div className="plant-grid-wrapper">
-                <div className="plant-grid-title">Meine Pflanzen</div>
+                <div className="plant-grid-title">My plants</div>
 
                 <div className="plant-grid">
                     {!loadingPlants && storedPlants.length === 0 ? (
@@ -349,7 +349,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                         onClick={() => deleteSpot(gardenSpotId)}
                     >
                         <IonIcon icon={trash} />
-                        Garden Spot löschen
+                        Delete Garden Spot
                     </IonButton>
                 </div>
             </div>

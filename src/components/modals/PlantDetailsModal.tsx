@@ -79,23 +79,23 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({
                         {(plant.sunlight || plant.watering || plant.care_level || plant.pruning_month || plant.cycle) && (
                             <IonAccordion value="pflege">
                                 <IonItem slot="header">
-                                    <IonLabel>🌿 Standort & Pflege</IonLabel>
+                                    <IonLabel>🌿 Location & Care</IonLabel>
                                 </IonItem>
                                 <div className="ion-padding" slot="content">
                                     {plant.sunlight?.length > 0 && (
-                                        <div>🔆 <strong>Licht:</strong> {plant.sunlight.join(', ')}</div>
+                                        <div>🔆 <strong>Light requirements::</strong> {plant.sunlight.join(', ')}</div>
                                     )}
                                     {plant.watering && (
-                                        <div>💧 <strong>Bewässerung:</strong> {plant.watering}</div>
+                                        <div>💧 <strong>Watering:</strong> {plant.watering}</div>
                                     )}
                                     {plant.care_level && (
-                                        <div>⚠️ <strong>Pflegeaufwand:</strong> {plant.care_level}</div>
+                                        <div>⚠️ <strong>Care level:</strong> {plant.care_level}</div>
                                     )}
                                     {plant.pruning_month?.length > 0 && (
-                                        <div>✂️ <strong>Schnittmonate:</strong> {plant.pruning_month.join(', ')}</div>
+                                        <div>✂️ <strong>Cutting months:</strong> {plant.pruning_month.join(', ')}</div>
                                     )}
                                     {plant.cycle && (
-                                        <div>🔁 <strong>Zyklus:</strong> {plant.cycle}</div>
+                                        <div>🔁 <strong>Life cycle:</strong> {plant.cycle}</div>
                                     )}
                                 </div>
                             </IonAccordion>
@@ -105,15 +105,15 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({
                         {(plant.growth_rate || typeof plant.drought_tolerant === "boolean" || typeof plant.indoor === "boolean" || typeof plant.medicinal === "boolean") && (
                             <IonAccordion value="eigenschaften">
                                 <IonItem slot="header">
-                                    <IonLabel>📐 Eigenschaften</IonLabel>
+                                    <IonLabel>📐 Characteristics</IonLabel>
                                 </IonItem>
                                 <div className="ion-padding" slot="content">
                                     {plant.growth_rate && (
-                                        <div>🌱 <strong>Wachstum:</strong> {plant.growth_rate}</div>
+                                        <div>🌱 <strong>Growth rate:</strong> {plant.growth_rate}</div>
                                     )}
-                                    <div>☀️ <strong>Trockentolerant:</strong> {plant.drought_tolerant ? 'Ja' : 'Nein'}</div>
-                                    <div>🏠 <strong>Für drinnen geeignet:</strong> {plant.indoor ? 'Ja' : 'Nein'}</div>
-                                    <div>💊 <strong>Medizinisch nutzbar:</strong> {plant.medicinal ? 'Ja' : 'Nein'}</div>
+                                    <div>☀️ <strong>Drought tolerant:</strong> {plant.drought_tolerant ? 'Yes' : 'No'}</div>
+                                    <div>🏠 <strong>Houseplant:</strong> {plant.indoor ? 'Yes' : 'No'}</div>
+                                    <div>💊 <strong>Medically usable:</strong> {plant.medicinal ? 'Yes' : 'No'}</div>
                                 </div>
                             </IonAccordion>
                         )}
@@ -122,15 +122,15 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({
                         {(plant.origin?.length > 0 || plant.description) && (
                             <IonAccordion value="weitere">
                                 <IonItem slot="header">
-                                    <IonLabel>📚 Weitere Informationen</IonLabel>
+                                    <IonLabel>📚 Further information</IonLabel>
                                 </IonItem>
                                 <div className="ion-padding" slot="content">
                                     {plant.origin?.length > 0 && (
-                                        <div>🌍 <strong>Herkunft:</strong> {plant.origin.join(', ')}</div>
+                                        <div>🌍 <strong>Origin:</strong> {plant.origin.join(', ')}</div>
                                     )}
                                     {plant.description && (
                                         <div className="plant-detail-description">
-                                            <strong>📝 Beschreibung:</strong> {plant.description}
+                                            <strong>📝 Description:</strong> {plant.description}
                                         </div>
                                     )}
                                 </div>
@@ -169,7 +169,7 @@ const PlantDetailsModal: React.FC<PlantDetailsModalProps> = ({
                         className="add-to-cart-button"
                         onClick={() => onConfirm(quantity)}
                     >
-                        Pflanze hinzufügen
+                        Add plant
                     </IonButton>
                 </div>
             </IonContent>
