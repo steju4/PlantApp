@@ -40,8 +40,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, onRegist
         const password = passwordRef.current?.value?.toString() || '';
         const confirmPassword = confirmPasswordRef.current?.value?.toString() || '';
 
-        if (!firstName.trim() || !lastName.trim() || !email.trim() || !postalCode.trim() || !city.trim() || !password.trim() || !confirmPassword.trim()) {
+        if (!firstName || !lastName || !email || !postalCode || !city || !password || !confirmPassword) {
             setPasswordError('Please fill in all fields.');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setPasswordError('Please enter a valid email address.');
             return;
         }
 
@@ -50,10 +56,36 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, onRegist
             return;
         }
 
+        if (password.length < 8) {
+            setPasswordError('Password must be at least 8 characters long.');
+            return;
+        }
+
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+        const numberRegex = /\d/;
+        const uppercaseRegex = /[A-Z]/;
+
+        if (!specialCharRegex.test(password)) {
+            setPasswordError('Password must contain at least one special character.');
+            return;
+        }
+
+        if (!numberRegex.test(password)) {
+            setPasswordError('Password must contain at least one number.');
+            return;
+        }
+
+        if (!uppercaseRegex.test(password)) {
+            setPasswordError('Password must contain at least one uppercase letter.');
+            return;
+        }
+
+
         if (password !== confirmPassword) {
             setPasswordError('Passwords do not match.');
             return;
         }
+
 
         setPasswordError('');
         await handleSubmit({
@@ -150,6 +182,7 @@ const handleSubmit = async (formData: any) => {
                             type="email"
                             placeholder="Your email address"
                             onIonBlur={e => checkEmail(e.target.value as string)}
+                            onIonInput={() => setPasswordError('')}
                         />
                     </div>
 
@@ -159,6 +192,7 @@ const handleSubmit = async (formData: any) => {
                             type="password"
                             ref={passwordRef}
                             placeholder="Your password"
+                            onIonInput={() => setPasswordError('')}
                         />
                     </div>
 
@@ -168,6 +202,7 @@ const handleSubmit = async (formData: any) => {
                             type="password"
                             ref={confirmPasswordRef}
                             placeholder="Repeat Password"
+                            onIonInput={() => setPasswordError('')}
                         />
                     </div>
 
