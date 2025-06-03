@@ -11,7 +11,7 @@ import {
     IonButtons,
     IonIcon
 } from '@ionic/react';
-import { close } from 'ionicons/icons';
+import { close, eye, eyeOff } from 'ionicons/icons'; // eye & eyeOff hinzufügen
 import '../css/register.css';
 
 interface RegisterModalProps {
@@ -30,6 +30,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, onRegist
     const confirmPasswordRef = useRef<HTMLIonInputElement>(null);
 
     const [passwordError, setPasswordError] = useState<string>('');
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
     const handleRegister = async () => {
         const firstName = firstNameRef.current?.value?.toString().trim() || '';
@@ -188,22 +190,38 @@ const handleSubmit = async (formData: any) => {
 
                     <div className="input-container">
                         <IonLabel position="stacked">Password</IonLabel>
-                        <IonInput
-                            type="password"
-                            ref={passwordRef}
-                            placeholder="Your password"
-                            onIonInput={() => setPasswordError('')}
-                        />
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <IonInput
+                                type={showPassword ? "text" : "password"}
+                                ref={passwordRef}
+                                placeholder="Your password"
+                                onIonInput={() => setPasswordError('')}
+                                style={{ flex: 1 }}
+                            />
+                            <IonIcon
+                                icon={showPassword ? eyeOff : eye}
+                                style={{ fontSize: "24px", paddingLeft: "8px", cursor: "pointer" }}
+                                onClick={() => setShowPassword(!showPassword)}
+                            />
+                        </div>
                     </div>
 
                     <div className="input-container">
                         <IonLabel position="stacked">Repeat Password</IonLabel>
-                        <IonInput
-                            type="password"
-                            ref={confirmPasswordRef}
-                            placeholder="Repeat Password"
-                            onIonInput={() => setPasswordError('')}
-                        />
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <IonInput
+                                type={showConfirmPassword ? "text" : "password"}
+                                ref={confirmPasswordRef}
+                                placeholder="Repeat Password"
+                                onIonInput={() => setPasswordError('')}
+                                style={{ flex: 1 }}
+                            />
+                            <IonIcon
+                                icon={showConfirmPassword ? eyeOff : eye}
+                                style={{ fontSize: "24px", paddingLeft: "8px", cursor: "pointer" }}
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            />
+                        </div>
                     </div>
 
                     {passwordError && <p className="error-message">{passwordError}</p>}
