@@ -12,6 +12,7 @@ import {
     IonButtons,
     IonIcon
 } from '@ionic/react';
+import { eyeOff, eye } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import '../css/login.css';
 import Logo from '../../../public/assets/icon/logo.png';
@@ -29,6 +30,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
     const emailRef = useRef<HTMLIonInputElement>(null);
     const passwordRef = useRef<HTMLIonInputElement>(null);
     const [error, setError] = useState<string>('');
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const history = useHistory();
 
     const handleLogin = async () => {
@@ -128,12 +130,21 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
                     </div>
                     <div className="input-container">
                         <IonLabel position="stacked">Password</IonLabel>
-                        <IonInput
-                            type="password"
-                            ref = {passwordRef}
-                            placeholder="Password"
-                        />
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <IonInput
+                                type={showPassword ? "text" : "password"}
+                                ref={passwordRef}
+                                placeholder="Password"
+                                style={{ flex: 1 }}
+                            />
+                            <IonIcon
+                                icon={showPassword ? eyeOff : eye}
+                                style={{ fontSize: "24px", paddingLeft: "8px", cursor: "pointer" }}
+                                onClick={() => setShowPassword(!showPassword)}
+                            />
+                        </div>
                     </div>
+
                     {error && <p className="error-message">{error}</p>}
                     <IonButton expand="block" onClick={handleLogin}>
                         Login
