@@ -73,52 +73,86 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
         }
     }, [token, gardenSpotId]);
 
-        const handleAddPlantToGardenSpot = async (plantToAdd: PlantDetails, quantity: number) => {
+    const handleAddPlantToGardenSpot = async (plantToAdd: PlantDetails, quantity: number) => {
         if (!token || !plantToAdd || !gardenSpotId) {
             alert("Fehler: Token, Pflanzendetails oder GardenSpot ID fehlen.");
             return;
         }
 
-        const plantData = {
-            externalPlantId: plantToAdd.id,
-            commonName: plantToAdd.common_name,
-            thumbnail: plantToAdd.default_image?.thumbnail || null,
-            amount: quantity,
-            sunlight: plantToAdd.sunlight?.join(', ') || null,
-            watering: plantToAdd.watering || null,
-            careLevel: plantToAdd.care_level || null,
-            pruningMonth: plantToAdd.pruning_month?.join(', ') || null,
-            cycle: plantToAdd.cycle || null,
-            growthRate: plantToAdd.growth_rate || null,
-            droughtTolerant: plantToAdd.drought_tolerant || false,
-            indoor: plantToAdd.indoor || false,
-            medicinal: plantToAdd.medicinal || false,
-            description: plantToAdd.description || null,
-            origin: plantToAdd.origin?.join(', ') || null,
-        };
+        // Prüfen, ob die Pflanze schon im Spot ist
+        const existingPlant = storedPlants.find(p => p.externalPlantId === plantToAdd.id);
 
-        try {
-            const res = await fetch(`http://localhost:8080/auth/api/gardenspots/${gardenSpotId}/plants`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(plantData),
-            });
+        if (existingPlant) {
+            // Pflanze existiert schon, Menge erhöhen (PUT)
+            const newAmount = (existingPlant.amount ?? 0) + quantity;
 
-            if (!res.ok) {
-                const errorBody = await res.text();
-                throw new Error(`HTTP error! status: ${res.status}, body: ${errorBody}`);
+            try {
+                const res = await fetch(`http://localhost:8080/auth/api/gardenspotplants/${existingPlant.id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ amount: newAmount }),
+                });
+
+                if (!res.ok) {
+                    const errorBody = await res.text();
+                    throw new Error(`HTTP error! status: ${res.status}, body: ${errorBody}`);
+                }
+                const updatedPlant: StoredGardenPlant = await res.json();
+                setStoredPlants(prev => prev.map(p => p.id === updatedPlant.id ? updatedPlant : p));
+                setShowDetailsModal(false);
+                setSearchterm('');
+                setPlants([]);
+            } catch (error) {
+                console.error("Fehler beim Aktualisieren der Pflanze:", error);
+                alert(`Fehler beim Aktualisieren der Pflanze: ${error instanceof Error ? error.message : String(error)}`);
             }
-            const newStoredPlant: StoredGardenPlant = await res.json();
-            setStoredPlants(prev => [...prev, newStoredPlant]);
-            setShowDetailsModal(false);
-            setSearchterm('');
-            setPlants([]);
-        } catch (error) {
-            console.error("Fehler beim Hinzufügen der Pflanze:", error);
-            alert(`Fehler beim Hinzufügen der Pflanze: ${error instanceof Error ? error.message : String(error)}`);
+
+        } else {
+            // Pflanze existiert nicht, neu anlegen (POST)
+            const plantData = {
+                externalPlantId: plantToAdd.id,
+                commonName: plantToAdd.common_name,
+                thumbnail: plantToAdd.default_image?.thumbnail || null,
+                amount: quantity,
+                sunlight: plantToAdd.sunlight?.join(', ') || null,
+                watering: plantToAdd.watering || null,
+                careLevel: plantToAdd.care_level || null,
+                pruningMonth: plantToAdd.pruning_month?.join(', ') || null,
+                cycle: plantToAdd.cycle || null,
+                growthRate: plantToAdd.growth_rate || null,
+                droughtTolerant: plantToAdd.drought_tolerant || false,
+                indoor: plantToAdd.indoor || false,
+                medicinal: plantToAdd.medicinal || false,
+                description: plantToAdd.description || null,
+                origin: plantToAdd.origin?.join(', ') || null,
+            };
+
+            try {
+                const res = await fetch(`http://localhost:8080/auth/api/gardenspots/${gardenSpotId}/plants`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(plantData),
+                });
+
+                if (!res.ok) {
+                    const errorBody = await res.text();
+                    throw new Error(`HTTP error! status: ${res.status}, body: ${errorBody}`);
+                }
+                const newStoredPlant: StoredGardenPlant = await res.json();
+                setStoredPlants(prev => [...prev, newStoredPlant]);
+                setShowDetailsModal(false);
+                setSearchterm('');
+                setPlants([]);
+            } catch (error) {
+                console.error("Fehler beim Hinzufügen der Pflanze:", error);
+                alert(`Fehler beim Hinzufügen der Pflanze: ${error instanceof Error ? error.message : String(error)}`);
+            }
         }
     };
 
