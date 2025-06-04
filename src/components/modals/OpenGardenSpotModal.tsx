@@ -292,24 +292,24 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 style={{ display: 'flex', alignItems: 'center' }}
             >
                 <div className="search-wrapper" style={{ position: 'relative', flex: 1, marginRight: '8px' }}>
-                    <IonInput
-                        ref={inputRef}
-                        className="search-input"
-                        value={searchterm}
-                        placeholder="Enter plant name to add"
-                        onIonInput={(e) => setSearchterm(e.target.value as string)}
-                        onFocus={handleInputFocus}
-                        onKeyPress={(e) => {
+                            <IonInput
+                            ref={inputRef}
+                            className="search-input"
+                            value={searchterm}
+                            placeholder="Enter plant name to add"
+                            onIonInput={(e) => setSearchterm(e.target.value as string)}
+                            onFocus={handleInputFocus}
+                            onKeyPress={(e) => {
                             if (e.key === 'Enter') searchPlants();
                         }}
-                        style={{ paddingRight: '40px' }} // Platz für den Button
-                    />
-                    <IonButton
-                        onClick={searchPlants}
-                        style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', height: '32px', minWidth: '32px' }}
-                    >
-                        <IonIcon icon={searchIcon} />
-                    </IonButton>
+                            style={{ paddingRight: '40px' }} // Platz für den Button
+                            />
+                            <IonButton
+                            onClick={searchPlants}
+                             style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', height: '32px', minWidth: '32px' }}
+                        >
+                            <IonIcon icon={searchIcon} />
+                        </IonButton>
 
                     {dropdownVisible && (
                         <div className="dropdown" ref={dropdownRef} style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10 }}>
