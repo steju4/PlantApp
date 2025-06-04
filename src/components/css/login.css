@@ -1,4 +1,26 @@
-/* login.css */
+.login-header-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 0 16px;
+}
+
+.login-logo {
+    height: 44px;
+    user-select: none;
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+.login-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    white-space: normal;          /* Zeilenumbruch erlauben */
+    overflow-wrap: break-word;    /* Wörter umbrechen */
+    flex-grow: 1;                 /* Restlichen Platz einnehmen */
+}
 
 /* Nur Styles innerhalb des Login-Modals */
 .login-modal .input-container {

@@ -82,12 +82,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
                   style={{ '--width': '100vw', '--height': '100vh', '--border-radius': '0' }}>
             <IonHeader>
                 <IonToolbar>
-                    <IonButtons slot="start">
-                        <img src={Logo} alt="Logo" style={{ height: 50, marginLeft: 10, marginRight: 0 }} />
-                    </IonButtons>
-                    <IonTitle style={{ paddingLeft: "20px" }}>Welcome to PlantApp!</IonTitle>
+                    <div className="login-header-toolbar">
+                        <img src={Logo} alt="Logo" className="login-logo" />
+                        <div className="login-title">Welcome to PlantApp!</div>
+                    </div>
                 </IonToolbar>
             </IonHeader>
+
             <IonContent className="ion-padding">
                 <div className="login-modal">
                     <div

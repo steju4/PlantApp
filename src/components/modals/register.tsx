@@ -12,6 +12,7 @@ import {
     IonIcon
 } from '@ionic/react';
 import { close, eye, eyeOff } from 'ionicons/icons'; // eye & eyeOff hinzufügen
+import Header from "../Header";
 import '../css/register.css';
 
 interface RegisterModalProps {
@@ -143,16 +144,11 @@ const handleSubmit = async (formData: any) => {
             onDidDismiss={onClose}
             style={{ '--width': '100vw', '--height': '100vh', '--border-radius': '0' }}
         >
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                    <IonButton onClick={onClose}>
-                        <IonIcon icon={close} />
-                    </IonButton>
-                </IonButtons>
-                    <IonTitle>Register</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+            <Header
+                title="Register"
+                onClose={onClose}
+                showConfirm={false}
+            />
             <IonContent className="ion-padding">
                 <div className="register-modal">
                     <div className="name-container">
