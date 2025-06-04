@@ -181,7 +181,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             setSelectedPlant(fullDetails);
             setShowDetailsModal(true);
         } else {
-            setSelectedPlant(plant); 
+            setSelectedPlant(plant);
             setShowDetailsModal(true);
         }
     };
@@ -271,7 +271,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     };
 
     const getImageSrc = (url: string | null | undefined): string => {
-        
+
         if (!url || url === 'https://perenual.com/storage/image/upgrade_access.jpg') {
             return 'assets/fallback_picture/monstera.png';
         }
@@ -291,8 +291,9 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 className="open-garden-container"
                 style={{ display: 'flex', alignItems: 'center' }}
             >
-                <div className="search-wrapper" style={{ position: 'relative', flex: 1, marginRight: '8px' }}>
-                            <IonInput
+                <div className="search-wrapper">
+                    <div className="search-container">
+                        <IonInput
                             ref={inputRef}
                             className="search-input"
                             value={searchterm}
@@ -300,19 +301,16 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                             onIonInput={(e) => setSearchterm(e.target.value as string)}
                             onFocus={handleInputFocus}
                             onKeyPress={(e) => {
-                            if (e.key === 'Enter') searchPlants();
-                        }}
-                            style={{ paddingRight: '40px' }} // Platz für den Button
-                            />
-                            <IonButton
-                            onClick={searchPlants}
-                             style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', height: '32px', minWidth: '32px' }}
-                        >
+                                if (e.key === 'Enter') searchPlants();
+                            }}
+                        />
+                        <IonButton onClick={searchPlants} className="search-button">
                             <IonIcon icon={searchIcon} />
                         </IonButton>
+                    </div>
 
                     {dropdownVisible && (
-                        <div className="dropdown" ref={dropdownRef} style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10 }}>
+                        <div className="dropdown" ref={dropdownRef}>
                             <IonList lines="none">
                                 {plants.length > 0 ? (
                                     plants.map((plant) => (
@@ -335,9 +333,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                                     ))
                                 ) : (
                                     <IonItem lines="none" className="dropdown-item-no-results">
-                                        <div style={{ padding: '10px', textAlign: 'center', width: '100%' }}>
-                                            No results found.
-                                        </div>
+                                        <div className="no-results">No results found.</div>
                                     </IonItem>
                                 )}
                             </IonList>
@@ -406,11 +402,11 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                     isOpen={showEditModal}
                     onDismiss={() => {
                         setShowEditModal(false);
-                        setEditStoredPlant(null); 
+                        setEditStoredPlant(null);
                     }}
                     onConfirm={handleConfirmPlantEdit}
                     onDelete={handleDeleteStoredPlant}
-                    
+
                     plant={{
                         id: editStoredPlant.externalPlantId,
                         common_name: editStoredPlant.commonName,

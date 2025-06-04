@@ -13,19 +13,41 @@
 }
 
 /* === Suchfeld === */
-.search-input {
-    width: 100%;
-    border: 0.5px solid gray;
-    border-radius: 10px;
-    font-size: 14px;
-    padding: 10px 10px 10px 8px;
-    margin-bottom: 0;
-}
-
-/* === Dropdown-Liste === */
+/* === Suchfeld Wrapper === */
 .search-wrapper {
     position: relative;
     width: 100%;
+    margin: 0 auto; /* zentriert */
+    margin-bottom: 1rem; /* Abstand nach unten, damit kein Überlappen */
+}
+
+.search-input {
+    width: calc(100% - 40px); /* volle Breite vom Wrapper */
+    border: 0.5px solid gray;
+    border-radius: 10px;
+    font-size: 14px;
+    padding: 10px 36px 10px 10px; /* rechts Platz für Button */
+    margin-bottom: 0;
+    box-sizing: border-box;
+}
+
+.search-wrapper ion-button {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 36px;
+    width: 36px;
+    min-width: 36px;
+    --padding-start: 0;
+    --padding-end: 0;
+    --box-shadow: none;
+    --background: transparent;
+    color: #000;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .dropdown {
