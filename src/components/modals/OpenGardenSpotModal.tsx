@@ -15,7 +15,7 @@ import Header from "../Header";
 import PlantDetailsModal from "./PlantDetailsModal";
 import EditPlantModal from "./EditPlantModal";
 import { search as searchIcon } from 'ionicons/icons';
-import { trash } from 'ionicons/icons';
+import { trash, sunnyOutline } from 'ionicons/icons';
 
 interface GardenSpotProps {
     openGardenSpot: () => void;
@@ -344,6 +344,15 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
 
             <div className="plant-grid-wrapper">
                 <div className="plant-grid-title">My plants</div>
+
+                {/* Wetter-Info (Placebo) */}
+                <div className="weather-box">
+                    <IonIcon icon={sunnyOutline} className="weather-icon" />
+                    <div className="weather-text">
+                        Sonnig, 25 °C – Luftfeuchtigkeit: 40 % – Regenwahrscheinlichkeit: 10%
+                    </div>
+                </div>
+
 
                 <div className="plant-grid">
                     {!loadingPlants && storedPlants.length === 0 ? (

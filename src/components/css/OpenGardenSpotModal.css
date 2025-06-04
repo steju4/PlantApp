@@ -196,3 +196,21 @@
     justify-content: center;
     gap: 8px;
 }
+.weather-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background-color: rgba(56, 161, 105, 0.9);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: white; /* hellere Schrift auf dunklem Hintergrund */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.weather-icon {
+    font-size: 24px;
+    color: #a3e635; /* helleres Gelb-Grün für Icon */
+}
