@@ -290,57 +290,60 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             <div
                 className="open-garden-container"
                 style={{ display: 'flex', alignItems: 'center' }}
-            >       
-                <IonInput
-                    ref={inputRef}
-                    className="search-input"
-                    value={searchterm}
-                    placeholder="Enter plant name to add"
-                    onIonInput={(e) => setSearchterm(e.target.value as string)}
-                    onFocus={handleInputFocus}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter') searchPlants();
-                    }}
-                    style={{ flex: 1, marginRight: '8px' }}
-                />
-                <IonButton onClick={searchPlants}>
-                    <IonIcon icon={searchIcon} />
-                </IonButton>
-                
+            >
+                <div className="search-wrapper" style={{ position: 'relative', flex: 1, marginRight: '8px' }}>
+                    <IonInput
+                        ref={inputRef}
+                        className="search-input"
+                        value={searchterm}
+                        placeholder="Enter plant name to add"
+                        onIonInput={(e) => setSearchterm(e.target.value as string)}
+                        onFocus={handleInputFocus}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter') searchPlants();
+                        }}
+                        style={{ paddingRight: '40px' }} // Platz für den Button
+                    />
+                    <IonButton
+                        onClick={searchPlants}
+                        style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', height: '32px', minWidth: '32px' }}
+                    >
+                        <IonIcon icon={searchIcon} />
+                    </IonButton>
 
-                {dropdownVisible && ( // Zeige das Dropdown-Div, wenn eine Suche aktiv war
-                    <div className="dropdown" ref={dropdownRef}>
-                        <IonList lines="none">
-                            {plants.length > 0 ? (
-                                plants.map((plant) => (
-                                    <IonItem
-                                        key={plant.id}
-                                        button
-                                        detail={true}
-                                        onClick={() => handleSelection(plant)}
-                                        className="dropdown-item"
-                                    >
-                                        <IonImg
-                                            src={getImageSrc(plant.default_image?.thumbnail)}
-                                            className="dropdown-item-img"
-                                        />
-                                        <div className="dropdown-item-text">
-                                            <div>{plant.common_name}</div>
-                                            <div className="plant-scientific">{plant.scientific_name}</div>
+                    {dropdownVisible && (
+                        <div className="dropdown" ref={dropdownRef} style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10 }}>
+                            <IonList lines="none">
+                                {plants.length > 0 ? (
+                                    plants.map((plant) => (
+                                        <IonItem
+                                            key={plant.id}
+                                            button
+                                            detail={true}
+                                            onClick={() => handleSelection(plant)}
+                                            className="dropdown-item"
+                                        >
+                                            <IonImg
+                                                src={getImageSrc(plant.default_image?.thumbnail)}
+                                                className="dropdown-item-img"
+                                            />
+                                            <div className="dropdown-item-text">
+                                                <div>{plant.common_name}</div>
+                                                <div className="plant-scientific">{plant.scientific_name}</div>
+                                            </div>
+                                        </IonItem>
+                                    ))
+                                ) : (
+                                    <IonItem lines="none" className="dropdown-item-no-results">
+                                        <div style={{ padding: '10px', textAlign: 'center', width: '100%' }}>
+                                            No results found.
                                         </div>
                                     </IonItem>
-                                ))
-                            ) : (
-                                // Nachricht, wenn keine Pflanzen gefunden wurden, aber das Dropdown sichtbar ist
-                                <IonItem lines="none" className="dropdown-item-no-results">
-                                    <div style={{ padding: '10px', textAlign: 'center', width: '100%' }}>
-                                        No results found.
-                                    </div>
-                                </IonItem>
-                            )}
-                        </IonList>
-                    </div>
-                )}
+                                )}
+                            </IonList>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="plant-grid-wrapper">

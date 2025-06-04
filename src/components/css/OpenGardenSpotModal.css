@@ -23,11 +23,16 @@
 }
 
 /* === Dropdown-Liste === */
+.search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
 .dropdown {
     position: absolute;
     top: 100%;
-    left: 5%;
-    width: 90%;
+    left: 0;
+    width: 100%;
     background: white;
     border: 0.5px solid gray;
     border-radius: 8px;
@@ -35,8 +40,9 @@
     z-index: 10;
     max-height: 300px;
     overflow-y: auto;
-    margin-top: 0;
+    margin-top: 2px; /* kleiner Abstand zum Input */
 }
+
 
 .dropdown-item {
     display: flex;
