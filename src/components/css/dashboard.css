@@ -44,3 +44,37 @@
 
 
 }
+.header-container {
+    --background: #ffffff;
+    --color: #000000;
+    position: relative;
+}
+
+/* Titel zentrieren – gleich wie Header-Komponente */
+.centered-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+/* Logo-Bild links wie Close-Button */
+.dashboard-logo {
+    height: 40px;
+    margin-left: 10px;
+}
+
+/* Logout-Button styled wie Confirm */
+.confirm-text-gradient {
+    background: linear-gradient(135deg, #4CAF50, #8BC34A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
+.logout-text {
+    color: #d32f2f; /* dunkler Rotton */
+    font-weight: bold;
+}

@@ -194,20 +194,22 @@ const handleDeleteSpot = async (id: number) => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <img src={Logo} alt="Logo" style={{ height: 50, marginLeft: 10, marginRight: 0 }} />
-          </IonButtons>
-          <IonTitle style={{ paddingLeft: "5px" }}>PlantApp</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={logout} color="danger" style={{ marginRight: "10px" }}>
-              Logout
-            </IonButton>
-          </IonButtons>
-      </IonToolbar>
-    </IonHeader>
-    <IonContent style={{ paddingBottom: '60px' }}>
+        <IonHeader className="header-container">
+            <IonToolbar>
+                <IonButtons slot="start">
+                    <img src={Logo} alt="Logo" className="dashboard-logo" />
+                </IonButtons>
+
+                <IonTitle className="centered-title">PlantApp</IonTitle>
+
+                <IonButtons slot="end">
+                    <IonButton fill="clear" onClick={logout} color="danger">
+                        <span className="logout-text">Logout</span>
+                    </IonButton>
+                </IonButtons>
+            </IonToolbar>
+        </IonHeader>
+        <IonContent style={{ paddingBottom: '60px' }}>
     <div
       style={{
         maxWidth: "100%",
