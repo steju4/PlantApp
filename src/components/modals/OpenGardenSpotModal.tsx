@@ -15,28 +15,31 @@ import Header from "../Header";
 import PlantDetailsModal from "./PlantDetailsModal";
 import EditPlantModal from "./EditPlantModal";
 import { search as searchIcon } from 'ionicons/icons';
-import { trash } from 'ionicons/icons';
+import {Spot} from "../../constants/interfaces";
+import { trash, sunnyOutline } from 'ionicons/icons';
+import {fetchWeatherData} from "../../scripts/weather_api";
 
-interface GardenSpotProps {
+interface OpenGardenSpotModalProps {
     openGardenSpot: () => void;
     closeGardenSpotModal: () => void;
     deleteSpot: (id: number) => void;
-    gardenSpotName: string;
-    gardenSpotId: number;
+    gardenSpot: Spot; // Kompletter Spot
     token: string | null;
 }
 
-const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
-                                                            openGardenSpot,
-                                                            closeGardenSpotModal,
-                                                            deleteSpot,
-                                                            gardenSpotName,
-                                                            gardenSpotId,
-                                                            token
+const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
+                                                                     openGardenSpot,
+                                                                     closeGardenSpotModal,
+                                                                     deleteSpot,
+                                                                     gardenSpot,
+                                                                     token
                                                         }) => {
     const inputRef = useRef<HTMLIonInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const gardenSpotName = gardenSpot.name;
+    const gardenSpotId = gardenSpot.id;
+    const gardenSpotCity = gardenSpot.city;
     const [searchterm, setSearchterm] = useState('');
     const [plants, setPlants] = useState<PlantDetails[]>([]);
     const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -46,6 +49,17 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     const [showEditModal, setShowEditModal] = useState(false);
     const [storedPlants, setStoredPlants] = useState<StoredGardenPlant[]>([]);
     const [loadingPlants, setLoadingPlants] = useState<boolean>(false);
+    const [weatherData, setWeatherData] = useState<{
+        cityName: string;
+        temp: number;
+        humidity: number;
+        rainProb: number;
+        weatherDescription: string;
+    } | null>(null);
+
+    const [loadingWeather, setLoadingWeather] = useState(false);
+    const [weatherError, setWeatherError] = useState<string | null>(null);
+
 
     useEffect(() => {
         if (token && gardenSpotId) {
@@ -72,6 +86,28 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             });
         }
     }, [token, gardenSpotId]);
+
+    useEffect(() => {
+        if (!gardenSpotCity) return;
+
+        const getWeather = async () => {
+            setLoadingWeather(true);
+            setWeatherError(null);
+            try {
+                const data = await fetchWeatherData(gardenSpotCity);
+                setWeatherData(data);
+            } catch (err) {
+                setWeatherError(err instanceof Error ? err.message : String(err));
+                setWeatherData(null);
+            } finally {
+                setLoadingWeather(false);
+            }
+        };
+
+        getWeather();
+    }, [gardenSpotCity]);
+
+
 
     const handleAddPlantToGardenSpot = async (plantToAdd: PlantDetails, quantity: number) => {
         if (!token || !plantToAdd || !gardenSpotId) {
@@ -181,7 +217,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             setSelectedPlant(fullDetails);
             setShowDetailsModal(true);
         } else {
-            setSelectedPlant(plant); 
+            setSelectedPlant(plant);
             setShowDetailsModal(true);
         }
     };
@@ -271,12 +307,34 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     };
 
     const getImageSrc = (url: string | null | undefined): string => {
-        
+
         if (!url || url === 'https://perenual.com/storage/image/upgrade_access.jpg') {
             return 'assets/fallback_picture/monstera.png';
         }
         return url;
     };
+
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerHeight < 800);
+    const [weatherExpanded, setWeatherExpanded] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerHeight < 800);
+            if (window.innerHeight >= 800) {
+                setWeatherExpanded(true);
+            } else {
+                setWeatherExpanded(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
 
     return (
         <div>
@@ -290,61 +348,92 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             <div
                 className="open-garden-container"
                 style={{ display: 'flex', alignItems: 'center' }}
-            >       
-                <IonInput
-                    ref={inputRef}
-                    className="search-input"
-                    value={searchterm}
-                    placeholder="Enter plant name to add"
-                    onIonInput={(e) => setSearchterm(e.target.value as string)}
-                    onFocus={handleInputFocus}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter') searchPlants();
-                    }}
-                    style={{ flex: 1, marginRight: '8px' }}
-                />
-                <IonButton onClick={searchPlants}>
-                    <IonIcon icon={searchIcon} />
-                </IonButton>
-                
-
-                {dropdownVisible && ( // Zeige das Dropdown-Div, wenn eine Suche aktiv war
-                    <div className="dropdown" ref={dropdownRef}>
-                        <IonList lines="none">
-                            {plants.length > 0 ? (
-                                plants.map((plant) => (
-                                    <IonItem
-                                        key={plant.id}
-                                        button
-                                        detail={true}
-                                        onClick={() => handleSelection(plant)}
-                                        className="dropdown-item"
-                                    >
-                                        <IonImg
-                                            src={getImageSrc(plant.default_image?.thumbnail)}
-                                            className="dropdown-item-img"
-                                        />
-                                        <div className="dropdown-item-text">
-                                            <div>{plant.common_name}</div>
-                                            <div className="plant-scientific">{plant.scientific_name}</div>
-                                        </div>
-                                    </IonItem>
-                                ))
-                            ) : (
-                                // Nachricht, wenn keine Pflanzen gefunden wurden, aber das Dropdown sichtbar ist
-                                <IonItem lines="none" className="dropdown-item-no-results">
-                                    <div style={{ padding: '10px', textAlign: 'center', width: '100%' }}>
-                                        No results found.
-                                    </div>
-                                </IonItem>
-                            )}
-                        </IonList>
+            >
+                <div className="search-wrapper">
+                    <div className="search-container">
+                        <IonInput
+                            ref={inputRef}
+                            className="search-input"
+                            value={searchterm}
+                            placeholder="Enter plant name to add"
+                            onIonInput={(e) => setSearchterm(e.target.value as string)}
+                            onFocus={handleInputFocus}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') searchPlants();
+                            }}
+                        />
+                        <IonButton onClick={searchPlants} className="search-button">
+                            <IonIcon icon={searchIcon} />
+                        </IonButton>
                     </div>
-                )}
+
+                    {dropdownVisible && (
+                        <div className="dropdown" ref={dropdownRef}>
+                            <IonList lines="none">
+                                {plants.length > 0 ? (
+                                    plants.map((plant) => (
+                                        <IonItem
+                                            key={plant.id}
+                                            button
+                                            detail={true}
+                                            onClick={() => handleSelection(plant)}
+                                            className="dropdown-item"
+                                        >
+                                            <IonImg
+                                                src={getImageSrc(plant.default_image?.thumbnail)}
+                                                className="dropdown-item-img"
+                                            />
+                                            <div className="dropdown-item-text">
+                                                <div>{plant.common_name}</div>
+                                                <div className="plant-scientific">{plant.scientific_name}</div>
+                                            </div>
+                                        </IonItem>
+                                    ))
+                                ) : (
+                                    <IonItem lines="none" className="dropdown-item-no-results">
+                                        <div className="no-results">No results found.</div>
+                                    </IonItem>
+                                )}
+                            </IonList>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="plant-grid-wrapper">
                 <div className="plant-grid-title">My plants</div>
+
+                <div className={`weather-box ${weatherExpanded ? 'expanded' : 'collapsed'}`}>
+                    {isSmallScreen && (
+                        <div
+                            className="weather-header"
+                            onClick={() => setWeatherExpanded(prev => !prev)}
+                            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                        >
+                            <IonIcon icon={sunnyOutline} className="weather-icon" />
+                            <span style={{ marginLeft: '8px' }}>
+        Weather {weatherExpanded ? '▲' : '▼'}
+      </span>
+                        </div>
+                    )}
+
+                    {(weatherExpanded || !isSmallScreen) && (
+                        <div className="weather-text">
+                            {loadingWeather && "Loading weather data..."}
+                            {weatherError && `Error loading weather data for city: ${gardenSpotCity}`}
+                            {weatherData && !loadingWeather && !weatherError && (
+                                <>
+                                    Weather for <strong>{weatherData.cityName}</strong>:{" "}
+                                    {weatherData.weatherDescription.charAt(0).toUpperCase() + weatherData.weatherDescription.slice(1)},&nbsp;
+                                    {Math.round(weatherData.temp)}°C – Humidity: {weatherData.humidity}% – Rainfall (last hour): {weatherData.rainProb} mm
+                                </>
+                            )}
+                            {!weatherData && !loadingWeather && !weatherError && "No weather data available."}
+                        </div>
+                    )}
+                </div>
+
+
 
                 <div className="plant-grid">
                     {!loadingPlants && storedPlants.length === 0 ? (
@@ -403,11 +492,11 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                     isOpen={showEditModal}
                     onDismiss={() => {
                         setShowEditModal(false);
-                        setEditStoredPlant(null); 
+                        setEditStoredPlant(null);
                     }}
                     onConfirm={handleConfirmPlantEdit}
                     onDelete={handleDeleteStoredPlant}
-                    
+
                     plant={{
                         id: editStoredPlant.externalPlantId,
                         common_name: editStoredPlant.commonName,

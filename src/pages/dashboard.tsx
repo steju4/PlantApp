@@ -3,10 +3,6 @@ import {
   IonButton,
   IonContent,
   IonFooter,
-  IonImg,
-  IonInput,
-  IonItem,
-  IonList,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -37,10 +33,10 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   const [userData, setUserData] = useState<UserData>();
   const history = useHistory();
   const [gardenSpots, setGardenSpots] = useState<Spot[]>([]);
-  const [selectedGardenSpotId, setSelectedGardenSpotId] = useState<number | null>(null);
+  const [selectedGardenSpot, setSelectedGardenSpot] = useState<Spot | null>(null);
 
 
-  useEffect(() => {
+    useEffect(() => {
   if (token) {
     fetch("http://localhost:8080/auth/api/gardenspots", {
       headers: { Authorization: `Bearer ${token}` },
@@ -68,7 +64,6 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
 
   const [userName, setUserName] = useState<string | null>(null);
 
-  const [selectedGardenSpotName, setSelectedGardenSpotName] = useState<string>("");
 
 
   useEffect(() => {
@@ -113,10 +108,9 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   const addGardenSpot = useRef<HTMLIonModalElement>(null);
   const openGardenSpotModal = useRef<HTMLIonModalElement>(null);
 
-  const showOpenGardenSpotModal = (gardenSpot: Spot) => { 
-    setSelectedGardenSpotName(gardenSpot.name);
-    setSelectedGardenSpotId(gardenSpot.id);
-    openGardenSpotModal.current?.present();
+  const showOpenGardenSpotModal = (gardenSpot: Spot) => {
+        setSelectedGardenSpot(gardenSpot);
+        openGardenSpotModal.current?.present();
   };
 
   const closeGardenSpotDilemma = () => {
@@ -252,19 +246,17 @@ const handleDeleteSpot = async (id: number) => {
     </div>
 
 
-      <Gardenspots
-        gardenSpots={gardenSpots}
-        userData={userData}
-        closeGardenSpotsModal={() => openGardenSpotModal.current?.dismiss()}
-        editSpot={editSpot}
-        deleteSpot={deleteSpot}
-        openGardenSpotModal={(spot: Spot) => { 
-            showOpenGardenSpotModal(spot);
-        }}
-/>
+            <Gardenspots
+                gardenSpots={gardenSpots}
+                userData={userData}
+                closeGardenSpotsModal={() => openGardenSpotModal.current?.dismiss()}
+                editSpot={editSpot}
+                deleteSpot={deleteSpot}
+                openGardenSpotModal={showOpenGardenSpotModal} // direkt Funktion weitergeben//
+            />
 
 
-      <IonModal
+            <IonModal
           ref={openGardenSpotModal}
           style={{
             '--width': '100vw',
@@ -275,16 +267,15 @@ const handleDeleteSpot = async (id: number) => {
           }
         }
       >
-        {selectedGardenSpotId && selectedGardenSpotName && ( 
-            <OpenGardenSpotModal
-            openGardenSpot={openGardenSpot} 
-            closeGardenSpotModal={closeGardenSpotModal}
-            deleteSpot={handleDeleteSpot} 
-            gardenSpotName={selectedGardenSpotName}
-            gardenSpotId={selectedGardenSpotId} 
-            token={token} 
-            />
-        )}
+                {selectedGardenSpot && (
+                    <OpenGardenSpotModal
+                        openGardenSpot={openGardenSpot}
+                        closeGardenSpotModal={closeGardenSpotModal}
+                        deleteSpot={handleDeleteSpot}
+                        gardenSpot={selectedGardenSpot} // Ganze Spot-Daten
+                        token={token}
+                    />
+                )}
       </IonModal>
 
       <IonModal ref={addGardenSpot} className="modal-sizer">
