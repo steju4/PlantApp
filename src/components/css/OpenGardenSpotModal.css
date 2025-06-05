@@ -11,6 +11,21 @@
         margin-top: 1.2em;
     }
 }
+@media (max-height: 800px) {
+    .plant-grid-wrapper .plant-grid {
+        max-height: 320px; /* vorher 370px, jetzt minimal kleiner */
+    }
+    .weather-box.collapsed {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0s ease;
+    }
+    .weather-box.expanded {
+        max-height: 200px; /* oder passend */
+        transition: max-height 0s ease;
+    }
+}
+
 
 /* === Suchfeld === */
 /* === Suchfeld Wrapper === */
