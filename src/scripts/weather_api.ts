@@ -12,7 +12,7 @@ export interface WeatherData {
 
 export const fetchWeatherData = async (city: string): Promise<WeatherData> => {
     const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=de`
+        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=en`
     );
 
     if (!response.ok) {

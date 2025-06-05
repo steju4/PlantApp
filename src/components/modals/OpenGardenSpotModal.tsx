@@ -412,23 +412,23 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
                         >
                             <IonIcon icon={sunnyOutline} className="weather-icon" />
                             <span style={{ marginLeft: '8px' }}>
-        Wetter {weatherExpanded ? '▲' : '▼'}
+        Weather {weatherExpanded ? '▲' : '▼'}
       </span>
                         </div>
                     )}
 
                     {(weatherExpanded || !isSmallScreen) && (
                         <div className="weather-text">
-                            {loadingWeather && "Wetterdaten werden geladen..."}
-                            {weatherError && `Fehler beim Laden der Wetterdaten für die Stadt: ${gardenSpotCity}`}
+                            {loadingWeather && "Loading weather data..."}
+                            {weatherError && `Error loading weather data for city: ${gardenSpotCity}`}
                             {weatherData && !loadingWeather && !weatherError && (
                                 <>
-                                    Wetter für <strong>{weatherData.cityName}</strong>:{" "}
+                                    Weather for <strong>{weatherData.cityName}</strong>:{" "}
                                     {weatherData.weatherDescription.charAt(0).toUpperCase() + weatherData.weatherDescription.slice(1)},&nbsp;
-                                    {Math.round(weatherData.temp)}°C – Luftfeuchtigkeit: {weatherData.humidity}% – Regenmenge (letzte Stunde): {weatherData.rainProb} mm
+                                    {Math.round(weatherData.temp)}°C – Humidity: {weatherData.humidity}% – Rainfall (last hour): {weatherData.rainProb} mm
                                 </>
                             )}
-                            {!weatherData && !loadingWeather && !weatherError && "Keine Wetterdaten verfügbar."}
+                            {!weatherData && !loadingWeather && !weatherError && "No weather data available."}
                         </div>
                     )}
                 </div>
