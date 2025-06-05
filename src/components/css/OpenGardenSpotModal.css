@@ -1,51 +1,54 @@
 /* === Allgemeines Layout für die Seite === */
 .open-garden-container {
-    position: relative; /* Wichtig für das Dropdown */
+    position: relative; /* Wichtig für das Dropdown, damit dieses relativ zur Box positioniert wird */
     padding: 0 5%;
     margin-top: 2em;
 }
 
-/* Responsive Anpassung */
+/* Responsive Anpassung für kleine Bildschirme */
 @media (max-width: 600px) {
     .open-garden-container {
-        margin-top: 1.2em;
+        margin-top: 1.2em; /* Weniger Abstand oben bei kleinen Bildschirmen */
     }
 }
+
+/* Responsive Anpassung bei geringerer Bildschirmhöhe */
 @media (max-height: 800px) {
     .plant-grid-wrapper .plant-grid {
-        max-height: 300px; /* vorher 370px, jetzt minimal kleiner */
+        max-height: 300px; /* Reduziert die Höhe des Pflanzenrasters minimal */
     }
     .weather-box.collapsed {
-        max-height: 0;
+        max-height: 0; /* Versteckt Wetter-Box */
         overflow: hidden;
-        transition: max-height 0s ease;
+        transition: max-height 0s ease; /* Keine Animation */
     }
     .weather-box.expanded {
-        max-height: 200px; /* oder passend */
-        transition: max-height 0s ease;
+        max-height: 200px; /* Maximale Höhe der ausgeklappten Wetter-Box */
+        transition: max-height 0s ease; /* Keine Animation */
     }
 }
 
-
 /* === Suchfeld === */
-/* === Suchfeld Wrapper === */
+/* Wrapper des Suchfelds mit relativer Positionierung für Button */
 .search-wrapper {
     position: relative;
     width: 100%;
-    margin: 0 auto; /* zentriert */
-    margin-bottom: 1rem; /* Abstand nach unten, damit kein Überlappen */
+    margin: 0 auto; /* Zentriert horizontal */
+    margin-bottom: 1rem; /* Abstand unter dem Suchfeld */
 }
 
+/* Eingabefeld Suchfeld, volle Breite minus Platz für Button */
 .search-input {
-    width: calc(100% - 40px); /* volle Breite vom Wrapper */
+    width: calc(100% - 40px); /* Volle Breite minus Button */
     border: 0.5px solid gray;
     border-radius: 10px;
     font-size: 14px;
-    padding: 10px 36px 10px 10px; /* rechts Platz für Button */
+    padding: 10px 36px 10px 10px; /* Rechts Platz für Button */
     margin-bottom: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Padding und Border in Breite einbeziehen */
 }
 
+/* Such-Button absolut positioniert innerhalb Wrapper */
 .search-wrapper ion-button {
     position: absolute;
     right: 4px;
@@ -59,28 +62,29 @@
     --box-shadow: none;
     --background: transparent;
     color: #000;
-    z-index: 1;
+    z-index: 1; /* Über dem Input */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* Dropdown-Liste unter Suchfeld */
 .dropdown {
     position: absolute;
-    top: 100%;
+    top: 100%; /* Direkt unter Input */
     left: 0;
     width: 100%;
     background: white;
     border: 0.5px solid gray;
     border-radius: 8px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    z-index: 10; /* Über anderen Inhalten */
     max-height: 300px;
-    overflow-y: auto;
-    margin-top: 2px; /* kleiner Abstand zum Input */
+    overflow-y: auto; /* Scrollbar bei vielen Einträgen */
+    margin-top: 2px; /* Kleiner Abstand zum Input */
 }
 
-
+/* Einzelne Dropdown-Einträge mit flexibler Ausrichtung */
 .dropdown-item {
     display: flex;
     justify-content: space-between;
@@ -88,20 +92,23 @@
     padding: 10px;
     margin: 5px;
     border-bottom: 1px solid #ccc;
-    position: relative;
+    position: relative; /* Für absolute Position des Buttons */
 }
 
+/* Bild im Dropdown-Item, maximale Größe */
 .dropdown-item-img {
     max-width: 50px;
     max-height: 50px;
     margin-right: 10px;
 }
 
+/* Text im Dropdown-Item als Spalten-Layout */
 .dropdown-item-text {
     display: flex;
     flex-direction: column;
 }
 
+/* "Hinzufügen"-Button absolut rechts mittig im Dropdown-Item */
 .add-button {
     position: absolute;
     right: 10px;
@@ -116,10 +123,10 @@
     width: 100%;
     padding: 0 5%;
     margin-top: 20px;
-    text-align: center; /* wichtig für zentrierten Titel */
+    text-align: center; /* Zentriert Titel */
 }
 
-/* Titel über dem Grid – im Button-Stil */
+/* Titel über dem Pflanzen-Grid, gestaltet wie ein Button */
 .plant-grid-title {
     display: inline-block;
     margin: 0 auto 1rem auto;
@@ -134,17 +141,17 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* === Pflanzen-Grid === */
+/* === Pflanzen-Grid als responsive Raster */
 .plant-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 10px;
-    overflow-y: auto;
+    overflow-y: auto; /* Scrollbar falls nötig */
     max-height: 370px;
     padding-bottom: 10px;
 }
 
-/* === Einzelne Pflanzen-Karte === */
+/* === Einzelne Pflanzen-Karte mit weißem Hintergrund und Schatten */
 .plant-box {
     position: relative;
     display: flex;
@@ -153,30 +160,33 @@
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 10px;
-    padding-bottom: 40px;
+    padding-bottom: 40px; /* Platz für Mengen-Badge */
     box-shadow: 5px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     background-color: white;
 }
 
+/* Bild innerhalb Pflanzenkarte */
 .plant-box img {
     max-width: 100px;
     max-height: 100px;
     margin-bottom: 10px;
 }
 
+/* Pflanzenname fett und schwarz */
 .plant-name {
     font-weight: bold;
     color: black;
 }
 
+/* Wissenschaftlicher Name kursiv und grün */
 .plant-scientific {
     font-style: italic;
     color: green;
     margin-bottom: 18px;
 }
 
-/* === Mengen-Badge === */
+/* === Mengen-Badge in Pflanzenkarte unten rechts */
 .plant-quantity-badge {
     position: absolute;
     bottom: 8px;
@@ -188,12 +198,14 @@
     border-radius: 12px;
     font-weight: bold;
 }
-/* === Löschen-Button === */
+
+/* === Löschen-Button Wrapper mit zentriertem Text */
 .delete-button-wrapper {
     text-align: center;
     margin-top: 2rem;
 }
 
+/* Löschen-Button mit rotem Farbverlauf und Icon-Abstand */
 .delete-button {
     width: 80%;
     margin: 20px auto 0;
@@ -209,8 +221,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 8px; /* Abstand zwischen Icon und Text */
 }
+
+/* Wetter-Box mit grünem Hintergrund und abgerundeten Ecken */
 .weather-box {
     display: flex;
     align-items: center;
@@ -221,11 +235,12 @@
     margin-bottom: 12px;
     font-size: 16px;
     font-weight: 500;
-    color: white; /* hellere Schrift auf dunklem Hintergrund */
+    color: white; /* Helle Schrift auf dunklem Hintergrund */
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
+/* Wetter-Icon mit hellgrüner Farbe und größerer Schrift */
 .weather-icon {
     font-size: 24px;
-    color: #a3e635; /* helleres Gelb-Grün für Icon */
+    color: #a3e635; /* Hellgelb-grün für Icon */
 }

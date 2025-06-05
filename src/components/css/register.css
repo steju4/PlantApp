@@ -1,5 +1,6 @@
 /* CSS wirkt nur innerhalb von .register-modal */
 
+/* Container für einzelne Eingabefelder */
 .register-modal .input-container {
     margin-bottom: 16px;
     width: 90%;
@@ -7,10 +8,12 @@
     flex-grow: 0;
 }
 
+/* Erster input-container bekommt oben mehr Abstand */
 .register-modal .input-container:first-child {
     margin-top: 40px;
 }
 
+/* Container für Vorname und Nachname, horizontal verteilt */
 .register-modal .name-container {
     display: flex;
     justify-content: space-between;
@@ -18,10 +21,12 @@
     margin: 40px auto 16px auto;
 }
 
+/* Einzelne Eingabefelder innerhalb des Namen-Containers */
 .register-modal .name-container .input-item {
     width: 48%;
 }
 
+/* Container für PLZ und Wohnort, horizontal verteilt */
 .register-modal .plz-wohnort-container {
     display: flex;
     justify-content: space-between;
@@ -30,11 +35,13 @@
     margin-left: 5%;
 }
 
+/* Eingabefelder für PLZ und Wohnort mit je 48% Breite */
 .register-modal .input-item.plz,
 .register-modal .input-item.wohnort {
     width: 48%;
 }
 
+/* Grüner Button für Registrierung mit Hintergrund-Gradient und Styling */
 .register-modal ion-button.register-button {
     --background: linear-gradient(135deg, #4CAF50, #8BC34A);
     --color: white;
@@ -51,6 +58,7 @@
     margin-bottom: 0;
 }
 
+/* Abbrechen-Button mit ähnlichem Styling, ohne Farb-Gradient */
 .register-modal ion-button.cancel-button {
     width: 90%;
     margin-left: 5%;
@@ -63,6 +71,7 @@
     margin-top: 0;
 }
 
+/* Fehlermeldungen in rot zentriert und mit Abstand */
 .register-modal .error-message {
     color: red;
     text-align: center;
