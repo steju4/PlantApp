@@ -37,18 +37,29 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
     const inputRef = useRef<HTMLIonInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const gardenSpotName = gardenSpot.name;
-    const gardenSpotId = gardenSpot.id;
-    const gardenSpotCity = gardenSpot.city;
+    // Garten-Spotspezifische Daten aus den Props extrahiert
+    const gardenSpotName = gardenSpot.name; // Name des Garden Spots
+    const gardenSpotId = gardenSpot.id; // ID des Garden Spots
+    const gardenSpotCity = gardenSpot.city; // Stadt des Garden Spots
+    // Suchbegriff, den der Nutzer eingibt, um Pflanzen zu suchen
     const [searchterm, setSearchterm] = useState('');
+    // Ergebnisliste der Pflanzen, die zur Suche passen
     const [plants, setPlants] = useState<PlantDetails[]>([]);
+    // Steuerung der Sichtbarkeit des Dropdowns mit Suchergebnissen
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    // Die aktuell ausgewählte Pflanze, für die Details angezeigt werden
     const [selectedPlant, setSelectedPlant] = useState<PlantDetails | null>(null);
+    // Steuerung der Sichtbarkeit des Modal-Fensters mit Pflanzendetails
     const [showDetailsModal, setShowDetailsModal] = useState(false);
+    // Pflanze, die aus dem gespeicherten Garten-Spot zum Bearbeiten ausgewählt wurde
     const [editStoredPlant, setEditStoredPlant] = useState<StoredGardenPlant | null>(null);
+    // Steuerung der Sichtbarkeit des Modals zum Bearbeiten einer gespeicherten Pflanze
     const [showEditModal, setShowEditModal] = useState(false);
+    // Liste der Pflanzen, die aktuell im Garden Spot gespeichert sind
     const [storedPlants, setStoredPlants] = useState<StoredGardenPlant[]>([]);
+    // Ladezustand für das Abrufen der gespeicherten Pflanzen
     const [loadingPlants, setLoadingPlants] = useState<boolean>(false);
+    // Wetterdaten für den Garden Spot mit Stadtname, Temperatur, Luftfeuchtigkeit etc.
     const [weatherData, setWeatherData] = useState<{
         cityName: string;
         temp: number;
@@ -57,7 +68,9 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
         weatherDescription: string;
     } | null>(null);
 
+    // Ladezustand beim Abrufen der Wetterdaten
     const [loadingWeather, setLoadingWeather] = useState(false);
+    // Fehlermeldung, falls beim Laden der Wetterdaten ein Fehler auftritt
     const [weatherError, setWeatherError] = useState<string | null>(null);
 
 
@@ -88,23 +101,29 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
     }, [token, gardenSpotId]);
 
     useEffect(() => {
+        // Wenn keine Stadt für den Garden Spot gesetzt ist, abbrechen
         if (!gardenSpotCity) return;
 
+        // Async-Funktion, um Wetterdaten für die Stadt abzurufen
         const getWeather = async () => {
-            setLoadingWeather(true);
-            setWeatherError(null);
+            setLoadingWeather(true); // Ladeanzeige aktivieren
+            setWeatherError(null); // Vorherige Fehler zurücksetzen
             try {
+                // Wetterdaten von einer API holen (fetchWeatherData)
                 const data = await fetchWeatherData(gardenSpotCity);
-                setWeatherData(data);
+                setWeatherData(data); // Wetterdaten im State speichern
             } catch (err) {
+                // Bei Fehler Fehlernachricht setzen und Wetterdaten löschen
                 setWeatherError(err instanceof Error ? err.message : String(err));
                 setWeatherData(null);
             } finally {
-                setLoadingWeather(false);
+                setLoadingWeather(false); // Ladeanzeige ausschalten, egal ob Erfolg oder Fehler
             }
         };
 
+        // Funktion direkt aufrufen
         getWeather();
+        // Effekt wird ausgeführt, wenn sich die Stadt ändert (gardenSpotCity)
     }, [gardenSpotCity]);
 
 
@@ -287,49 +306,61 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
     };
 
     useEffect(() => {
+        // Funktion zum Schließen des Dropdowns, wenn außerhalb geklickt wird
         const handleOutsideClick = (event: MouseEvent) => {
             if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target as Node) &&
-                inputRef.current &&
-                !(inputRef.current as unknown as HTMLElement).contains(event.target as Node)
+                dropdownRef.current && // Dropdown ist gerendert
+                !dropdownRef.current.contains(event.target as Node) && // Klick war nicht im Dropdown
+                inputRef.current && // Input-Feld ist vorhanden
+                !(inputRef.current as unknown as HTMLElement).contains(event.target as Node) // Klick war nicht im Input-Feld
             ) {
-                setDropdownVisible(false);
+                setDropdownVisible(false); // Dropdown schließen
             }
         };
 
+        // Event Listener für Klicks im Dokument registrieren
         document.addEventListener('click', handleOutsideClick);
+        // Cleanup: Listener entfernen, wenn Komponente unmountet wird
         return () => document.removeEventListener('click', handleOutsideClick);
     }, []);
 
+    // Funktion zum Anzeigen des Dropdowns beim Fokussieren des Input-Felds,
+    // aber nur wenn bereits Pflanzen in der Liste sind
     const handleInputFocus = () => {
         if (plants.length > 0) setDropdownVisible(true);
     };
 
+    // Hilfsfunktion, um ein Bild-URL zurückzugeben oder ein Fallback-Bild, falls URL ungültig ist
     const getImageSrc = (url: string | null | undefined): string => {
+        // Falls keine URL oder Standard-Upgrade-Zugriff-Bild, dann Fallback
 
         if (!url || url === 'https://perenual.com/storage/image/upgrade_access.jpg') {
             return 'assets/fallback_picture/monstera.png';
         }
-        return url;
+        return url; // Ansonsten Originalbild zurückgeben
     };
 
+    // State, ob Bildschirm klein ist (Höhe < 800px)
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerHeight < 800);
+    // State, ob das Wetterfeld aufgeklappt ist
     const [weatherExpanded, setWeatherExpanded] = useState(false);
 
     useEffect(() => {
+        // Funktion zum Anpassen der States bei Fenstergröße ändern
         const handleResize = () => {
-            setIsSmallScreen(window.innerHeight < 800);
+            setIsSmallScreen(window.innerHeight < 800); // Kleine Bildschirme erkennen
             if (window.innerHeight >= 800) {
-                setWeatherExpanded(true);
+                setWeatherExpanded(true); // Größere Bildschirme zeigen Wetter immer ausgeklappt
             } else {
-                setWeatherExpanded(false);
+                setWeatherExpanded(false); // Kleinere Bildschirme starten mit Wetter zugeklappt
             }
         };
 
+        // Event Listener für Größenänderung hinzufügen
         window.addEventListener('resize', handleResize);
         handleResize();
 
+        // Cleanup: Listener entfernen, wenn Komponente unmountet wird
         return () => {
             window.removeEventListener('resize', handleResize);
         };
@@ -367,6 +398,7 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
                         </IonButton>
                     </div>
 
+                    {/* Dropdown mit Suchergebnissen nur anzeigen, wenn dropdownVisible = true */}
                     {dropdownVisible && (
                         <div className="dropdown" ref={dropdownRef}>
                             <IonList lines="none">
@@ -403,6 +435,7 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
             <div className="plant-grid-wrapper">
                 <div className="plant-grid-title">My plants</div>
 
+                {/* Wetterbox: bei kleinem Bildschirm einklappbar */}
                 <div className={`weather-box ${weatherExpanded ? 'expanded' : 'collapsed'}`}>
                     {isSmallScreen && (
                         <div
@@ -435,6 +468,7 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
 
 
 
+                {/* Pflanzengitter */}
                 <div className="plant-grid">
                     {!loadingPlants && storedPlants.length === 0 ? (
                         <div
@@ -466,6 +500,7 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
                 </div>
 
                 {/* Immer direkt unter der Pflanzengrid sichtbar */}
+                {/* Löschbutton für Garden Spot */}
                 <div className="delete-button-wrapper" style={{ marginTop: '2rem', textAlign: 'center' }}>
                     <IonButton
                         className="delete-button"

@@ -16,13 +16,13 @@ import '../css/AddGardenSpotModal.css';
 import Header from "../Header";
 
 interface GardenSpotProps {
-    newGardenSpot: () => void;
-    setGardenSpotName: (name: string) => void;
-    setPostCode: (code: string) => void;
-    setCity: (city: string) => void;
-    setStreet: (street: string) => void;
-    setStreetNumber: (number: string) => void;
-    closeGardenSpotDilemma: () => void;
+    newGardenSpot: () => void;          // Funktion zum Erstellen eines neuen Gartenplatzes
+    setGardenSpotName: (name: string) => void; // Setter für Gartenplatz Name
+    setPostCode: (code: string) => void;        // Setter für Postleitzahl
+    setCity: (city: string) => void;            // Setter für Stadt
+    setStreet: (street: string) => void;        // Setter für Straße
+    setStreetNumber: (number: string) => void;  // Setter für Hausnummer
+    closeGardenSpotDilemma: () => void;         // Funktion zum Schließen des Modals
 }
 
 const AddGardenSpotModal: React.FC<GardenSpotProps> = ({
@@ -34,28 +34,32 @@ const AddGardenSpotModal: React.FC<GardenSpotProps> = ({
                                                            setStreetNumber,
                                                            closeGardenSpotDilemma
                                                        }) => {
-    const [gardenSpotName, setLocalGardenSpotName] = useState<string>('');
-    const [street, setLocalStreet] = useState<string>('');
-    const [streetNumber, setLocalStreetNumber] = useState<string>('');
+    const [gardenSpotName, setLocalGardenSpotName] = useState<string>('');       // Lokaler Zustand Gartenplatzname
+    const [street, setLocalStreet] = useState<string>('');                       // Lokaler Zustand Straße
+    const [streetNumber, setLocalStreetNumber] = useState<string>('');           // Lokaler Zustand Hausnummer
 
+    // Refs für die IonInput-Felder, falls benötigt (z.B. Fokus)
     const gardenSpotNameRef = useRef<HTMLIonInputElement>(null);
     const postCodeRef = useRef<HTMLIonInputElement>(null);
     const cityRef = useRef<HTMLIonInputElement>(null);
     const streetRef = useRef<HTMLIonInputElement>(null);
     const streetNumberRef = useRef<HTMLIonInputElement>(null);
 
+    // Handler für Änderung des Gartenplatznamens, aktualisiert lokalen und externen Zustand
     const handleGardenSpotNameChange = (e: any) => {
         const name = e.detail.value as string;
         setLocalGardenSpotName(name);
         setGardenSpotName(name);
     };
 
+    // Handler für Änderung der Straße, lokal + extern
     const handleStreetChange = (e: any) => {
         const streetValue = e.detail.value as string;
         setLocalStreet(streetValue);
         setStreet(streetValue);
     };
 
+    // Handler für Änderung der Hausnummer, lokal + extern
     const handleStreetNumberChange = (e: any) => {
         const number = e.detail.value as string;
         setLocalStreetNumber(number);
@@ -64,11 +68,11 @@ const AddGardenSpotModal: React.FC<GardenSpotProps> = ({
 
     return (
         <IonModal
-            isOpen={true}
-            onDidDismiss={closeGardenSpotDilemma}
-            style={{ '--width': '100vw', '--height': '100vh', '--border-radius': '0' }}
+            isOpen={true}                             // Modal ist immer geöffnet (kann angepasst werden)
+            onDidDismiss={closeGardenSpotDilemma}    // Event beim Schließen des Modals
+            style={{ '--width': '100vw', '--height': '100vh', '--border-radius': '0' }} // Volle Bildschirmgröße, keine Rundungen
         >
-            {/* Verwenden der Header-Komponente */}
+            {/* Verwenden der eigenen Header-Komponente mit Titel und Schließen-Funktion */}
             <Header title={gardenSpotName ? gardenSpotName : 'New Garden Spot'} onClose={closeGardenSpotDilemma} />
 
             <IonContent className="ion-padding">
@@ -78,12 +82,12 @@ const AddGardenSpotModal: React.FC<GardenSpotProps> = ({
                         <IonInput
                             ref={gardenSpotNameRef}
                             placeholder="Enter Garden Spot Name"
-                            value={gardenSpotName}
-                            onIonInput={handleGardenSpotNameChange}
+                            value={gardenSpotName}           // Wert des Input-Feldes
+                            onIonInput={handleGardenSpotNameChange} // On-Input Handler
                         />
                     </div>
 
-                    {/* Flexbox Layout für Straße und Hausnummer */}
+                    {/* Flexbox Layout für Straße und Hausnummer nebeneinander */}
                     <div className="input-container flex-row">
                         <div className="input-column">
                             <IonLabel position="stacked">Street</IonLabel>
@@ -91,7 +95,7 @@ const AddGardenSpotModal: React.FC<GardenSpotProps> = ({
                                 ref={streetRef}
                                 placeholder="Enter Street"
                                 value={street}
-                                onIonInput={handleStreetChange}
+                                onIonInput={handleStreetChange}  // On-Input Handler Straße
                             />
                         </div>
 
@@ -101,19 +105,19 @@ const AddGardenSpotModal: React.FC<GardenSpotProps> = ({
                                 ref={streetNumberRef}
                                 placeholder="Enter Street Number"
                                 value={streetNumber}
-                                onIonInput={handleStreetNumberChange}
+                                onIonInput={handleStreetNumberChange} // On-Input Handler Hausnummer
                             />
                         </div>
                     </div>
 
-                    {/* Flexbox Layout für Postleitzahl und Stadt */}
+                    {/* Flexbox Layout für Postleitzahl und Stadt nebeneinander */}
                     <div className="input-container flex-row">
                         <div className="input-column">
                             <IonLabel position="stacked">Postal Code</IonLabel>
                             <IonInput
                                 ref={postCodeRef}
                                 placeholder="Enter Postal Code"
-                                onIonInput={(e) => setPostCode(e.detail.value as string)}
+                                onIonInput={(e) => setPostCode(e.detail.value as string)} // Direkt Setter aufrufen
                             />
                         </div>
 
@@ -122,14 +126,16 @@ const AddGardenSpotModal: React.FC<GardenSpotProps> = ({
                             <IonInput
                                 ref={cityRef}
                                 placeholder="Enter City"
-                                onIonInput={(e) => setCity(e.detail.value as string)}
+                                onIonInput={(e) => setCity(e.detail.value as string)}    // Direkt Setter aufrufen
                             />
                         </div>
                     </div>
 
+                    {/* Bestätigungsbutton zum Speichern */}
                     <IonButton className="confirm-button" onClick={newGardenSpot}>
                         Confirm
                     </IonButton>
+                    {/* Abbrechen Button zum Schließen ohne Speichern */}
                     <IonButton className="cancel-button" expand="block" fill="clear" color="medium" onClick={closeGardenSpotDilemma}>
                         Cancel
                     </IonButton>

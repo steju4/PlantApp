@@ -80,10 +80,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
         <IonModal isOpen={isOpen}
                   onDidDismiss={onClose}
                   style={{ '--width': '100vw', '--height': '100vh', '--border-radius': '0' }}>
-            <IonHeader>
-                <IonToolbar>
+            <IonHeader> {/* Kopfbereich des Modals */}
+                <IonToolbar> {/* Toolbar für Kopfzeile */}
                     <div className="login-header-toolbar">
-                        <img src={Logo} alt="Logo" className="login-logo" />
+                        <img src={Logo} alt="Logo" className="login-logo" /> {/* Logo-Bild */}
                         <div className="login-title">Welcome to PlantApp!</div>
                     </div>
                 </IonToolbar>
@@ -122,35 +122,39 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSho
                         </div>
                     </div>
                     <div className="input-container">
-                        <IonLabel position="stacked">E-Mail</IonLabel>
+                        <IonLabel position="stacked">E-Mail</IonLabel> {/* Beschriftung für E-Mail Eingabe */}
                         <IonInput
-                            type="email"
-                            ref = {emailRef}
-                            placeholder="Email address"
+                            type="email" // E-Mail Eingabefeld
+                            ref = {emailRef} // Referenz zum Zugriff auf Wert
+                            placeholder="Email address" // Platzhaltertext
                         />
                     </div>
                     <div className="input-container">
-                        <IonLabel position="stacked">Password</IonLabel>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <IonLabel position="stacked">Password</IonLabel> {/* Beschriftung für Passwort Eingabe */}
+                        <div style={{ display: "flex", alignItems: "center" }}> {/* Flexbox für Input und Icon nebeneinander */}
                             <IonInput
-                                type={showPassword ? "text" : "password"}
-                                ref={passwordRef}
-                                placeholder="Password"
-                                style={{ flex: 1 }}
+                                type={showPassword ? "text" : "password"} // Passwort sichtbar oder verborgen
+                                ref={passwordRef} // Referenz zum Zugriff auf Wert
+                                placeholder="Password" // Platzhaltertext
+                                style={{ flex: 1 }} // Input nimmt verfügbaren Platz ein
                             />
                             <IonIcon
-                                icon={showPassword ? eyeOff : eye}
-                                style={{ fontSize: "24px", paddingLeft: "8px", cursor: "pointer" }}
-                                onClick={() => setShowPassword(!showPassword)}
+                                icon={showPassword ? eyeOff : eye} // Icon je nach Sichtbarkeit des Passworts
+                                style={{ fontSize: "24px", paddingLeft: "8px", cursor: "pointer" }} // Styling des Icons
+                                onClick={() => setShowPassword(!showPassword)} // Umschalten Passwort sichtbar/verborgen
                             />
                         </div>
                     </div>
 
+                    {/* Anzeige einer Fehlermeldung, wenn error nicht leer ist */}
                     {error && <p className="error-message">{error}</p>}
+
+                    {/* Login Button, der bei Klick den Login-Prozess startet */}
                     <IonButton expand="block" onClick={handleLogin}>
                         Login
                     </IonButton>
 
+                    {/* Hinweis zum Registrieren mit Link, der den Register-Dialog öffnet */}
                     <div className="register-hint">
                         <span>
                             Don't have an account?{' '}
