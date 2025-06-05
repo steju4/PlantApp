@@ -13,7 +13,7 @@
 }
 @media (max-height: 800px) {
     .plant-grid-wrapper .plant-grid {
-        max-height: 320px; /* vorher 370px, jetzt minimal kleiner */
+        max-height: 300px; /* vorher 370px, jetzt minimal kleiner */
     }
     .weather-box.collapsed {
         max-height: 0;
