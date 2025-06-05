@@ -16,7 +16,7 @@ import PlantDetailsModal from "./PlantDetailsModal";
 import EditPlantModal from "./EditPlantModal";
 import { search as searchIcon } from 'ionicons/icons';
 import { trash, sunnyOutline } from 'ionicons/icons';
-const city = "Munich";
+const city = "Friedrichshafen";
 const OPENWEATHER_API_KEY = "7124aa5c248a83f67f5d34bf50443ba5";
 
 interface GardenSpotProps {
@@ -49,6 +49,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     const [storedPlants, setStoredPlants] = useState<StoredGardenPlant[]>([]);
     const [loadingPlants, setLoadingPlants] = useState<boolean>(false);
     const [weatherData, setWeatherData] = useState<{
+        cityName: string;
         temp: number;
         humidity: number;
         rainProb: number;
@@ -104,6 +105,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 const rainProb = data.rain ? (data.rain["1h"] || 0) : 0;
 
                 setWeatherData({
+                    cityName: data.name,
                     temp: data.main.temp,
                     humidity: data.main.humidity,
                     rainProb: rainProb,
@@ -399,6 +401,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                         {weatherError && `Fehler beim Laden der Wetterdaten: ${weatherError}`}
                         {weatherData && !loadingWeather && !weatherError && (
                             <>
+                                Wetter für <strong>{weatherData.cityName}</strong>:{" "}
                                 {weatherData.weatherDescription.charAt(0).toUpperCase() + weatherData.weatherDescription.slice(1)},&nbsp;
                                 {Math.round(weatherData.temp)}°C – Luftfeuchtigkeit: {weatherData.humidity}% – Regenmenge (letzte Stunde): {weatherData.rainProb} mm
                             </>
@@ -406,6 +409,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                         {!weatherData && !loadingWeather && !weatherError && "Keine Wetterdaten verfügbar."}
                     </div>
                 </div>
+
 
                 <div className="plant-grid">
                     {!loadingPlants && storedPlants.length === 0 ? (
