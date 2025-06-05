@@ -43,47 +43,56 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, onRegist
         const password = passwordRef.current?.value?.toString() || '';
         const confirmPassword = confirmPasswordRef.current?.value?.toString() || '';
 
+        // Prüfen, ob alle erforderlichen Felder ausgefüllt sind
         if (!firstName || !lastName || !email || !postalCode || !city || !password || !confirmPassword) {
             setPasswordError('Please fill in all fields.');
             return;
         }
 
+        // Validierung der E-Mail-Adresse mit einfachem Regex-Muster
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             setPasswordError('Please enter a valid email address.');
             return;
         }
 
+        // Überprüfen, ob die E-Mail-Adresse bereits existiert (aus dem Backend-Check)
         if (emailExists) {
             setPasswordError('This email is already taken.');
             return;
         }
 
+        // Passwort muss mindestens 8 Zeichen lang sein
         if (password.length < 8) {
             setPasswordError('Password must be at least 8 characters long.');
             return;
         }
 
-        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
-        const numberRegex = /\d/;
-        const uppercaseRegex = /[A-Z]/;
+        // Regex-Definitionen für Passwortanforderungen
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/; // mindestens ein Sonderzeichen
+        const numberRegex = /\d/; // mindestens eine Zahl
+        const uppercaseRegex = /[A-Z]/; // mindestens ein Großbuchstabe
 
+        // Prüfen, ob Passwort mindestens ein Sonderzeichen enthält
         if (!specialCharRegex.test(password)) {
             setPasswordError('Password must contain at least one special character.');
             return;
         }
 
+        // Prüfen, ob Passwort mindestens eine Zahl enthält
         if (!numberRegex.test(password)) {
             setPasswordError('Password must contain at least one number.');
             return;
         }
 
+        // Prüfen, ob Passwort mindestens einen Großbuchstaben enthält
         if (!uppercaseRegex.test(password)) {
             setPasswordError('Password must contain at least one uppercase letter.');
             return;
         }
 
 
+        // Prüfen, ob Passwort und Bestätigung übereinstimmen
         if (password !== confirmPassword) {
             setPasswordError('Passwords do not match.');
             return;
@@ -139,18 +148,21 @@ const handleSubmit = async (formData: any) => {
 };
 
     return (
+        // IonModal-Komponente für das Registrierungs-Modal
         <IonModal
-            isOpen={isOpen}
-            onDidDismiss={onClose}
-            style={{ '--width': '100vw', '--height': '100vh', '--border-radius': '0' }}
+            isOpen={isOpen} // Modal sichtbar, wenn isOpen true ist
+            onDidDismiss={onClose} // Callback beim Schließen des Modals
+            style={{ '--width': '100vw', '--height': '100vh', '--border-radius': '0' }} // Volle Bildschirmgröße, keine Abrundung
         >
+            {/* Header-Komponente mit Titel und Schließen-Button */}
             <Header
                 title="Register"
                 onClose={onClose}
-                showConfirm={false}
+                showConfirm={false} // Kein Bestätigungs-Button im Header
             />
             <IonContent className="ion-padding">
                 <div className="register-modal">
+                    {/* Eingabefelder für Vor- und Nachname */}
                     <div className="name-container">
                         <div className="input-item">
                             <IonLabel position="stacked">First name</IonLabel>
@@ -162,6 +174,7 @@ const handleSubmit = async (formData: any) => {
                         </div>
                     </div>
 
+                    {/* Eingabefelder für Postleitzahl und Stadt */}
                     <div className="plz-wohnort-container">
                         <div className="input-item plz">
                             <IonLabel position="stacked">Postal Code</IonLabel>
@@ -173,43 +186,46 @@ const handleSubmit = async (formData: any) => {
                         </div>
                     </div>
 
+                    {/* Eingabefeld für E-Mail mit Validierungs-Check beim Verlassen */}
                     <div className="input-container">
                         <IonLabel position="stacked">E-Mail</IonLabel>
                         <IonInput
                             ref={emailRef}
                             type="email"
                             placeholder="Your email address"
-                            onIonBlur={e => checkEmail(e.target.value as string)}
-                            onIonInput={() => setPasswordError('')}
+                            onIonBlur={e => checkEmail(e.target.value as string)} // Email-Verfügbarkeit prüfen beim Verlassen des Feldes
+                            onIonInput={() => setPasswordError('')} // Fehleranzeige löschen bei Eingabe
                         />
                     </div>
 
+                    {/* Eingabefeld für Passwort mit Sichtbarkeit umschalten */}
                     <div className="input-container">
                         <IonLabel position="stacked">Password</IonLabel>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <IonInput
-                                type={showPassword ? "text" : "password"}
+                                type={showPassword ? "text" : "password"} // Passwort anzeigen oder verstecken
                                 ref={passwordRef}
                                 placeholder="Your password"
-                                onIonInput={() => setPasswordError('')}
+                                onIonInput={() => setPasswordError('')} // Fehleranzeige löschen bei Eingabe
                                 style={{ flex: 1 }}
                             />
                             <IonIcon
-                                icon={showPassword ? eyeOff : eye}
+                                icon={showPassword ? eyeOff : eye} // Icon passend zur Sichtbarkeit
                                 style={{ fontSize: "24px", paddingLeft: "8px", cursor: "pointer" }}
-                                onClick={() => setShowPassword(!showPassword)}
+                                onClick={() => setShowPassword(!showPassword)} // Passwort-Sichtbarkeit toggeln
                             />
                         </div>
                     </div>
 
+                    {/* Eingabefeld zur Passwort-Wiederholung mit Sichtbarkeit umschalten */}
                     <div className="input-container">
                         <IonLabel position="stacked">Repeat Password</IonLabel>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <IonInput
-                                type={showConfirmPassword ? "text" : "password"}
+                                type={showConfirmPassword ? "text" : "password"} // Sichtbarkeit ähnlich wie beim Passwort
                                 ref={confirmPasswordRef}
                                 placeholder="Repeat Password"
-                                onIonInput={() => setPasswordError('')}
+                                onIonInput={() => setPasswordError('')} // Fehleranzeige löschen bei Eingabe
                                 style={{ flex: 1 }}
                             />
                             <IonIcon
@@ -220,11 +236,15 @@ const handleSubmit = async (formData: any) => {
                         </div>
                     </div>
 
+                    {/* Anzeige der Fehlermeldung, falls gesetzt */}
                     {passwordError && <p className="error-message">{passwordError}</p>}
 
+                    {/* Button zum Abschicken der Registrierung */}
                     <IonButton className="register-button" onClick={handleRegister}>
                         Register
                     </IonButton>
+
+                    {/* Button zum Abbrechen und Schließen des Modals */}
                     <IonButton className="cancel-button" expand="block" fill="clear" color="medium" onClick={onClose}>
                         Cancel
                     </IonButton>
