@@ -401,7 +401,7 @@ const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
                     <IonIcon icon={sunnyOutline} className="weather-icon" />
                     <div className="weather-text">
                         {loadingWeather && "Wetterdaten werden geladen..."}
-                        {weatherError && `Fehler beim Laden der Wetterdaten: ${weatherError}`}
+                        {weatherError && `Fehler beim Laden der Wetterdaten für die Stadt: ${gardenSpotCity}`}
                         {weatherData && !loadingWeather && !weatherError && (
                             <>
                                 Wetter für <strong>{weatherData.cityName}</strong>:{" "}
