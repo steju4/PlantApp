@@ -12,13 +12,10 @@ import {
   IonButtons,
   IonModal,
 } from "@ionic/react";
-// import { StatusBar, Style } from "@capacitor/status-bar";
 import { add } from "ionicons/icons";
 import "../components/css/dashboard.css";
 import "../components/css/global.css";
-import { Spot, StoredGardenPlant, PlantDetails, UserData } from "../constants/interfaces";
-import { pingSpeciesAPI } from "../scripts/plant_api_species";
-import { pingAPI } from "../scripts/plant_api";
+import { Spot, PlantDetails, UserData } from "../constants/interfaces";
 import AddGardenSpotModal from "../components/modals/AddGardenSpotModal";
 import OpenGardenSpotModal from "../components/modals/OpenGardenSpotModal";
 import Gardenspots from "../components/Gardenspots_Cards";
@@ -108,22 +105,28 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   const addGardenSpot = useRef<HTMLIonModalElement>(null);
   const openGardenSpotModal = useRef<HTMLIonModalElement>(null);
 
+// Öffnet das Modal für einen ausgewählten GardenSpot und setzt diesen als aktuell ausgewählt
   const showOpenGardenSpotModal = (gardenSpot: Spot) => {
-        setSelectedGardenSpot(gardenSpot);
-        openGardenSpotModal.current?.present();
-  };
+  setSelectedGardenSpot(gardenSpot);  //Speichert den ausgewählten GardenSpot im State
+  openGardenSpotModal.current?.present();  // Öffnet das Modal über die Referenz, falls vorhanden
+    };
 
-  const closeGardenSpotDilemma = () => {
-    addGardenSpot.current?.dismiss();
+    // Schließt das Modal zum Hinzufügen eines GardenSpots, falls geöffnet
+    const closeGardenSpotDilemma = () => {
+    addGardenSpot.current?.dismiss(); // Schließt das Modal über die Referenz, falls vorhanden
   };
+  // Schließt das Modal zum Anzeigen eines GardenSpots, falls geöffnet
   const closeGardenSpotModal = () => {
-    openGardenSpotModal.current?.dismiss();
+    openGardenSpotModal.current?.dismiss(); // Schließt das Modal über die Referenz, falls vorhanden
   };
 
-  const newGardenSpot = () => {
+    // Platzhalter-Funktion für das Anlegen eines neuen GardenSpots (momentan nur Konsolenausgabe)
+    const newGardenSpot = () => {
     console.log("newGardenSpot");
   };
-  const openGardenSpot = () => {
+
+    // Platzhalter-Funktion zum Öffnen eines GardenSpots (momentan nur Konsolenausgabe)
+    const openGardenSpot = () => {
     console.log("openGardenSpot");
   };
 
@@ -257,7 +260,7 @@ const handleDeleteSpot = async (id: number) => {
 
 
             <IonModal
-          ref={openGardenSpotModal}
+          ref={openGardenSpotModal} // Referenz, um das Modal programmatisch zu steuern (öffnen/schließen)
           style={{
             '--width': '100vw',
             '--height': '100vh',
@@ -267,26 +270,28 @@ const handleDeleteSpot = async (id: number) => {
           }
         }
       >
+                {/* Falls ein GardenSpot ausgewählt ist, wird das OpenGardenSpotModal angezeigt */}
                 {selectedGardenSpot && (
                     <OpenGardenSpotModal
-                        openGardenSpot={openGardenSpot}
-                        closeGardenSpotModal={closeGardenSpotModal}
-                        deleteSpot={handleDeleteSpot}
-                        gardenSpot={selectedGardenSpot} // Ganze Spot-Daten
+                        openGardenSpot={openGardenSpot} // Funktion zum Öffnen des GardenSpots (Platzhalter)
+                        closeGardenSpotModal={closeGardenSpotModal} // Funktion zum Schließen des Modals
+                        deleteSpot={handleDeleteSpot} // Funktion zum Löschen des GardenSpots
+                        gardenSpot={selectedGardenSpot} // Daten des aktuell ausgewählten GardenSpots
                         token={token}
                     />
                 )}
       </IonModal>
 
       <IonModal ref={addGardenSpot} className="modal-sizer">
+        {/* Modal zum Hinzufügen eines neuen GardenSpots */}
         <AddGardenSpotModal
-          newGardenSpot={handleCreateGardenSpot}
-          setGardenSpotName={setNewSpotName}
-          setStreet={setNewStreet}
-          setStreetNumber={setNewStreetNumber}
-          setPostCode={setNewPostalCode}
-          setCity={setNewCity}
-          closeGardenSpotDilemma={closeGardenSpotDilemma}
+          newGardenSpot={handleCreateGardenSpot} // Funktion zum Erstellen eines neuen GardenSpots
+          setGardenSpotName={setNewSpotName} // Setter für den Namen des neuen Spots
+          setStreet={setNewStreet} // Setter für Straße
+          setStreetNumber={setNewStreetNumber} // Setter für Hausnummer
+          setPostCode={setNewPostalCode} // Setter für Postleitzahl
+          setCity={setNewCity} // Setter für Stadt
+          closeGardenSpotDilemma={closeGardenSpotDilemma} // Funktion zum Schließen des Modals
         />
       </IonModal>
       </IonContent>
@@ -300,6 +305,7 @@ const handleDeleteSpot = async (id: number) => {
                     height: '100%'   
                 }}>
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+                        {/* Floating Action Button zum Öffnen des Modals zum Hinzufügen eines neuen GardenSpots */}
                         <IonFabButton className="AddButton" onClick={() => addGardenSpot.current?.present()}>
                             <IonIcon icon={add}></IonIcon>
                         </IonFabButton>
