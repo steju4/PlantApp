@@ -15,31 +15,31 @@ import Header from "../Header";
 import PlantDetailsModal from "./PlantDetailsModal";
 import EditPlantModal from "./EditPlantModal";
 import { search as searchIcon } from 'ionicons/icons';
+import {Spot} from "../../constants/interfaces";
 import { trash, sunnyOutline } from 'ionicons/icons';
 const OPENWEATHER_API_KEY = "7124aa5c248a83f67f5d34bf50443ba5";
 
-interface GardenSpotProps {
+interface OpenGardenSpotModalProps {
     openGardenSpot: () => void;
     closeGardenSpotModal: () => void;
     deleteSpot: (id: number) => void;
-    gardenSpotName: string;
-    gardenSpotId: number;
-    gardenSpotCity: string;
+    gardenSpot: Spot; // Kompletter Spot
     token: string | null;
 }
 
-const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
-                                                            openGardenSpot,
-                                                            closeGardenSpotModal,
-                                                            deleteSpot,
-                                                            gardenSpotName,
-                                                            gardenSpotId,
-                                                            gardenSpotCity,
-                                                            token
+const OpenGardenSpotModal: React.FC<OpenGardenSpotModalProps> = ({
+                                                                     openGardenSpot,
+                                                                     closeGardenSpotModal,
+                                                                     deleteSpot,
+                                                                     gardenSpot,
+                                                                     token
                                                         }) => {
     const inputRef = useRef<HTMLIonInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const gardenSpotName = gardenSpot.name;
+    const gardenSpotId = gardenSpot.id;
+    const gardenSpotCity = gardenSpot.city;
     const [searchterm, setSearchterm] = useState('');
     const [plants, setPlants] = useState<PlantDetails[]>([]);
     const [dropdownVisible, setDropdownVisible] = useState(false);
