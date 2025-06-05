@@ -16,6 +16,8 @@ import PlantDetailsModal from "./PlantDetailsModal";
 import EditPlantModal from "./EditPlantModal";
 import { search as searchIcon } from 'ionicons/icons';
 import { trash, sunnyOutline } from 'ionicons/icons';
+const city = "Munich";
+const OPENWEATHER_API_KEY = "7124aa5c248a83f67f5d34bf50443ba5";
 
 interface GardenSpotProps {
     openGardenSpot: () => void;
@@ -46,6 +48,16 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     const [showEditModal, setShowEditModal] = useState(false);
     const [storedPlants, setStoredPlants] = useState<StoredGardenPlant[]>([]);
     const [loadingPlants, setLoadingPlants] = useState<boolean>(false);
+    const [weatherData, setWeatherData] = useState<{
+        temp: number;
+        humidity: number;
+        rainProb: number;
+        weatherDescription: string;
+    } | null>(null);
+
+    const [loadingWeather, setLoadingWeather] = useState(false);
+    const [weatherError, setWeatherError] = useState<string | null>(null);
+
 
     useEffect(() => {
         if (token && gardenSpotId) {
@@ -72,6 +84,41 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             });
         }
     }, [token, gardenSpotId]);
+
+    useEffect(() => {
+        const fetchWeather = async () => {
+            setLoadingWeather(true);
+            setWeatherError(null);
+
+            try {
+                const res = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=de`
+                );
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                const rainProb = data.rain ? (data.rain["1h"] || 0) : 0;
+
+                setWeatherData({
+                    temp: data.main.temp,
+                    humidity: data.main.humidity,
+                    rainProb: rainProb,
+                    weatherDescription: data.weather[0]?.description || "unbekannt",
+                });
+            } catch (err) {
+                setWeatherError(err instanceof Error ? err.message : String(err));
+                setWeatherData(null);
+            } finally {
+                setLoadingWeather(false);
+            }
+        };
+
+        fetchWeather();
+    }, []);
 
     const handleAddPlantToGardenSpot = async (plantToAdd: PlantDetails, quantity: number) => {
         if (!token || !plantToAdd || !gardenSpotId) {
@@ -345,14 +392,20 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
             <div className="plant-grid-wrapper">
                 <div className="plant-grid-title">My plants</div>
 
-                {/* Wetter-Info (Placebo) */}
                 <div className="weather-box">
                     <IonIcon icon={sunnyOutline} className="weather-icon" />
                     <div className="weather-text">
-                        Sonnig, 25 °C – Luftfeuchtigkeit: 40 % – Regenwahrscheinlichkeit: 10%
+                        {loadingWeather && "Wetterdaten werden geladen..."}
+                        {weatherError && `Fehler beim Laden der Wetterdaten: ${weatherError}`}
+                        {weatherData && !loadingWeather && !weatherError && (
+                            <>
+                                {weatherData.weatherDescription.charAt(0).toUpperCase() + weatherData.weatherDescription.slice(1)},&nbsp;
+                                {Math.round(weatherData.temp)}°C – Luftfeuchtigkeit: {weatherData.humidity}% – Regenmenge (letzte Stunde): {weatherData.rainProb} mm
+                            </>
+                        )}
+                        {!weatherData && !loadingWeather && !weatherError && "Keine Wetterdaten verfügbar."}
                     </div>
                 </div>
-
 
                 <div className="plant-grid">
                     {!loadingPlants && storedPlants.length === 0 ? (
