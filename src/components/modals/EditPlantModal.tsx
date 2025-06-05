@@ -16,12 +16,12 @@ import Header from "../Header";
 import '../css/PlantDetailsModal.css';
 
 interface EditPlantModalProps {
-    isOpen: boolean;
-    onDismiss: () => void;
-    onConfirm: (newQuantity: number) => void;
-    onDelete: () => void;
-    plant: PlantDetails | null;
-    initialQuantity?: number;
+    isOpen: boolean;                  // Modal öffnen oder schließen
+    onDismiss: () => void;            // Funktion zum Schließen des Modals
+    onConfirm: (newQuantity: number) => void; // Bestätigen mit neuer Menge
+    onDelete: () => void;             // Pflanze löschen Funktion
+    plant: PlantDetails | null;       // Pflanzen-Details (optional)
+    initialQuantity?: number;         // Anfangsmenge (optional)
 }
 
 const EditPlantModal: React.FC<EditPlantModalProps> = ({
@@ -32,24 +32,27 @@ const EditPlantModal: React.FC<EditPlantModalProps> = ({
                                                            plant,
                                                            initialQuantity
                                                        }) => {
-    const [quantity, setQuantity] = useState<number>(1);
+    const [quantity, setQuantity] = useState<number>(1);  // Zustand für Menge
 
+    // Beim Öffnen des Modals Menge initialisieren (default 1 oder übergeben)
     useEffect(() => {
         if (isOpen) {
             setQuantity(initialQuantity ?? 1);
         }
     }, [isOpen, initialQuantity]);
 
-    if (!plant) return null;
+    if (!plant) return null;  // Wenn keine Pflanze vorhanden, nichts rendern
 
+    // Menge erhöhen
     const increaseQuantity = () => setQuantity(prev => prev + 1);
+    // Menge verringern, aber nicht unter 1
     const decreaseQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
 
     return (
         <IonModal
-            isOpen={isOpen}
-            onDidDismiss={onDismiss}
-            style={{
+            isOpen={isOpen}                   // Modal Sichtbarkeit steuern
+            onDidDismiss={onDismiss}          // Modal schließen Event
+            style={{                         // Styles für Modal Größe & Aussehen
                 '--width': '100vw',
                 '--height': '100vh',
                 '--border-radius': '0',
@@ -57,6 +60,7 @@ const EditPlantModal: React.FC<EditPlantModalProps> = ({
                 '--padding-bottom': '0',
             }}
         >
+            {/* Header mit Titel, Close-Button und Confirm-Button */}
             <Header
                 title={plant.common_name || "Bearbeite Pflanze"}
                 onClose={onDismiss}
@@ -67,6 +71,7 @@ const EditPlantModal: React.FC<EditPlantModalProps> = ({
             <IonContent fullscreen className="modal-content">
                 <div className="plant-details-modal-content">
 
+                    {/* Pflanzenbild, Fallback wenn kein Bild vorhanden */}
                     <IonImg
                         src={
                             plant.default_image?.thumbnail !== "https://perenual.com/storage/image/upgrade_access.jpg"
@@ -76,12 +81,16 @@ const EditPlantModal: React.FC<EditPlantModalProps> = ({
                         className="plant-detail-image"
                     />
 
+                    {/* Pflanzenname */}
                     <div className="plant-detail-name">{plant.common_name}</div>
+                    {/* Wissenschaftlicher Name */}
                     <div className="plant-detail-scientific">
                         {plant.scientific_name?.join(', ')}
                     </div>
 
+                    {/* Akkordeon Gruppe für verschiedene Pflanzeninfos */}
                     <IonAccordionGroup expand="inset">
+                        {/* Standort & Pflege, falls Daten vorhanden */}
                         {(plant.sunlight || plant.watering || plant.care_level || plant.pruning_month || plant.cycle) && (
                             <IonAccordion value="pflege">
                                 <IonItem slot="header">
@@ -107,6 +116,7 @@ const EditPlantModal: React.FC<EditPlantModalProps> = ({
                             </IonAccordion>
                         )}
 
+                        {/* Eigenschaften der Pflanze */}
                         {(plant.growth_rate || typeof plant.drought_tolerant === "boolean" || typeof plant.indoor === "boolean" || typeof plant.medicinal === "boolean") && (
                             <IonAccordion value="eigenschaften">
                                 <IonItem slot="header">
@@ -123,6 +133,7 @@ const EditPlantModal: React.FC<EditPlantModalProps> = ({
                             </IonAccordion>
                         )}
 
+                        {/* Weitere Infos wie Herkunft und Beschreibung */}
                         {(plant.origin?.length > 0 || plant.description) && (
                             <IonAccordion value="weitere">
                                 <IonItem slot="header">
@@ -142,45 +153,50 @@ const EditPlantModal: React.FC<EditPlantModalProps> = ({
                         )}
                     </IonAccordionGroup>
 
+                    {/* Bereich zur Anpassung der Menge */}
                     <div className="plant-detail-quantity">
+                        {/* Button zum Verringern der Menge */}
                         <IonButton onClick={decreaseQuantity} className="quantity-button">
                             <IonIcon icon={remove} />
                         </IonButton>
 
+                        {/* Input für direkte Eingabe der Menge */}
                         <input
                             type="number"
                             min={1}
-                            value={quantity === 0 ? '' : quantity}
+                            value={quantity === 0 ? '' : quantity}   // Zeigt leeres Feld bei 0
                             onChange={(e) => {
                                 const val = e.target.value;
                                 if (val === '') {
-                                    setQuantity(0);
+                                    setQuantity(0);  // Leeres Feld möglich
                                     return;
                                 }
                                 const num = parseInt(val, 10);
                                 if (!isNaN(num) && num >= 0) {
-                                    setQuantity(num);
+                                    setQuantity(num);  // Menge aktualisieren
                                 }
                             }}
                             onBlur={() => {
                                 if (quantity < 1) {
-                                    setQuantity(1);
+                                    setQuantity(1);  // Mindestmenge auf 1 setzen
                                 }
                             }}
                             className="quantity-input"
                         />
 
+                        {/* Button zum Erhöhen der Menge */}
                         <IonButton onClick={increaseQuantity} className="quantity-button">
                             <IonIcon icon={add} />
                         </IonButton>
                     </div>
 
+                    {/* Button zum Löschen der Pflanze */}
                     <IonButton
                         expand="block"
-                        onClick={onDelete}
+                        onClick={onDelete}               // Löschen Funktion aufrufen
                         className="delete-button"
                     >
-                        <IonIcon icon={trash} slot="start" />
+                        <IonIcon icon={trash} slot="start" />  {/* Papierkorb Icon */}
                         Delete plant
                     </IonButton>
 
