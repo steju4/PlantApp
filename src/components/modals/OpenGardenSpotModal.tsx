@@ -16,7 +16,6 @@ import PlantDetailsModal from "./PlantDetailsModal";
 import EditPlantModal from "./EditPlantModal";
 import { search as searchIcon } from 'ionicons/icons';
 import { trash, sunnyOutline } from 'ionicons/icons';
-const city = "Friedrichshafen";
 const OPENWEATHER_API_KEY = "7124aa5c248a83f67f5d34bf50443ba5";
 
 interface GardenSpotProps {
@@ -25,6 +24,7 @@ interface GardenSpotProps {
     deleteSpot: (id: number) => void;
     gardenSpotName: string;
     gardenSpotId: number;
+    gardenSpotCity: string;
     token: string | null;
 }
 
@@ -34,6 +34,7 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                                                             deleteSpot,
                                                             gardenSpotName,
                                                             gardenSpotId,
+                                                            gardenSpotCity,
                                                             token
                                                         }) => {
     const inputRef = useRef<HTMLIonInputElement>(null);
@@ -87,13 +88,15 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
     }, [token, gardenSpotId]);
 
     useEffect(() => {
+        if (!gardenSpotCity) return;
+
         const fetchWeather = async () => {
             setLoadingWeather(true);
             setWeatherError(null);
 
             try {
                 const res = await fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=de`
+                    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(gardenSpotCity)}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=de`
                 );
 
                 if (!res.ok) {
@@ -101,7 +104,6 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
                 }
 
                 const data = await res.json();
-
                 const rainProb = data.rain ? (data.rain["1h"] || 0) : 0;
 
                 setWeatherData({
@@ -120,7 +122,8 @@ const OpenGardenSpotModal: React.FC<GardenSpotProps> = ({
         };
 
         fetchWeather();
-    }, []);
+    }, [gardenSpotCity]);
+
 
     const handleAddPlantToGardenSpot = async (plantToAdd: PlantDetails, quantity: number) => {
         if (!token || !plantToAdd || !gardenSpotId) {
