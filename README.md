@@ -177,11 +177,27 @@ npm run dev
 
 ---
 
-## 👨‍💻 Entwickelt von
+## 🧑‍💻 Aufgabenverteilung im Team
 
-- Nico Biesinger
-- Maximilian Seible
-- Julian Stengele
+Die Entwicklung der PlantApp wurde im Team wie folgt aufgeteilt:
+
+-   **Maximilian Seible:**
+    -   Frontend-Entwicklung mit Fokus auf State Management und Logik.
+    -   Integration der externen Perenual Pflanzen-API im Frontend.
+    -   Anbindung der Frontend-Komponenten an die Backend-API.
+    -   Anlage, Design und Anpassung von Modals im Frontend.
+    -   Mitwirkung bei der Backend-Entwicklung und Datenbankmodellierung.
+
+-   **Julian Stengele:**
+    -   Hauptverantwortlich für die Konzeption und Entwicklung des Backends (Spring Boot).
+    -   Implementierung der REST-API-Endpunkte.
+    -   Datenbankdesign und -modellierung (JPA-Entitäten, Repositories).
+    -   Umsetzung der Benutzerauthentifizierung und -autorisierung mittels JWT und Spring Security.
+    -   Unterstützung bei der Anlage, Design und Anpassung von Modals und zugehöriger Logik im Frontend.
+-   **Nico Biesinger:**
+    -   Konzeption und Design der Benutzeroberfläche (UI/UX).
+    -   Entwicklung der Kernkomponenten und Seiten im Frontend (Ionic React).
+    -   Umsetzung des responsiven Designs und der mobilen Optimierung.
 
 ---
 
