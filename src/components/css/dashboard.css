@@ -1,28 +1,33 @@
 .dilemma-container {
-    display: flex;
+    display: flex; /* horizontale Anordnung */
     justify-content: space-between; /* Verteilung der Elemente */
     align-items: center; /* Vertikale Zentrierung */
     width: 100%;
 }
 
+/* Stilisierung des Bearbeiten-Icons */
 .edit-icon {
     font-size: 25px;
 }
 
+/* Container für Icons – nimmt vollen Raum ein */
 .icon-container {
     height: 100%;
     width: 100%;
 }
 
+/* Stilisierung des Löschen-Buttons */
 .delete-button {
     font-size: 25px;
     color: rgb(232, 0, 3);
 }
 
+/* Responsives Padding */
 .content {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
+/* Visuelle Gestaltung eines einzelnen Elements */
 .dilemma-item {
 
     border: 0.5px solid #ccc;
@@ -31,14 +36,19 @@
 
 }
 
+/* Modal-Größe wird über CSS-Variablen gesteuert */
 .modal-sizer {
     --width: 100vw;
     --height: 100vh;
     --border-radius: 0
 }
+
+/* Globale CSS-Variable für Statusleiste (z. B. auf Mobilgeräten) */
 :root {
     --status-bar-height: env(safe-area-inset-top);
 }
+
+/* Titel auf Tab1 – größerer Schriftgrad */
 .title-Tab1{
     font-size: 28px;
 
@@ -74,6 +84,8 @@
     -webkit-text-fill-color: transparent;
     font-weight: bold;
 }
+
+/* Logout-Button mit rotem Text */
 .logout-text {
     color: #d32f2f; /* dunkler Rotton */
     font-weight: bold;
