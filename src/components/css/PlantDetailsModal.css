@@ -1,3 +1,4 @@
+/* Modal-Hauptinhalt */
 .modal-content {
     --padding-top: 12px;
     padding-left: 5%;
@@ -10,22 +11,23 @@
     height: 100%;
 }
 
+/* Spezieller Inhalt im Pflanzen-Detail-Modal */
 .plant-details-modal-content {
     width: 100%;
-    flex: 1;
+    flex: 1; /* Füllt den verfügbaren Platz */
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    align-items: center; /* Zentriert horizontal */
+    justify-content: flex-start; /* Oben ausgerichtet */
     text-align: center;
     padding-top: 20px;
 }
 
-/* Bild */
+/* Bild der Pflanze */
 .plant-detail-image {
     max-width: 150px;
     max-height: 150px;
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Abstand nach unten */
 }
 
 /* Pflanzenname */
@@ -76,7 +78,7 @@ ion-accordion .ion-padding {
     line-height: 1.6;
 }
 
-/* Menge-Auswahl */
+/* Bereich für Mengen-Auswahl: Buttons und Eingabefeld */
 .plant-detail-quantity {
     display: flex;
     align-items: center;
@@ -122,6 +124,7 @@ ion-accordion .ion-padding {
     -moz-appearance: textfield;
 }
 
+/* Spin-Buttons im Inputfeld in Webkit-Browsern deaktivieren */
 .quantity-input::-webkit-inner-spin-button,
 .quantity-input::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -141,6 +144,7 @@ ion-accordion .ion-padding {
     --box-shadow: none;
 }
 
+/* Löschen-Button rot mit Icon und Text */
 .delete-button {
     width: 80%;
     margin: 20px auto 0; /* zentriert über auto */
