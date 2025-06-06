@@ -1,91 +1,74 @@
-export interface ArgumentItem {
-    description: string;
-    importance: number;
-    ID: number;
-}
-
-export interface Dilemma {
-
-    id: number;
-    name: string;
-    pro: ArgumentItem[];
-    contra: ArgumentItem[];
-    lastEdit: string;
-    color: string;
-    progressbarBlur: boolean
-}
-
+// Daten des eingeloggten Benutzers und seine Garden Spots
 export interface UserData {
-    id: number;
-    garden_spots: Spot[];
-    email_adress: string, 
-    first_name: string,
-    last_name: string,
-    postal_code: string,
-    city: string,
-    password: string
+    id: number;                 // Interne DB-ID
+    garden_spots: Spot[];       // Liste der Garden Spots des Nutzers
+    email_adress: string;       // Login-E-Mail
+    first_name: string;         // Vorname
+    last_name: string;          // Nachname
+    postal_code: string;        // PLZ
+    city: string;               // Stadt
+    password: string;           // (nicht unbedingt im Frontend erforderlich)
 }
 
-export interface ColorPicker {
-    colorName: string;
-    colorcode: string;
-    border: string;
-    id: number;
-}
-
+// Details einer Pflanze aus der externen API
 export interface PlantDetails {
-    id: number;
-    common_name: string;
-    scientific_name: string[];
-    origin: string[],
-    watering: string;
-    sunlight: string[];
-    pruning_month: string[];
-    growth_rate: string;
-    description: string
-    default_image : {thumbnail: string};
-    quantity?: number; 
-    care_level?: string; 
-    cycle?: string;
-    drought_tolerant?: boolean;
-    indoor?: boolean;
-    medicinal?: boolean;
+    id: number;                 // Externe Pflanzen-ID
+    common_name: string;        // Geläufiger Name
+    scientific_name: string[];  // Wissenschaftlicher Name(n)
+    origin: string[];           // Herkunftsländer
+    watering: string;           // Bewässerungshinweis
+    sunlight: string[];         // Lichtbedarf
+    pruning_month: string[];    // Monate für Rückschnitt
+    growth_rate: string;        // Wachstumsgeschwindigkeit
+    description: string;        // Beschreibungstext
+    default_image: {             // Bild-URLs
+        thumbnail: string;      
+    };
+    quantity?: number;          // (optional) Menge im Spot
+    care_level?: string;        // (optional) Pflegeaufwand
+    cycle?: string;             // (optional) Lebenszyklus
+    drought_tolerant?: boolean; // (optional) Trockenheitstoleranz
+    indoor?: boolean;           // (optional) Innenbereich geeignet
+    medicinal?: boolean;        // (optional) Medizinische Nutzung
 }
 
+// Struktur einer Pflanze, wie sie in der DB und im Frontend gespeichert wird
 export interface StoredGardenPlant {
-    id: number; // Die ID in DB
-    externalPlantId: number;
-    commonName: string;
-    thumbnail: string | null;
-    amount: number;
-    gardenSpotId?: number;
-    sunlight: string | null;
-    watering: string | null;
-    careLevel: string | null;
-    pruningMonth: string | null; 
-    cycle: string | null;
-    growthRate: string | null;
-    droughtTolerant: boolean;
-    indoor: boolean;
-    medicinal: boolean;
-    description: string | null;
-    origin: string | null;  
+    id: number;                 // DB-ID
+    externalPlantId: number;    // API-ID
+    commonName: string;         // Pflanzenname
+    thumbnail: string | null;   // Bild-URL oder null
+    amount: number;             // Anzahl im Spot
+    gardenSpotId?: number;      // (optional) zugehöriger Spot
+    sunlight: string | null;    // Lichtbedarf
+    watering: string | null;    // Bewässerung
+    careLevel: string | null;   // Pflegeaufwand
+    pruningMonth: string | null;// Rückschnittmonat
+    cycle: string | null;       // Lebenszyklus
+    growthRate: string | null;  // Wachstumsgeschwindigkeit
+    droughtTolerant: boolean;   // Trockenheitstolerant?
+    indoor: boolean;            // Innenbereich geeignet?
+    medicinal: boolean;         // Medizinische Pflanze?
+    description: string | null; // Beschreibung
+    origin: string | null;      // Herkunft
 }
 
-export interface Spot{
-    id: number;
-    name: string, 
-    postalCode: string,
-    street: string,
-    streetNumber: string,
-    city: string,
-    plants: StoredGardenPlant[],
-    logo: string
+// Definition eines Garden Spots im Frontend
+export interface Spot {
+    id: number;                 // Spot-ID
+    name: string;               // Bezeichnung
+    postalCode: string;         // PLZ
+    street: string;             // Straße
+    streetNumber: string;       // Hausnummer
+    city: string;               // Stadt
+    plants: StoredGardenPlant[];// Pflanzen im Spot
+    logo: string;               // Pfad oder URL zum Logo/Bild
 }
 
+// Vereinfachtes Pflanzen-Modell für Auswahllisten 
 export interface Plant {
-    id: number,
-    name: string, 
-    value: number,
-    thumbnail: string
+    id: number;                 // Pflanzen-ID
+    name: string;               // Name
+    value: number;              // Wert oder Menge
+    thumbnail: string;          // Vorschaubild
 }

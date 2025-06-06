@@ -1,23 +1,47 @@
 package com.webengineering.plantapp.backend.dto;
 
+/**
+ * Data Transfer Object (DTO) für die Rückgabe von Pflanzeninformationen an das Frontend.
+ * Enthält alle relevanten Felder einer Pflanze, die angezeigt werden sollen.
+ */
 public class GardenSpotPlantResponseDTO {
+    // Eindeutige ID der Pflanze in der Datenbank.
     private Long id;
+    // ID der Pflanze aus einer externen API (z.B. Perenual).
     private Long externalPlantId;
+    // Allgemeiner Name der Pflanze.
     private String commonName;
+    // URL zu einem Vorschaubild der Pflanze.
     private String thumbnail;
+    // Anzahl dieser Pflanze im Garden Spot.
     private int amount;
+    // Benötigte Sonneneinstrahlung.
     private String sunlight;
+    // Bewässerungsbedarf.
     private String watering;
+    // Pflegeaufwand.
     private String careLevel;
+    // Monate für den Rückschnitt.
     private String pruningMonth;
+    // Lebenszyklus der Pflanze (z.B. mehrjährig).
     private String cycle;
+    // Wachstumsgeschwindigkeit.
     private String growthRate;
+    // Gibt an, ob die Pflanze trockenheitstolerant ist.
     private boolean droughtTolerant;
+    // Gibt an, ob die Pflanze für den Innenbereich geeignet ist.
     private boolean indoor;
+    // Gibt an, ob die Pflanze medizinische Eigenschaften hat.
     private boolean medicinal;
+    // Beschreibung der Pflanze.
     private String description;
+    // Herkunft der Pflanze.
     private String origin;
 
+    /**
+     * Konstruktor zum Erstellen eines GardenSpotPlantResponseDTO-Objekts.
+     * Initialisiert alle Felder des DTOs.
+     */
     public GardenSpotPlantResponseDTO(
         Long id, Long externalPlantId, String commonName, String thumbnail, int amount,
         String sunlight, String watering, String careLevel, String pruningMonth, String cycle,
@@ -42,7 +66,8 @@ public class GardenSpotPlantResponseDTO {
         this.origin = origin;
     }
 
-    // Getter 
+    // Standard Getter- und Setter-Methoden für alle Felder.
+    // Ermöglichen den Zugriff und die Modifikation der Feldwerte.
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getExternalPlantId() { return externalPlantId; }

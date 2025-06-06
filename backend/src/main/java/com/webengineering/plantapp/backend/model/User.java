@@ -3,21 +3,22 @@ package com.webengineering.plantapp.backend.model;
 import javax.persistence.*;
 
 @Entity
+// Entität für einen Anwendungsbenutzer
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;            // Primärschlüssel: eindeutige Benutzer-ID
 
     @Column(unique = true, nullable = false)
-    private String email;
+    private String email;       // Login-E-Mail (einzigartig, Pflichtfeld)
 
-    private String password;
-    private String firstName;
-    private String lastName;
-    private String cityName;
-    private String zipCode;
+    private String password;    // Gehashtes Passwort
+    private String firstName;   // Vorname
+    private String lastName;    // Nachname
+    private String cityName;    // Stadt
+    private String zipCode;     // Postleitzahl
 
-    // Getter/Setter
+    // Getter/Setter für alle Felder
     public Long getId() {
         return id;
     }

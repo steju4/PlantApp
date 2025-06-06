@@ -34,15 +34,15 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
 
 
     useEffect(() => {
-  if (token) {
-    fetch("http://localhost:8080/auth/api/gardenspots", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setGardenSpots(data))
-      .catch((err) => console.error("Fehler beim Laden der Gardenspots:", err));
-  }
-}, [token]);
+    if (token) {
+      fetch("http://localhost:8080/auth/api/gardenspots", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => setGardenSpots(data))                         // Spots im State ablegen
+        .catch((err) => console.error("Fehler beim Laden der Gardenspots:", err));
+    }
+  }, [token]);    
 
   const [plants, setPlants] = useState<PlantDetails>({
     id: 0,
@@ -94,14 +94,6 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
 //     );
 //   });
 
- 
-  const editSpot = () => {
-    console.log("editSpot")
-  }
-  const deleteSpot = () => {
-    console.log("deleteSpot")
-
-  }
   const addGardenSpot = useRef<HTMLIonModalElement>(null);
   const openGardenSpotModal = useRef<HTMLIonModalElement>(null);
 
@@ -135,23 +127,25 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   const [newStreetNumber, setNewStreetNumber] = useState("");
   const [newPostalCode, setNewPostalCode] = useState("");
   const [newCity, setNewCity] = useState("");
+
+  // legt neuen Spot per API an und fügt ihn dem State hinzu
   const addGardenSpotToDB = async (spot: Spot) => {
-  if (!token) return;
-  const res = await fetch("http://localhost:8080/auth/api/gardenspots", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(spot),
-  });
-  if (res.ok) {
-    const newSpot = await res.json();
-    setGardenSpots(prev => [...prev, newSpot]);
-  } else {
-    alert("Fehler beim Anlegen des GardenSpots");
-  }
-};
+    if (!token) return;
+    const res = await fetch("http://localhost:8080/auth/api/gardenspots", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(spot),
+    });
+    if (res.ok) {
+      const newSpot = await res.json();
+      setGardenSpots(prev => [...prev, newSpot]);                  // State updaten
+    } else {
+      alert("Fehler beim Anlegen des GardenSpots");
+    }
+  };
 
   const handleCreateGardenSpot = () => {
   const spot: Spot = {
@@ -173,6 +167,7 @@ const Dashboard: React.FC<DashboardProps> = ({ token }) => {
   closeGardenSpotDilemma();
 };
 
+// löscht Spot über API und entfernt aus State
 const handleDeleteSpot = async (id: number) => {
   if (!token) return;
   try {
@@ -181,13 +176,23 @@ const handleDeleteSpot = async (id: number) => {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
-    setGardenSpots(prev => prev.filter(s => s.id !== id));
+    setGardenSpots(prev => prev.filter(s => s.id !== id)); // Spot entfernen
     closeGardenSpotModal();
   } catch (err) {
     console.error("Error deleting spot:", err);
     alert(`Error deleting spot: ${err instanceof Error ? err.message : String(err)}`);
   }
 };
+
+  function deleteSpot(id: number): void {
+    handleDeleteSpot(id);
+  }
+
+  function editSpot(ID: number): void {
+    const spot = gardenSpots.find(s => s.id === ID);
+    console.log("editSpot", spot);
+    // Hier könnte eine Logik zum Bearbeiten des Spots implementiert werden
+  }
 
   return (
     <IonPage>

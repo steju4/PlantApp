@@ -22,11 +22,15 @@ import java.util.Optional;
 import java.util.List;
 
 
-
+/**
+ * Controller für Authentifizierung und API-Endpunkte.
+ * Definiert REST-Schnittstellen für Benutzerverwaltung, Garden Spots und Pflanzen.
+ */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth") // Alle Endpunkte in dieser Klasse beginnen mit /auth
 public class AuthController {
 
+    // Injiziert Abhängigkeiten für Service, JWT-Utility und Repositories
     @Autowired
     private UserService userService;
 
@@ -39,6 +43,9 @@ public class AuthController {
     @Autowired
     private GardenSpotPlantRepository gardenSpotPlantRepository;
 
+    /**
+     * Endpunkt zur Registrierung eines neuen Benutzers.
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         if (userService.emailExists(user.getEmail())) {
@@ -48,6 +55,10 @@ public class AuthController {
         return ResponseEntity.ok(savedUser);
     }
 
+    /**
+     * Endpunkt zum Einloggen eines Benutzers.
+     * Gibt bei Erfolg einen JWT zurück.
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
         String email = loginData.get("email");
@@ -61,12 +72,18 @@ public class AuthController {
         }
     }
 
+    /**
+     * Endpunkt zur Überprüfung, ob eine E-Mail bereits existiert.
+     */
     @GetMapping("/check-email")
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         boolean exists = userService.emailExists(email);
         return ResponseEntity.ok(exists);
         }
 
+    /**
+     * Endpunkt zum Abrufen der Daten des aktuell eingeloggten Benutzers.
+     */
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
@@ -83,6 +100,10 @@ public class AuthController {
             return ResponseEntity.status(404).body("User not found");
         }
     }
+
+    /**
+     * Endpunkt zum Abrufen aller Garden Spots des aktuell eingeloggten Benutzers.
+     */
     @GetMapping("/api/gardenspots")
     public List<GardenSpot> getUserGardenSpots(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
@@ -92,24 +113,33 @@ public class AuthController {
             User user = userOpt.get();
             return gardenSpotRepository.findByUserId(user.getId());
         } else {
+            // Gibt eine leere Liste zurück, wenn der Benutzer nicht gefunden wird oder kein Token vorhanden ist.
             return List.of();
         }
     }
+
+    /**
+     * Endpunkt zum Erstellen eines neuen Garden Spots für den aktuell eingeloggten Benutzer.
+     */
     @PostMapping("/api/gardenspots")
     public GardenSpot createGardenSpot(@RequestHeader("Authorization") String authHeader, @RequestBody GardenSpot spot) {
         String token = authHeader.replace("Bearer ", "");
         String email = jwtUtil.extractUsername(token);
         Optional<User> userOpt = userService.findByEmail(email);
         if (userOpt.isPresent()) {
-            spot.setUser(userOpt.get());
-            return gardenSpotRepository.save(spot);
+            spot.setUser(userOpt.get()); // Setzt den Benutzer für den Garden Spot.
+            return gardenSpotRepository.save(spot); // Speichert den neuen Garden Spot.
         } else {
+            // Wirft eine Ausnahme, wenn der Benutzer nicht autorisiert ist.
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
         }
     }
 
+    /**
+     * Endpunkt zum Löschen eines Garden Spots (und aller zugehörigen Pflanzen) des aktuell eingeloggten Benutzers.
+     */
     @DeleteMapping("/api/gardenspots/{gardenSpotId}")
-    @Transactional
+    @Transactional // Stellt sicher, dass alle DB-Operationen atomar sind.
     public ResponseEntity<Void> deleteGardenSpot(
     @RequestHeader("Authorization") String authHeader,
     @PathVariable Long gardenSpotId) {
@@ -128,20 +158,24 @@ public class AuthController {
     }
     GardenSpot spot = spotOpt.get();
 
-    // Ownership-Check
+    // Ownership-Check: Stellt sicher, dass der Benutzer der Eigentümer des Spots ist.
     if (!spot.getUser().getId().equals(userOpt.get().getId())) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    // erst alle Plants löschen
+    // Erst alle zugehörigen Pflanzen löschen.
     gardenSpotPlantRepository.deleteAllByGardenSpotId(gardenSpotId);
 
-    // dann den Spot
+    // Dann den Garden Spot selbst löschen.
     gardenSpotRepository.deleteById(gardenSpotId);
 
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.noContent().build(); // HTTP 204 No Content als Erfolgsantwort.
     }
 
+    /**
+     * Endpunkt zum Abrufen aller Pflanzen eines spezifischen Garden Spots.
+     * Stellt sicher, dass der Benutzer Zugriff auf den Garden Spot hat.
+     */
     @GetMapping("/api/gardenspots/{gardenSpotId}/plants")
     public ResponseEntity<List<GardenSpotPlant>> getPlantsForGardenSpot(
             @RequestHeader("Authorization") String authHeader,
@@ -153,18 +187,23 @@ public class AuthController {
         }
 
         Optional<GardenSpot> spotOpt = gardenSpotRepository.findById(gardenSpotId);
+        // Prüft, ob der Spot existiert und dem aktuellen Benutzer gehört.
         if (spotOpt.isEmpty() || !spotOpt.get().getUser().getId().equals(userOpt.get().getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // User darf nicht auf diesen Spot zugreifen
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         return ResponseEntity.ok(gardenSpotPlantRepository.findByGardenSpotId(gardenSpotId));
     }
 
+    /**
+     * Endpunkt zum Hinzufügen einer neuen Pflanze zu einem spezifischen Garden Spot.
+     * Stellt sicher, dass der Benutzer Zugriff auf den Garden Spot hat.
+     */
     @PostMapping("/api/gardenspots/{gardenSpotId}/plants")
     public ResponseEntity<GardenSpotPlant> addPlantToGardenSpot(
             @RequestHeader("Authorization") String authHeader,
             @PathVariable Long gardenSpotId,
-            @RequestBody PlantDataRequest plantData) {
+            @RequestBody PlantDataRequest plantData) { // Nimmt Pflanzendaten als Request Body entgegen.
         String email = jwtUtil.extractUsername(authHeader.replace("Bearer ", ""));
         Optional<User> userOpt = userService.findByEmail(email);
         if (userOpt.isEmpty()) {
@@ -172,10 +211,12 @@ public class AuthController {
         }
 
         Optional<GardenSpot> spotOpt = gardenSpotRepository.findById(gardenSpotId);
+        // Prüft, ob der Spot existiert und dem aktuellen Benutzer gehört.
         if (spotOpt.isEmpty() || !spotOpt.get().getUser().getId().equals(userOpt.get().getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
+        // Erstellt eine neue GardenSpotPlant-Entität und befüllt sie mit den Daten.
         GardenSpotPlant newPlant = new GardenSpotPlant();
         newPlant.setExternalPlantId(plantData.getExternalPlantId());
         newPlant.setCommonName(plantData.getCommonName());
@@ -183,7 +224,7 @@ public class AuthController {
         newPlant.setAmount(plantData.getAmount());
         newPlant.setGardenSpot(spotOpt.get());
 
-        // Neue Felder setzen
+        // Setzt die zusätzlichen Felder für die Pflanze.
         newPlant.setSunlight(plantData.getSunlight());
         newPlant.setWatering(plantData.getWatering());
         newPlant.setCareLevel(plantData.getCareLevel());
@@ -196,16 +237,20 @@ public class AuthController {
         newPlant.setDescription(plantData.getDescription());
         newPlant.setOrigin(plantData.getOrigin());
 
-        GardenSpotPlant savedPlant = gardenSpotPlantRepository.save(newPlant);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPlant);
+        GardenSpotPlant savedPlant = gardenSpotPlantRepository.save(newPlant); // Speichert die neue Pflanze.
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPlant); // HTTP 201 Created als Erfolgsantwort.
     }
 
-       @PutMapping("/api/gardenspotplants/{gardenSpotPlantId}")
-    @Transactional
-    public ResponseEntity<GardenSpotPlantResponseDTO> updateGardenSpotPlant( 
+    /**
+     * Endpunkt zum Aktualisieren der Daten einer Pflanze (z.B. Menge).
+     * Stellt sicher, dass der Benutzer Zugriff auf die Pflanze hat.
+     */
+    @PutMapping("/api/gardenspotplants/{gardenSpotPlantId}")
+    @Transactional // Stellt sicher, dass die DB-Operation atomar ist.
+    public ResponseEntity<GardenSpotPlantResponseDTO> updateGardenSpotPlant(
             @RequestHeader("Authorization") String authHeader,
             @PathVariable Long gardenSpotPlantId,
-            @RequestBody Map<String, Integer> payload) {
+            @RequestBody Map<String, Integer> payload) { // Erwartet eine Map mit dem Feld "amount".
         String email = jwtUtil.extractUsername(authHeader.replace("Bearer ", ""));
         Optional<User> userOpt = userService.findByEmail(email);
         if (userOpt.isEmpty()) {
@@ -218,18 +263,19 @@ public class AuthController {
         }
 
         GardenSpotPlant plant = plantOpt.get();
-        // Gehört diese Pflanze zu einem GardenSpot des aktuellen Users?
+        // Ownership-Check: Stellt sicher, dass die Pflanze zu einem Spot des Benutzers gehört.
         if (!plant.getGardenSpot().getUser().getId().equals(userOpt.get().getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         Integer newAmount = payload.get("amount");
         if (newAmount == null || newAmount < 0) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body(null); // Ungültige Menge.
         }
-        plant.setAmount(newAmount);
-        GardenSpotPlant updatedPlantEntity = gardenSpotPlantRepository.save(plant); 
+        plant.setAmount(newAmount); // Aktualisiert die Menge der Pflanze.
+        GardenSpotPlant updatedPlantEntity = gardenSpotPlantRepository.save(plant); // Speichert die Änderungen.
 
+        // Konvertiert die Entität in ein DTO für die Antwort.
         GardenSpotPlantResponseDTO responseDto = new GardenSpotPlantResponseDTO(
             updatedPlantEntity.getId(),
             updatedPlantEntity.getExternalPlantId(),
@@ -248,9 +294,13 @@ public class AuthController {
             updatedPlantEntity.getDescription(),
             updatedPlantEntity.getOrigin()
         );
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(responseDto); // Gibt das aktualisierte Pflanzen-DTO zurück.
     }
 
+    /**
+     * Endpunkt zum Löschen einer spezifischen Pflanze.
+     * Stellt sicher, dass der Benutzer Zugriff auf die Pflanze hat.
+     */
     @DeleteMapping("/api/gardenspotplants/{gardenSpotPlantId}")
     public ResponseEntity<Void> deleteGardenSpotPlant(
             @RequestHeader("Authorization") String authHeader,
@@ -267,12 +317,12 @@ public class AuthController {
         }
 
         GardenSpotPlant plant = plantOpt.get();
+        // Ownership-Check: Stellt sicher, dass die Pflanze zu einem Spot des Benutzers gehört.
         if (!plant.getGardenSpot().getUser().getId().equals(userOpt.get().getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        gardenSpotPlantRepository.deleteById(gardenSpotPlantId);
-        return ResponseEntity.noContent().build();
+        gardenSpotPlantRepository.deleteById(gardenSpotPlantId); // Löscht die Pflanze.
+        return ResponseEntity.noContent().build(); // HTTP 204 No Content als Erfolgsantwort.
     }
-}   
-
+}

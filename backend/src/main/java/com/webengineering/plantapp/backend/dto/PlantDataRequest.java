@@ -1,24 +1,43 @@
 package com.webengineering.plantapp.backend.dto;
 
+/**
+ * Data Transfer Object (DTO) für Anfragen vom Frontend, um Pflanzendaten zu übermitteln.
+ * Wird verwendet, wenn eine neue Pflanze erstellt oder eine bestehende aktualisiert wird.
+ */
 public class PlantDataRequest {
+    // ID der Pflanze aus einer externen API (z.B. Perenual).
     private Long externalPlantId;
+    // Allgemeiner Name der Pflanze.
     private String commonName;
+    // URL zu einem Vorschaubild der Pflanze.
     private String thumbnail;
+    // Anzahl dieser Pflanze.
     private int amount;
+    // Benötigte Sonneneinstrahlung.
     private String sunlight;
+    // Bewässerungsbedarf.
     private String watering;
+    // Pflegeaufwand.
     private String careLevel;
+    // Monate für den Rückschnitt.
     private String pruningMonth;
+    // Lebenszyklus der Pflanze.
     private String cycle;
+    // Wachstumsgeschwindigkeit.
     private String growthRate;
+    // Gibt an, ob die Pflanze trockenheitstolerant ist.
     private boolean droughtTolerant;
+    // Gibt an, ob die Pflanze für den Innenbereich geeignet ist.
     private boolean indoor;
+    // Gibt an, ob die Pflanze medizinische Eigenschaften hat.
     private boolean medicinal;
+    // Beschreibung der Pflanze.
     private String description;
+    // Herkunft der Pflanze.
     private String origin;
 
-    // Getter und Setter
-       public Long getExternalPlantId() { return externalPlantId; }
+    // Standard Getter- und Setter-Methoden für alle Felder.
+    public Long getExternalPlantId() { return externalPlantId; }
     public void setExternalPlantId(Long externalPlantId) { this.externalPlantId = externalPlantId; }
     public String getCommonName() { return commonName; }
     public void setCommonName(String commonName) { this.commonName = commonName; }

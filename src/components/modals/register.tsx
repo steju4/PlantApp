@@ -11,7 +11,7 @@ import {
     IonButtons,
     IonIcon
 } from '@ionic/react';
-import { close, eye, eyeOff } from 'ionicons/icons'; // eye & eyeOff hinzufügen
+import { close, eye, eyeOff } from 'ionicons/icons';
 import Header from "../header";
 import '../css/register.css';
 
