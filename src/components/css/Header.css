@@ -1,7 +1,8 @@
+/* Header-Container: definiert die Grundfarben für den Hintergrund und Text */
 .header-container {
-    --background: #ffffff;
-    --color: #000000;
-    position: relative;
+    --background: #ffffff; /* weißer Hintergrund (Ion Components können diese Variable nutzen) */
+    --color: #000000; /* schwarzer Text */
+    position: relative; /* wichtig für das Zentrieren des Titels mit absoluter Position */
 }
 
 /* Titel zentrieren: horizontal UND vertikal */
@@ -9,10 +10,10 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); /* horizontale & vertikale Zentrierung */
     font-size: 20px;
     font-weight: bold;
-    pointer-events: none;
+    pointer-events: none; /* verhindert, dass Klicks den Titel beeinflussen */
 }
 
 /* Buttons unverändert belassen */
@@ -27,9 +28,10 @@ ion-button {
     height: 1px;
 }
 
+/* Text mit grünem Verlauf, ideal für auffällige Aktionsbuttons wie "Speichern", "Bestätigen" */
 .confirm-text-gradient {
-    background: linear-gradient(135deg, #4CAF50, #8BC34A);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: linear-gradient(135deg, #4CAF50, #8BC34A); /* grüner Verlauf */
+    -webkit-background-clip: text; /* Clip auf Text anwenden */
+    -webkit-text-fill-color: transparent; /* macht den Text „durchsichtig“, um den Verlauf zu zeigen */
     font-weight: bold;
 }
