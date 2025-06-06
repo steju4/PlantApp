@@ -1,18 +1,21 @@
+/* Login Header (Logo + Titel)  */
 .login-header-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-    padding: 0 16px;
+    display: flex; /* horizontale Ausrichtung */
+    align-items: center; /* vertikal zentriert */
+    justify-content: flex-start; /* linksbündige Anordnung */
+    gap: 12px; /* Abstand zwischen Logo und Titel */
+    padding: 0 16px; /* seitlicher Innenabstand */
 }
 
+/* Login-Logo: bleibt in seiner Größe konstant */
 .login-logo {
     height: 44px;
-    user-select: none;
-    pointer-events: none;
-    flex-shrink: 0;
+    user-select: none; /* verhindert Markieren per Maus */
+    pointer-events: none; /* macht das Logo "nicht klickbar" */
+    flex-shrink: 0; /* verhindert, dass das Logo bei Platzmangel schrumpft */
 }
 
+/* Login-Titel: flexible Breite und gutes Textverhalten */
 .login-title {
     font-size: 20px;
     font-weight: bold;
@@ -23,18 +26,21 @@
 }
 
 /* Nur Styles innerhalb des Login-Modals */
+/* Input-Felder im Modal   */
 .login-modal .input-container {
     margin-bottom: 16px;
     width: 90%;
     margin-left: 5%;
-    flex-grow: 0;
+    flex-grow: 0; /* nimmt keine zusätzliche Höhe in flex-Layouts */
 }
 
+/* Erstes Feld erhält oberen Abstand */
 .login-modal .input-container:first-child {
     margin-top: 40px;
 }
 
 
+/* Fehleranzeige */
 .login-modal .error-message {
     color: red;
     text-align: center;
@@ -46,6 +52,7 @@
     margin-left: 5%;
 }
 
+/* Login-Button Styling */
 .login-modal ion-button {
     --background: linear-gradient(135deg, #4CAF50, #8BC34A);
     --color: white;
@@ -62,20 +69,23 @@
     margin-bottom: 0;
 }
 
+/* Hinweis zum Registrieren */
 .login-modal .register-hint {
     text-align: center;
     margin-top: 10px;
     font-size: 14px;
 }
 
+/* Link-Stil */
 .login-modal a {
-    background: linear-gradient(135deg, #4CAF50, #8BC34A);
-    -webkit-background-clip: text;
-    color: transparent;
+    background: linear-gradient(135deg, #4CAF50, #8BC34A); /* grüner Verlauf */
+    -webkit-background-clip: text; /* Farbverlauf nur im Text anzeigen */
+    color: transparent; /* damit Textfarbe durch Hintergrund erscheint */
     text-decoration: none;
     font-weight: bold;
 }
 
+/* Hover-Effekt für Link */
 .login-modal a:hover {
     text-decoration: underline;
 }
