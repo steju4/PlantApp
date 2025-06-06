@@ -43,6 +43,7 @@
     font-size: 14px;
     padding: 10px;
     box-sizing: border-box;
+    height: 40px;
 }
 
 
@@ -79,7 +80,7 @@
     z-index: 10;
     max-height: 300px;
     overflow-y: auto;
-    margin-top: 2px; /* kleiner Abstand zum Input */
+    margin-top: 0px; /* kleiner Abstand zum Input */
 }
 
 
