@@ -7,8 +7,8 @@ import {
     IonList,
     IonIcon
 } from "@ionic/react";
-import { pingSpeciesAPI } from "../../scripts/plant_species_api_test";
-import { fetchPlantDetailsById } from "../../scripts/plant_species_details";
+import { pingSpeciesAPI } from "../../scripts/plantSpeciesApiTest";
+import { fetchPlantDetailsById } from "../../scripts/plantSpeciesDetails";
 import { PlantDetails, StoredGardenPlant } from "../../constants/interfaces";
 import '../css/OpenGardenSpotModal.css';
 import Header from "../Header";
@@ -17,7 +17,7 @@ import EditPlantModal from "./EditPlantModal";
 import { search as searchIcon } from 'ionicons/icons';
 import {Spot} from "../../constants/interfaces";
 import { trash, sunnyOutline } from 'ionicons/icons';
-import {fetchWeatherData} from "../../scripts/weather_api";
+import {fetchWeatherData} from "../../scripts/weatherApi";
 
 interface OpenGardenSpotModalProps {
     openGardenSpot: () => void;

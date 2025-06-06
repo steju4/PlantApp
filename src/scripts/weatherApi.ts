@@ -1,4 +1,4 @@
-// scripts/weather_api.ts
+// scripts/weatherApi.ts
 
 // API-Schlüssel für den Zugriff auf OpenWeatherMap-Daten
 const OPENWEATHER_API_KEY = "7124aa5c248a83f67f5d34bf50443ba5";

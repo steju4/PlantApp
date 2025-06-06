@@ -1,4 +1,4 @@
-// scripts/plant_species_details.ts
+// scripts/plantSpeciesDetails.ts
 import { PlantDetails } from '../constants/interfaces';
 
 const API_KEY = 'sk-vXLh681cb4a7a39fe10310'; // besser später in .env auslagern
