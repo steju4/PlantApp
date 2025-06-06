@@ -1,7 +1,7 @@
 /* === Allgemeines Layout für die Seite === */
 .open-garden-container {
     position: relative; /* Wichtig für das Dropdown */
-    padding: 0 5%;
+    padding: 0 5%; /* horizontaler Innenabstand */
     margin-top: 2em;
 }
 
@@ -12,14 +12,18 @@
     }
 }
 @media (max-height: 800px) {
+    /* Begrenzte Höhe für das Pflanzen-Grid */
     .plant-grid-wrapper .plant-grid {
         max-height: 300px;
     }
+
+    /* Zusammenklappbare Wetterbox */
     .weather-box.collapsed {
         max-height: 0;
         overflow: hidden;
         transition: max-height 0s ease;
     }
+
     .weather-box.expanded {
         max-height: 200px; /* oder passend */
         transition: max-height 0s ease;
@@ -27,8 +31,7 @@
 }
 
 
-/* === Suchfeld === */
-/* === Suchfeld Wrapper === */
+/* === Suchfeld-Bereich === */
 .search-wrapper {
     position: relative;
     width: 100%;
@@ -36,17 +39,18 @@
     margin-bottom: 1rem; /* Abstand nach unten, damit kein Überlappen */
 }
 
+/* Suchfeld Input-Stil */
 .search-input {
     flex: 1; /* nimmt so viel Platz wie möglich */
     border: 0.5px solid gray;
     border-radius: 10px;
     font-size: 14px;
     padding: 10px;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Padding und Border in der Breite berücksichtigen */
     height: 40px;
 }
 
-
+/* Suchbutton Styling */
 .search-button {
     height: 40px;
     min-width: 40px;
@@ -61,6 +65,7 @@
     align-items: center;
 }
 
+/* Flexbox für Input und Suchbutton nebeneinander */
 .search-container {
     display: flex;
     align-items: center;
@@ -68,9 +73,10 @@
     gap: 0.5rem; /* Abstand zwischen Input und Button */
 }
 
+/* Dropdown-Liste unter dem Suchfeld */
 .dropdown {
     position: absolute;
-    top: 100%;
+    top: 100%; /* direkt unter dem Input */
     left: 0;
     width: 100%;
     background: white;
@@ -78,12 +84,12 @@
     border-radius: 8px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 10;
-    max-height: 300px;
+    max-height: 300px; /* Max Höhe und Scrollbar */
     overflow-y: auto;
-    margin-top: 0px; /* kleiner Abstand zum Input */
+    margin-top: 0px;
 }
 
-
+/* Einzelne Einträge im Dropdown */
 .dropdown-item {
     display: flex;
     justify-content: space-between;
@@ -94,17 +100,20 @@
     position: relative;
 }
 
+/* Bild im Dropdown-Eintrag */
 .dropdown-item-img {
     max-width: 50px;
     max-height: 50px;
     margin-right: 10px;
 }
 
+/* Textcontainer für Dropdown-Eintrag */
 .dropdown-item-text {
     display: flex;
     flex-direction: column;
 }
 
+/* Button rechts im Dropdown-Eintrag */
 .add-button {
     position: absolute;
     right: 10px;
@@ -114,7 +123,7 @@
     padding: 5px;
 }
 
-/* === Wrapper für Grid & Titel === */
+/* Wrapper für Pflanzen-Grid und Titel */
 .plant-grid-wrapper {
     width: 100%;
     padding: 0 5%;
@@ -122,7 +131,7 @@
     text-align: center; /* wichtig für zentrierten Titel */
 }
 
-/* Titel über dem Grid – im Button-Stil */
+/* Stil für den Titel oberhalb des Grids */
 .plant-grid-title {
     display: inline-block;
     margin: 0 auto 1rem auto;
@@ -137,7 +146,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* === Pflanzen-Grid === */
+/* Grid für Pflanzen-Karten mit flexiblem Layout */
 .plant-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -147,7 +156,7 @@
     padding-bottom: 10px;
 }
 
-/* === Einzelne Pflanzen-Karte === */
+/* Einzelne Pflanzenkarte */
 .plant-box {
     position: relative;
     display: flex;
@@ -162,24 +171,27 @@
     background-color: white;
 }
 
+/* Bild in der Pflanzenkarte */
 .plant-box img {
     max-width: 100px;
     max-height: 100px;
     margin-bottom: 10px;
 }
 
+/* Pflanzenname fett und schwarz */
 .plant-name {
     font-weight: bold;
     color: black;
 }
 
+/* Wissenschaftlicher Name kursiv und grün */
 .plant-scientific {
     font-style: italic;
     color: green;
     margin-bottom: 18px;
 }
 
-/* === Mengen-Badge === */
+/* Mengen-Badge unten rechts auf Pflanzenkarte */
 .plant-quantity-badge {
     position: absolute;
     bottom: 8px;
@@ -191,12 +203,13 @@
     border-radius: 12px;
     font-weight: bold;
 }
-/* === Löschen-Button === */
+/* Container für den Löschen-Button unter dem Grid */
 .delete-button-wrapper {
     text-align: center;
     margin-top: 2rem;
 }
 
+/* Stil für den Löschen-Button */
 .delete-button {
     width: 80%;
     margin: 20px auto 0;
@@ -214,6 +227,8 @@
     justify-content: center;
     gap: 8px;
 }
+
+/* Wetter-Box oberhalb des Grids */
 .weather-box {
     display: flex;
     align-items: center;
@@ -228,6 +243,7 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
+/* Wetter-Icon Styling */
 .weather-icon {
     font-size: 24px;
     color: #a3e635; /* helleres Gelb-Grün für Icon */
