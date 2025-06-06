@@ -12,8 +12,8 @@ import {
     IonIcon
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
-import '../css/AddGardenSpotModal.css';
-import Header from "../Header";
+import '../css/add-garden-spot-modal.css';
+import Header from "../header";
 
 interface GardenSpotProps {
     newGardenSpot: () => void;          // Funktion zum Erstellen eines neuen Gartenplatzes

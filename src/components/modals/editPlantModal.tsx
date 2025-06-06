@@ -12,8 +12,8 @@ import {
 } from '@ionic/react';
 import { add, remove, trash } from 'ionicons/icons';
 import { PlantDetails } from '../../constants/interfaces';
-import Header from "../Header";
-import '../css/PlantDetailsModal.css';
+import Header from "../header";
+import '../css/plant-details-modal.css';
 
 interface EditPlantModalProps {
     isOpen: boolean;                  // Modal öffnen oder schließen

@@ -12,8 +12,8 @@ import {
 } from '@ionic/react';
 import { add, remove } from 'ionicons/icons';
 import { PlantDetails } from '../../constants/interfaces';
-import Header from "../Header";
-import '../css/PlantDetailsModal.css';
+import Header from "../header";
+import '../css/plant-details-modal.css';
 
 interface PlantDetailsModalProps {
     isOpen: boolean;               // Steuerung, ob das Modal sichtbar ist

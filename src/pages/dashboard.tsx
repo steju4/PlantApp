@@ -16,9 +16,9 @@ import { add } from "ionicons/icons";
 import "../components/css/dashboard.css";
 import "../components/css/global.css";
 import { Spot, PlantDetails, UserData } from "../constants/interfaces";
-import AddGardenSpotModal from "../components/modals/AddGardenSpotModal";
-import OpenGardenSpotModal from "../components/modals/OpenGardenSpotModal";
-import Gardenspots from "../components/Gardenspots_Cards";
+import AddGardenSpotModal from "../components/modals/addGardenSpotModal";
+import OpenGardenSpotModal from "../components/modals/openGardenSpotModal";
+import Gardenspots from "../components/gardenspotsCards";
 import Logo from '../../public/assets/icon/logo.png';
 import { useHistory } from "react-router-dom";
 interface DashboardProps {

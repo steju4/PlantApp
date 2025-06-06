@@ -10,10 +10,10 @@ import {
 import { pingSpeciesAPI } from "../../scripts/plantSpeciesApiTest";
 import { fetchPlantDetailsById } from "../../scripts/plantSpeciesDetails";
 import { PlantDetails, StoredGardenPlant } from "../../constants/interfaces";
-import '../css/OpenGardenSpotModal.css';
-import Header from "../Header";
-import PlantDetailsModal from "./PlantDetailsModal";
-import EditPlantModal from "./EditPlantModal";
+import '../css/open-garden-spot-modal.css';
+import Header from "../header";
+import PlantDetailsModal from "./plantDetailsModal";
+import EditPlantModal from "./editPlantModal";
 import { search as searchIcon } from 'ionicons/icons';
 import {Spot} from "../../constants/interfaces";
 import { trash, sunnyOutline } from 'ionicons/icons';

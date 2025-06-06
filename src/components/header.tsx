@@ -8,7 +8,7 @@ import {
     IonIcon
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
-import './css/Header.css';
+import './css/header.css';
 
 // Props-Interface für den Header-Komponent
 interface HeaderProps {

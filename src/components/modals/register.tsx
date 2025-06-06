@@ -12,7 +12,7 @@ import {
     IonIcon
 } from '@ionic/react';
 import { close, eye, eyeOff } from 'ionicons/icons'; // eye & eyeOff hinzufügen
-import Header from "../Header";
+import Header from "../header";
 import '../css/register.css';
 
 interface RegisterModalProps {
