@@ -1,30 +1,34 @@
+/* Container für Eingabefelder in der Modal – mit Abstand unten und zentriertem Layout */
 .add-garden-spot-modal .input-container {
-    margin-bottom: 16px;
-    width: 90%;
-    margin-left: 5%;
-    flex-grow: 0;
+    margin-bottom: 16px; /* Abstand nach unten zwischen Feldern */
+    width: 90%; /* Breite auf 90% begrenzt */
+    margin-left: 5%; /* zentriert durch linken Rand von 5% */
+    flex-grow: 0; /* Container wächst nicht über seine Größe hinaus */
 }
 
+/* Zusätzlicher Abstand oben beim ersten Eingabefeld */
 .add-garden-spot-modal .input-container:first-child {
     margin-top: 40px;
 }
 
+/* Gestyltet Bestätigungs-Button (z.B. „Hinzufügen“) */
 .add-garden-spot-modal ion-button.confirm-button {
-    --background: linear-gradient(135deg, #4CAF50, #8BC34A);
-    --color: white;
+    --background: linear-gradient(135deg, #4CAF50, #8BC34A); /* grüner Farbverlauf */
+    --color: white; /* weiße Schrift */
     font-weight: bold;
     font-size: 16px;
     border-radius: 8px;
-    width: 90%;
-    margin-left: 5%;
-    padding: 12px 0;
-    --box-shadow: none;
+    width: 90%; /* gleiche Breite wie Eingabefelder */
+    margin-left: 5%; /* zentriert */
+    padding: 12px 0; /* vertikales Padding */
+    --box-shadow: none; /* kein Schatten */
     --border-radius: 8px;
-    transition: background 0.3s ease, transform 0.1s ease;
+    transition: background 0.3s ease, transform 0.1s ease; /* Animation bei Hover/Interaktion */
     flex-shrink: 0;
     margin-bottom: 0;
 }
 
+/* Gestyltet Abbrechen-Button */
 .add-garden-spot-modal ion-button.cancel-button {
     width: 90%;
     margin-left: 5%;
@@ -37,8 +41,9 @@
     margin-top: 0;
 }
 
+/* Fehlermeldung zentriert unter Eingabefeldern */
 .add-garden-spot-modal .error-message {
-    color: red;
+    color: red; /* rot für Fehler */
     text-align: center;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -48,30 +53,33 @@
     margin-left: 5%;
 }
 
+/* Eingabefelder im Container (Textarea und Input) */
 .add-garden-spot-modal .input-container ion-textarea,
 .add-garden-spot-modal .input-container ion-input {
     font-size: 14px;
     padding: 10px;
     border-radius: 8px;
-    width: 100%;
-    background-color: transparent;
+    width: 100%; /* volle Breite innerhalb des Containers */
+    background-color: transparent; /* Hintergrund transparent */
     border: none;
     box-shadow: none;
 }
 
+/* Label innerhalb der Container – ebenfalls transparent */
 .add-garden-spot-modal .input-container ion-label {
     background-color: transparent;
 }
 
 /* Flexbox Layout für die Felder Street und Street Number */
 .add-garden-spot-modal .input-container.flex-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
+    display: flex; /* macht das Layout horizontal */
+    justify-content: space-between; /* Abstand zwischen Spalten */
+    gap: 20px; /* Lücke zwischen den beiden Feldern */
 }
 
+/* Spalten innerhalb eines flex-rows */
 .add-garden-spot-modal .input-container .input-column {
-    width: 48%;
+    width: 48%; /* zwei Spalten nebeneinander mit etwas Abstand */
 }
 
 /* Flexbox Layout für die Felder Postal Code und City */
@@ -79,8 +87,4 @@
     display: flex;
     justify-content: space-between;
     gap: 20px;
-}
-
-.add-garden-spot-modal .input-container .input-column {
-    width: 48%;
 }
